@@ -1,4 +1,4 @@
-# 🚀 Paraby UI Framework
+# Paraby UI Framework
 
 ![Paraby Banner](https://via.placeholder.com/800x200.png?text=Paraby+UI+-+Fastest+Python+UI+Framework)
 
@@ -7,19 +7,19 @@ Do you want to design Python UIs as fast as lightning, as beautiful as modern ap
 
 Welcome to **Paraby** - The next-generation UI framework!
 
-## ✨ Features
-- **⚡ Blazing Fast:** The elegant Parenthesis `()` syntax allows extremely fast prototyping.
-- **🎨 Beautiful by Default:** Built on top of `CustomTkinter`, Paraby automatically wraps your UI in modern, rounded, and flat design languages (Dark Mode supported).
-- **🧠 Smart Engine:** Automatically detects low-contrast text/background colors and warns developers!
-- **🔌 Auto-binding:** No more `.get()` or `.set()`. UI variables are directly bound to your Python logic file!
+## Features
+- **Blazing Fast:** The elegant Parenthesis `()` syntax allows extremely fast prototyping.
+- **Beautiful by Default:** Built on top of `CustomTkinter`, Paraby automatically wraps your UI in modern, rounded, and flat design languages (Dark Mode supported).
+- **Smart Engine:** Automatically detects low-contrast text/background colors and warns developers!
+- **Auto-binding:** No more `.get()` or `.set()`. UI variables are directly bound to your Python logic file!
 - **VS Code Extension:** Full Syntax Highlighting and Code Suggestion support.
 
-## 📦 Installation
+## Installation
 ```bash
 pip install paraby
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 **1. Create a UI file `app.pui`**
 ```python
@@ -49,7 +49,7 @@ if my_button.click:
 
 Just run `python app.py` and enjoy your app!
 
-## 🎁 Showroom Mode
+## Showroom Mode
 Don't know how to use Paraby? Just create a new `.pui` file and write exactly one line:
 ```python
 test()
@@ -57,4 +57,4 @@ test()
 A full-featured demo app (with IDE Cheat Sheet included) will automatically open up!
 
 ---
-*Developed with ❤️ by By.*
+*made by By, aka Nguyên developer
