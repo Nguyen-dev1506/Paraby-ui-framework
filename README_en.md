@@ -56,5 +56,8 @@ test()
 ```
 A full-featured demo app (with IDE Cheat Sheet included) will automatically open up!
 
+## Philosophy
+Our goal is to help programmers build interfaces easily, quickly, and beautifully. But our main goal is to **bring joy back to coding**. Programmers are human beings, not machines. Paraby is built to care for, gently guide, and assist you with dedication, rather than throwing harsh, dry error logs at your face.
+
 ---
-*made by By, aka Nguyên developer
+*made by By, aka Nguyên developer*

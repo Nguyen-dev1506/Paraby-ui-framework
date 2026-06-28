@@ -55,6 +55,7 @@ Không biết dùng Paraby thế nào? Hãy tạo một file `.pui` mới và ch
 test()
 ```
 Một ứng dụng trình diễn toàn bộ chức năng (Kèm theo Cheat Sheet tạo sẵn cho IDE) sẽ tự động mở lên!
+Mục tiêu của chúng tôi là giúp đỡ lập trình viên xây dựng giao diện dễ dàng, nhanh chóng, đẹp và xịn. Nhưng mục tiêu lớn nhất của chúng tôi là **mang lại niềm vui khi gõ code**. Lập trình viên cũng là con người, không phải cỗ máy. Paraby được sinh ra để chăm sóc, nhắc nhở và giúp đỡ bạn một cách tận tình, nhẹ nhàng nhất thay vì ném vào mặt bạn những dòng lỗi đỏ lòm khô khan.
 
 ---
-*made by By, aka Nguyên developer
+*made by By, aka Nguyên developer*
