@@ -1,0 +1,13 @@
+Yêu cầu của chúng ta là:
+1. Tạo ra một framework giúp xây dựng ứng dụng desktop nhanh chóng, tự code thoải mái và thân thiện với người dùng.
+2. Đồ hoạ vừa đủ sử dụng dựa trên custom tkinter.
+3. Ngôn ngữ python 3.13
+4. Mục tiêu cốt lõi là làm cho cú pháp dễ dàng hơn. Cú pháp khai báo thuộc tính sử dụng dấu hai chấm (:) thay vì dấu bằng (=) và không cần dấu nháy kép rườm rà.
+5. Cú pháp gọi và thực hiện lệnh ở .py (logic) phải CỰC KÌ TỐI GIẢN, loại bỏ mọi dấu chấm rườm rà:
+    - Tự động nạp trực tiếp các widget thành biến toàn cục (không cần gọi qua `win.`).
+    - Gán và lấy giá trị cực ngắn gọn qua thuộc tính động (Ví dụ: sử dụng `my_label.text = my_entry.text` thay vì dùng `.configure(text=...)` và `.get()`).
+6. Có hai cách khai báo biến cho widget trong file thiết kế giao diện (.pui):
+    - Cách 1: Gán trực tiếp (Ví dụ: `my_btn = btn():`)
+    - Cách 2: Khai báo qua thuộc tính name (Ví dụ: `name: my_label` bên trong khối widget)
+7. Hỗ trợ bắt sự kiện gọn gàng trong python bằng if (Ví dụ: `if my_btn.click:` hoặc `if my_btn.click_me:`)
+8. Chỉ sửa file này khi thêm tính năng mới. Hãy đọc file này thật kĩ, phân tích rồi viết code. Xoá/Chỉnh sửa file cũ để theo kịp thiết kế mới nhất này.
