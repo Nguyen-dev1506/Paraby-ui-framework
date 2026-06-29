@@ -48,49 +48,63 @@ def show_help(pui_file):
         if m_input and current_widget_type:
             data_vars.append(m_input.group(1))
 
-    print("\n" + "="*65)
-    print(f"🛠️  PARABY CHEAT SHEET CHO FILE: {pui_file} 🛠️")
-    print("="*65)
+    cheat_sheet_str = "\n" + "="*65 + "\n"
+    cheat_sheet_str += f"🛠️  PARABY CHEAT SHEET CHO FILE: {pui_file} 🛠️\n"
+    cheat_sheet_str += "="*65 + "\n\n"
     
-    print("\n[1] DANH SÁCH BIẾN GIAO DIỆN (UI WIDGETS):")
+    cheat_sheet_str += "[1] DANH SÁCH BIẾN GIAO DIỆN (UI WIDGETS):\n"
     if widgets:
         for var, wtype in widgets.items():
-            print(f"  - {var} ({wtype})")
+            cheat_sheet_str += f"  - {var} ({wtype})\n"
     else:
-        print("  (Không tìm thấy biến widget nào có đặt tên)")
+        cheat_sheet_str += "  (Không tìm thấy biến widget nào có đặt tên)\n"
 
-    print("\n[2] DANH SÁCH BIẾN DỮ LIỆU (DATA BINDINGS - THỜI GIAN THỰC):")
+    cheat_sheet_str += "\n[2] DANH SÁCH BIẾN DỮ LIỆU (DATA BINDINGS - THỜI GIAN THỰC):\n"
     if data_vars:
         for var in data_vars:
-            print(f"  - {var} (Cập nhật tự động không cần gọi .get())")
+            cheat_sheet_str += f"  - {var} (Cập nhật tự động không cần gọi .get())\n"
     else:
-        print("  (Không tìm thấy biến dữ liệu nào khai báo qua thuộc tính `input`)")
+        cheat_sheet_str += "  (Không tìm thấy biến dữ liệu nào khai báo qua thuộc tính `input`)\n"
 
-    print("\n[3] GỢI Ý CODE LOGIC (COPY-PASTE VÀO FILE .py CHẠY NGAY):")
-    print("```python")
-    print("import paraby as pb\n")
-    print(f"pb.load('{pui_file}')\n")
-    print("# --- BẬT AUTOCOMPLETE CHO IDE ---")
+    cheat_sheet_str += "\n[3] GỢI Ý CODE LOGIC (COPY-PASTE VÀO FILE .py CHẠY NGAY):\n"
+    cheat_sheet_str += "```python\n"
+    cheat_sheet_str += "import paraby as pb\n\n"
+    cheat_sheet_str += f"pb.load('{pui_file}')\n\n"
+    cheat_sheet_str += "# --- BẬT AUTOCOMPLETE CHO IDE ---\n"
     for var, wtype in widgets.items():
-        print(f"{var}: pb.{wtype}")
+        cheat_sheet_str += f"{var}: pb.{wtype}\n"
         
     for var in data_vars:
-        print(f"{var}: str  # Biến dữ liệu")
+        cheat_sheet_str += f"{var}: str  # Biến dữ liệu\n"
         
-    print("\n# --- BẮT SỰ KIỆN ---")
+    cheat_sheet_str += "\n# --- BẮT SỰ KIỆN ---\n"
     if widgets:
         first_var = list(widgets.keys())[0]
-        print(f"if {first_var}.click:")
+        cheat_sheet_str += f"if {first_var}.click:\n"
         if data_vars:
-            print(f"    print('Dữ liệu người dùng vừa gõ:', {data_vars[0]})")
+            cheat_sheet_str += f"    print('Dữ liệu người dùng vừa gõ:', {data_vars[0]})\n"
         else:
-            print(f"    print('Nút {first_var} được bấm!')")
+            cheat_sheet_str += f"    print('Nút {first_var} được bấm!')\n"
             
-    print("```")
-    print("="*65 + "\n")
+    cheat_sheet_str += "```\n"
+    cheat_sheet_str += "="*65 + "\n"
+    
+    import paraby as pb
+    import os
+    help_pui_path = os.path.join(os.path.dirname(__file__), "help.pui")
+        
+    try:
+        win = pb.load(help_pui_path)
+        win.out_box.text = cheat_sheet_str
+    except Exception as e:
+        print("Lỗi khi mở giao diện Cheat Sheet:", e)
+        print(cheat_sheet_str)
 
-if __name__ == "__main__":
+def main():
     if len(sys.argv) < 2:
-        print("Cú pháp: python3 help.py <ten_file.pui>")
+        print("Cú pháp: paraby <ten_file.pui>")
     else:
         show_help(sys.argv[1])
+
+if __name__ == "__main__":
+    main()

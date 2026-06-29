@@ -91,6 +91,7 @@ python3 -m paraby giao_dien.pui
 ### 3.1. Nhãn chữ (`label` / `lable` / `text` / `txt`)
 Hỗ trợ cả cách viết `label()` và `lable()`. Hỗ trợ cấu hình font chữ riêng lẻ:
 - `font`: Tên font chữ (ví dụ: `"Courier"`, `"Arial"`).
+- `font_color`: Màu chữ (ví dụ: `"red"`, `"#ff0000"`)
 - `font_size`: Kích thước font (ví dụ: `18`).
 - `type`: Kiểu chữ (ví dụ: `"bold"`, `"italic"`, `"normal"`).
 

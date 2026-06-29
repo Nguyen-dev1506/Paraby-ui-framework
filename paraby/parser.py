@@ -1,5 +1,7 @@
 import re
 
+KNOWN_WIDGETS = {"btn", "button", "entry", "label", "lable", "text", "txt", "slider", "thanh_keo", "checkbox", "tick", "combobox", "dropdown", "select", "switch", "nut_gat", "frame", "hop", "progress", "loading", "thanh_tien_do", "textbox", "text_box", "khung_chu", "image", "img", "anh"}
+
 def strip_comments(val_str):
     """
     Loại bỏ chú thích ở cuối dòng nhưng không ảnh hưởng đến ký tự '#' nằm trong chuỗi ký tự.
@@ -109,7 +111,7 @@ def preprocess_implicit_window(code_text):
         widget_match = re.match(r"^([a-zA-Z0-9_]+\s*=\s*)?([a-zA-Z0-9_]+)\(\s*\)\s*:$", stripped)
         if widget_match:
             w_type = widget_match.group(2)
-            if w_type in ("btn", "button", "entry", "label", "text", "txt", "slider", "thanh_keo", "checkbox", "tick", "combobox", "dropdown", "select", "switch", "nut_gat", "frame", "hop"):
+            if w_type in KNOWN_WIDGETS:
                 first_window_line_idx = idx
                 break
                 
@@ -262,18 +264,16 @@ def transpile_pb(code_text):
         var_name = None
         widget_type = None
         
-        known_widgets = ("btn", "button", "entry", "label", "lable", "text", "txt", "slider", "thanh_keo", "checkbox", "tick", "combobox", "dropdown", "select", "switch", "nut_gat", "frame", "hop", "progress", "loading", "thanh_tien_do")
-        
         if widget_match_assigned:
             v_name = widget_match_assigned.group(1)
             w_type = widget_match_assigned.group(2)
-            if w_type in known_widgets:
+            if w_type in KNOWN_WIDGETS:
                 is_widget = True
                 var_name = v_name
                 widget_type = w_type
         elif widget_match_unassigned:
             w_type = widget_match_unassigned.group(1)
-            if w_type in known_widgets:
+            if w_type in KNOWN_WIDGETS:
                 is_widget = True
                 widget_type = w_type
                 

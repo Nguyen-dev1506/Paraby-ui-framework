@@ -8,15 +8,23 @@ setup(
     name='paraby',
     version='1.0.0',
     author='By',
-    author_email='your.email@example.com', # Thay bằng email của bạn
+    author_email='khoinguyenphan2014@gmail.com',
     description='A lightning-fast, highly readable UI framework for Python based on CustomTkinter',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/your-username/paraby", # Thay bằng link GitHub của bạn sau khi tạo
+    url="https://github.com/Nguyen-dev1506/Paraby-ui-framework",
     packages=find_packages(include=['paraby', 'paraby.*']),
+    package_data={'paraby': ['*.pui']},
+    include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'paraby=paraby.cli:main',
+        ],
+    },
     install_requires=[
         'customtkinter',
         'darkdetect',
+        'Pillow',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import paraby as pb
 
 # Demo sử dụng từ khoá window(): mới và thuộc tính name gán tên biến cho widget

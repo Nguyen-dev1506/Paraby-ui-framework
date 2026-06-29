@@ -1,0 +1,22 @@
+window(
+    title: Paraby Cheat Sheet
+    size: 700, 600
+    
+    loop(
+        label(
+            place: top
+            text: Paraby Auto-Generated Cheat Sheet
+            font_size: 20
+            type: bold
+        )
+        
+        out_box = text_box(
+            place: center
+            width: 660
+            height: 520
+            font: Courier
+            font_size: 14
+            font_color: cyan
+        )
+    )
+)

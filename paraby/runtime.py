@@ -1,4 +1,7 @@
 import customtkinter as ctk
+import time
+import os
+from PIL import Image
 
 # Bản đồ màu sắc hiện đại cho CustomTkinter hỗ trợ sáng/tối tự động
 COLOR_MAP = {
@@ -57,14 +60,16 @@ def resolve_color(color):
             return COLOR_MAP[c_lower]
     return color
 
-def create_window(size=None, color=None, title=None):
+def create_window(size=None, color=None, title=None, is_toplevel=False):
     """
-    Tạo và cấu hình cửa sổ chính CustomTkinter.
+    Tạo và cấu hình cửa sổ chính hoặc cửa sổ con (CTkToplevel) CustomTkinter.
     """
-    ctk.set_appearance_mode("System")
-    ctk.set_default_color_theme("blue")
-    
-    window = ctk.CTk()
+    if not is_toplevel:
+        ctk.set_appearance_mode("System")
+        ctk.set_default_color_theme("blue")
+        window = ctk.CTk()
+    else:
+        window = ctk.CTkToplevel()
     
     if title:
         window.title(title)
@@ -82,6 +87,29 @@ def create_window(size=None, color=None, title=None):
         window.configure(fg_color=resolve_color(color))
         
     return window
+
+WIDGET_CLASSES = {
+    "btn": ctk.CTkButton, "button": ctk.CTkButton,
+    "entry": ctk.CTkEntry,
+    "label": ctk.CTkLabel, "lable": ctk.CTkLabel, "text": ctk.CTkLabel, "txt": ctk.CTkLabel,
+    "slider": ctk.CTkSlider, "thanh_keo": ctk.CTkSlider,
+    "checkbox": ctk.CTkCheckBox, "tick": ctk.CTkCheckBox,
+    "combobox": ctk.CTkComboBox, "dropdown": ctk.CTkComboBox, "select": ctk.CTkComboBox,
+    "switch": ctk.CTkSwitch, "nut_gat": ctk.CTkSwitch,
+    "frame": ctk.CTkFrame, "hop": ctk.CTkFrame,
+    "text_box": ctk.CTkTextbox, "textbox": ctk.CTkTextbox, "khung_chu": ctk.CTkTextbox,
+    "progress": ctk.CTkProgressBar, "loading": ctk.CTkProgressBar, "thanh_tien_do": ctk.CTkProgressBar,
+    "image": ctk.CTkLabel, "img": ctk.CTkLabel, "anh": ctk.CTkLabel
+}
+
+def parse_size(size_str):
+    if isinstance(size_str, str) and "x" in size_str:
+        try:
+            parts = size_str.split("x")
+            return (int(parts[0].strip()), int(parts[1].strip()))
+        except:
+            pass
+    return None
 
 def create_widget(parent, widget_type, **properties):
     """
@@ -114,6 +142,9 @@ def create_widget(parent, widget_type, **properties):
             properties["text_color"] = properties.pop("color")
         else:
             properties["fg_color"] = properties.pop("color")
+            
+    if "font_color" in properties:
+        properties["text_color"] = properties.pop("font_color")
             
     # Cảnh báo thông minh: Nhắc nhở programmer nếu màu chữ và màu nền quá giống nhau
     def get_luminance(hex_color):
@@ -148,35 +179,41 @@ def create_widget(parent, widget_type, **properties):
     if w_type == "entry" and "text" in properties and "placeholder_text" not in properties:
         properties["placeholder_text"] = properties.pop("text")
         
+    if "from" in properties:
+        properties["from_"] = properties.pop("from")
+        
+    img_path = properties.pop("path", None)
+    btn_image = properties.pop("image", None)
+    img_target = img_path if img_path else btn_image
+    ctk_image = None
+    
+    if img_target:
+        try:
+            pil_img = Image.open(img_target)
+            sz = properties.pop("size", None)
+            parsed_sz = parse_size(sz) if sz else (pil_img.width, pil_img.height)
+            ctk_image = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=parsed_sz)
+        except Exception as e:
+            print(f"Lỗi tải ảnh '{img_target}': {e}")
+            
+    if w_type in ("image", "img", "anh"):
+        if "text" not in properties:
+            properties["text"] = ""
+        if ctk_image:
+            properties["image"] = ctk_image
+    elif w_type in ("btn", "button") and ctk_image:
+        properties["image"] = ctk_image
+        
     place_opt = properties.pop("place", None)
     input_var = properties.pop("input", None)
     
-    widget_class = None
-    if w_type in ("btn", "button"):
-        widget_class = ctk.CTkButton
-    elif w_type == "entry":
-        widget_class = ctk.CTkEntry
-    elif w_type in ("label", "lable", "text", "txt"):
-        widget_class = ctk.CTkLabel
-    elif w_type in ("slider", "thanh_keo"):
-        if "from" in properties:
-            properties["from_"] = properties.pop("from")
-        widget_class = ctk.CTkSlider
-    elif w_type in ("checkbox", "tick"):
-        widget_class = ctk.CTkCheckBox
-    elif w_type in ("combobox", "dropdown", "select"):
-        widget_class = ctk.CTkComboBox
-    elif w_type in ("switch", "nut_gat"):
-        widget_class = ctk.CTkSwitch
-    elif w_type in ("frame", "hop"):
-        widget_class = ctk.CTkFrame
-    elif w_type in ("progress", "loading", "thanh_tien_do"):
-        widget_class = ctk.CTkProgressBar
-        # Tiến độ ProgressBar theo mặc định nên hiển thị 0 để không bị đầy khi mới tạo
-        if "from" not in properties:
+    widget_class = WIDGET_CLASSES.get(w_type)
+    if not widget_class:
+        raise ValueError(f"Widget type '{w_type}' không được hỗ trợ trong Paraby UI.")
+        
+    if w_type in ("progress", "loading", "thanh_tien_do"):
+        if "from_" not in properties and "mode" not in properties:
             properties["mode"] = "determinate"
-    else:
-        raise ValueError(f"Widget type '{widget_type}' không được hỗ trợ trong Paraby UI.")
 
     widget = widget_class(master=parent, **properties)
     
@@ -307,6 +344,8 @@ def patch_classes():
             "switch": ("switch_", "nut_gat_"),
             "frame": ("frame_", "hop_"),
             "hop": ("frame_", "hop_"),
+            "text_box": ("text_box_", "textbox_", "khung_chu_"),
+            "khung_chu": ("text_box_", "textbox_", "khung_chu_"),
             "progress": ("progress_", "loading_", "thanh_tien_do_"),
             "loading": ("progress_", "loading_", "thanh_tien_do_"),
             "thanh_tien_do": ("progress_", "loading_", "thanh_tien_do_"),
@@ -336,6 +375,14 @@ def patch_classes():
         self.insert(0, str(val))
         
     setattr(ctk.CTkEntry, "text", property(entry_text_get, entry_text_set))
+
+    def textbox_text_get(self):
+        return self.get("1.0", "end-1c")
+    def textbox_text_set(self, val):
+        self.delete("1.0", "end")
+        self.insert("1.0", str(val))
+        
+    setattr(ctk.CTkTextbox, "text", property(textbox_text_get, textbox_text_set))
 
     # 4. Virtual property .value for CTkProgressBar (xử lý phần trăm 0-100)
     def progress_value_get(self):

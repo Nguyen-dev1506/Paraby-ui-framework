@@ -1,6 +1,7 @@
 import sys
 import os
 import types
+import tkinter.messagebox
 from importlib.machinery import ModuleSpec
 from importlib.abc import MetaPathFinder, SourceLoader
 
@@ -57,7 +58,26 @@ def register():
             return
     sys.meta_path.insert(0, ParabyFinder())
 
-def load(pb_filepath):
+def alert(title, message):
+    """Hiển thị hộp thoại thông báo."""
+    tkinter.messagebox.showinfo(title, message)
+
+def confirm(title, message):
+    """Hiển thị hộp thoại xác nhận (Có/Không), trả về True/False."""
+    return tkinter.messagebox.askyesno(title, message)
+
+def prompt(title, message):
+    """Hiển thị hộp thoại yêu cầu nhập chữ, trả về chuỗi văn bản."""
+    import customtkinter as ctk
+    dialog = ctk.CTkInputDialog(text=message, title=title)
+    return dialog.get_input()
+
+def popup(filepath):
+    """Mở một file .pui dưới dạng cửa sổ phụ (Toplevel)."""
+    win = load(filepath, _is_popup=True)
+    return win
+
+def load(pb_filepath, _is_popup=False):
     """
     Nạp và biên dịch trực tiếp file giao diện (.pui hoặc .pb), tự động liên kết sự kiện từ file caller.
     """
@@ -117,7 +137,8 @@ def load(pb_filepath):
     # Đăng ký chạy mainloop tự động khi script kết thúc
     if not hasattr(window, "_pb_looped_later"):
         window._pb_looped_later = True
-        atexit.register(window.mainloop)
+        if not _is_popup:
+            atexit.register(window.mainloop)
         
     # ----------------------------------------------------
     # BƠM BIẾN TOÀN CỤC VÀ LIÊN KẾT SỰ KIỆN AST TỰ ĐỘNG
@@ -192,20 +213,23 @@ def load(pb_filepath):
                     
             # Lọc ra các widget thiếu khai báo kiểu
             missing_hints = []
+            WIDGET_TYPE_MAP = {
+                "CTkButton": "btn", "CTkLabel": "label", "CTkEntry": "entry",
+                "CTkCheckBox": "checkbox", "CTkSwitch": "switch", "CTkSlider": "slider",
+                "CTkComboBox": "combobox", "CTkProgressBar": "progress",
+                "CTkFrame": "frame", "CTkTextbox": "text_box"
+            }
+            
             for w_name in injected_widgets:
                 if w_name not in annotated_vars:
                     widget = getattr(window, w_name)
                     w_class = widget.__class__.__name__
                     
                     mapped_type = "btn"
-                    if "Label" in w_class: mapped_type = "label"
-                    elif "Entry" in w_class: mapped_type = "entry"
-                    elif "CheckBox" in w_class: mapped_type = "checkbox"
-                    elif "Switch" in w_class: mapped_type = "switch"
-                    elif "Slider" in w_class: mapped_type = "slider"
-                    elif "ComboBox" in w_class: mapped_type = "combobox"
-                    elif "ProgressBar" in w_class: mapped_type = "progress"
-                    elif "Frame" in w_class: mapped_type = "frame"
+                    for k, v in WIDGET_TYPE_MAP.items():
+                        if k in w_class:
+                            mapped_type = v
+                            break
                     
                     missing_hints.append(f"{w_name}: {pb_alias}.{mapped_type}")
                     
@@ -291,6 +315,8 @@ def load(pb_filepath):
     except Exception as e:
         print(f"[Paraby Warning] Lỗi liên kết sự kiện tự động: {e}")
         
+    if _is_popup:
+        window.focus()
     return window
 
 def run(pb_filepath):
@@ -328,9 +354,7 @@ class button(btn): pass
 class label:
     text: str
 
-class lable(label): pass
 class text(label): pass
-class txt(label): pass
 
 class entry:
     text: str
@@ -342,32 +366,28 @@ class checkbox:
     click: bool
     change: bool
 
-class tick(checkbox): pass
-
 class switch:
     text: str
     click: bool
     change: bool
 
-class nut_gat(switch): pass
-
 class slider:
     change: bool
-
-class thanh_keo(slider): pass
 
 class combobox:
     change: bool
     select: bool
     
 class dropdown(combobox): pass
-class select(combobox): pass
 
 class progress:
     value: float
     
 class loading(progress): pass
-class thanh_tien_do(progress): pass
 
 class frame: pass
-class hop(frame): pass
+
+class text_box:
+    text: str
+
+class window: pass

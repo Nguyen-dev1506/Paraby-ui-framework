@@ -82,6 +82,7 @@ Bạn có thể thiết lập màu bằng **3 CÁCH KHÁC NHAU**:
 ### 3.1. Nhãn chữ (`label` / `lable` / `text` / `txt`)
 Thuộc tính `color` ở label sẽ tự động trở thành màu chữ.
 - `font`: Tên font (ví dụ: `Courier`, `Arial`)
+- `font_color`: Màu chữ (ví dụ: `"red"`, `"#ff0000"`)
 - `font_size`: Kích thước (ví dụ: `18`)
 - `type`: Kiểu chữ (`bold`, `italic`, `normal`)
 

@@ -97,6 +97,7 @@ python3 -m paraby my_ui.pui
 ### 3.1. Text Label (`label` / `lable` / `text` / `txt`)
 Supports both `label()` and `lable()` syntaxes. Supports individual font configurations:
 - `font`: Font name (e.g., `"Courier"`, `"Arial"`).
+- `font_color`: Màu chữ (ví dụ: `"red"`, `"#ff0000"`)
 - `font_size`: Font size (e.g., `18`).
 - `type`: Font style (e.g., `"bold"`, `"italic"`, `"normal"`).
 

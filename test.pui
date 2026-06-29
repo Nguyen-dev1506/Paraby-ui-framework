@@ -1,5 +1,5 @@
 window(
-    size: 350, 300
+    size: 600, 600
     title: My first app by paraby
     
     loop(
