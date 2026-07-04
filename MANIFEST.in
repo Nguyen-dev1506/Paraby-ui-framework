@@ -1,5 +1,4 @@
-include README_VN.md
 include README.md
 include src/paraby/*.pui
-include src/paraby/logo.png
+include DEVELOPER_GUIDE.md
 include DEVELOPER_GUIDE_VN.md

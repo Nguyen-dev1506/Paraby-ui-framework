@@ -1,24 +1,10 @@
 import re
 from paraby.parser.constants import WIDGET_ALIASES
 
-# 1. CENTRALIZED DATA ARCHITECTURE (DRY)
-class WidgetRegistry:
-    """Central dictionary managing all Paraby Widgets"""
-    ALIASES = WIDGET_ALIASES
 
-    @classmethod
-    def get_std_type(cls, name):
-        return cls.ALIASES.get(name)
-
-    @classmethod
-    def is_widget(cls, name):
-        return name in cls.ALIASES
-
-
-# 2. LEXER & UTILS
 def clean_lines(code_text):
     """
-    Function 1: Reads, cleans text, removes comments, and returns a list of Token lines.
+    Reads, cleans text, removes comments, and returns a list of Token lines.
     Preserves leading spaces to retain Python code in events.
     """
     if code_text.strip() in ("test()", "test():"):
@@ -26,13 +12,17 @@ def clean_lines(code_text):
 
     lines = code_text.splitlines()
     result = []
+
     for line in lines:
         stripped = line.strip()
         if not stripped or stripped.startswith("#"):
             continue
             
-        in_double = in_single = escape = False
+        in_double = False
+        in_single = False
+        escape = False
         clean_line = ""
+        
         for char in line:
             if escape:
                 escape = False
@@ -92,9 +82,21 @@ def process_value(val_str):
                         q_parts.append('"' + pc + '"')
             return "(" + ", ".join(q_parts) + ")"
     return '"' + val_str + '"'
+from paraby.parser.constants import WIDGET_ALIASES
+from paraby.parser.lexer import process_value
 
+class WidgetRegistry:
+    """Central dictionary managing all Paraby Widgets"""
+    ALIASES = WIDGET_ALIASES
 
-# 3. AST BUILDER
+    @classmethod
+    def get_std_type(cls, name):
+        return cls.ALIASES.get(name)
+
+    @classmethod
+    def is_widget(cls, name):
+        return name in cls.ALIASES
+
 class ASTNode:
     def __init__(self, node_type, var_name, std_type=None):
         self.node_type = node_type  # 'window', 'widget', 'event', 'raw'
@@ -107,7 +109,7 @@ class ASTNode:
 
 def build_ast(lines):
     """
-    Function 2: Parses Token lines and builds a nested AST tree.
+    Parses Token lines and builds a nested AST tree.
     """
     root_nodes = []
     stack = []
@@ -224,11 +226,9 @@ def build_ast(lines):
 
     return root_nodes
 
-
-# 4. CODE GENERATOR
 def generate_python(ast_nodes):
     """
-    Function 3: Traverses the AST tree and generates complete Python (CustomTkinter) source code
+    Traverses the AST tree and generates complete Python (CustomTkinter) source code
     """
     out = []
     out.append("import customtkinter as ctk")
@@ -302,6 +302,7 @@ def generate_python(ast_nodes):
                 
             if root.properties.get('has_loop'):
                 out.append(f"    pb.start_app({root.var_name})")
+                out.append(f"    {root.var_name}._pb_looped = True")
                 
             out.append(f"    return {root.var_name}")
             out.append("")
@@ -355,6 +356,7 @@ def New_window():
     pb.bind_event(my_btn, 'click', my_btn_click)
     
     pb.start_app(window)
+    window._pb_looped = True
     return window
 
 if __name__ == "__main__":
@@ -363,6 +365,9 @@ if __name__ == "__main__":
     if _win and not hasattr(_win, "_pb_looped"):
         _win.mainloop()
 '''
+from paraby.parser.lexer import clean_lines
+from paraby.parser.ast_builder import build_ast
+from paraby.parser.codegen import generate_python, get_showroom_code
 
 def transpile_pb(code_text):
     """

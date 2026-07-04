@@ -76,6 +76,7 @@ def generate_python(list ast_nodes):
                 
             if root.properties.get('has_loop'):
                 out.append(f"    pb.start_app({root.var_name})")
+                out.append(f"    {root.var_name}._pb_looped = True")
                 
             out.append(f"    return {root.var_name}")
             out.append("")
@@ -129,6 +130,7 @@ def New_window():
     pb.bind_event(my_btn, 'click', my_btn_click)
     
     pb.start_app(window)
+    window._pb_looped = True
     return window
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ extensions = [
 if USE_CYTHON:
     extensions = cythonize(extensions, compiler_directives={'language_level': "3"})
 
-# Đọc nội dung file README tiếng Anh để làm mô tả
+# Đọc nội dung file README tiếng Việt để làm mô tả
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 

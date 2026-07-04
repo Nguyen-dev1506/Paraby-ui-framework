@@ -133,4 +133,18 @@ pytest test_parser.py
 You can also run the speed benchmark via `python3 speed.py`.
 
 ---
+
+## ⚠️ 8. Technical Risk Warnings
+
+As a maintainer, please be aware of the following technical design choices and their associated risks before making changes:
+
+### 1. Global Monkey-Patching (`patch.py`)
+Paraby modifies `ctk.CTkBaseClass` and `ctk.CTk` globally at runtime to inject magic properties (like `.text`, `.click`, `.click_me`).
+- **Risk:** This monkey-patching affects the **entire Python process**. If a user imports Paraby alongside another standalone CustomTkinter application in the same process, the second application will also unknowingly inherit Paraby's patched properties. Keep this in mind when debugging conflicts with other UI libraries.
+
+### 2. AST Stack & Pseudo-Nodes (`ast_builder.pyx`)
+To support the `loop()` syntax without curly braces `{}`, the `build_ast` function pushes a **pseudo-node** named `loop` onto the parsing stack. This is used to balance the closing parentheses `)`.
+- **Risk:** If you plan to add new nested structures to the DSL in the future (like `if`, `for`, or `layout` blocks), you **must** handle the stack parsing carefully. Do not assume every block on the stack is a valid UI widget or window, and ensure the parent-child relationships bypass these pseudo-nodes when attaching widgets.
+
+---
 🎉 *Thank you for contributing to Paraby UI Framework! Together, we make UI development a joy.*

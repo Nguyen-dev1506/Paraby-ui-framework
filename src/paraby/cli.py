@@ -12,41 +12,31 @@ def show_help(pui_file):
     widgets = {}
     data_vars = []
     
-    current_widget_type = None
-    current_widget_var = None
-
-    lines = content.split('\n')
-    for line in lines:
-        stripped = line.strip()
-        if not stripped or stripped.startswith('#'):
-            continue
-            
-        # Quét widget block: VD: my_btn = btn(): hoặc btn():
-        m_widget = re.match(r"^(?:([a-zA-Z0-9_]+)\s*=\s*)?([a-zA-Z0-9_]+)\s*\(\s*\)\s*:", stripped)
-        if m_widget:
-            current_widget_var = m_widget.group(1)
-            current_widget_type = m_widget.group(2)
-            if current_widget_type in ("window", "Window", "loop"):
-                current_widget_type = None
-                current_widget_var = None
-                continue
-            
-            # Lưu lại biến nếu có gán trực tiếp
-            if current_widget_var:
-                widgets[current_widget_var] = current_widget_type
-            continue
-            
-        # Quét tên thuộc tính name: name: my_btn
-        m_name = re.match(r"^name\s*:\s*([a-zA-Z0-9_]+)", stripped)
-        if m_name and current_widget_type:
-            current_widget_var = m_name.group(1)
-            widgets[current_widget_var] = current_widget_type
-            continue
-            
-        # Quét biến dữ liệu (input binding): input: user_name
-        m_input = re.match(r"^input\s*:\s*([a-zA-Z0-9_]+)", stripped)
-        if m_input and current_widget_type:
-            data_vars.append(m_input.group(1))
+    try:
+        from paraby.parser.lexer import clean_lines
+        from paraby.parser.ast_builder import build_ast
+        
+        lines = clean_lines(content)
+        ast_nodes = build_ast(lines)
+        
+        def traverse(nodes):
+            for node in nodes:
+                if node.node_type == 'widget':
+                    widgets[node.var_name] = node.std_type
+                    if 'input' in node.properties:
+                        # process_value in AST usually wraps in quotes, so we strip them
+                        val = node.properties['input'].strip('"').strip("'")
+                        data_vars.append(val)
+                
+                # Traverse children for window, loop, and nested widgets (e.g. frame)
+                if node.node_type in ('window', 'loop', 'widget'):
+                    traverse(node.children)
+                    
+        traverse(ast_nodes)
+        
+    except Exception as e:
+        print(f"Lỗi phân tích AST: {e}")
+        return
 
     cheat_sheet_str = "\n" + "="*65 + "\n"
     cheat_sheet_str += f"🛠️  PARABY CHEAT SHEET CHO FILE: {pui_file} 🛠️\n"

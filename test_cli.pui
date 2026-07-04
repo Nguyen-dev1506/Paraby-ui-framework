@@ -1,0 +1,15 @@
+window(
+    title: CLI Test
+    size: 400x300
+    
+    loop(
+        btn(
+            name: my_button
+            text: Click Me
+        )
+        entry(
+            name: user_input
+            input: username_var
+        )
+    )
+)

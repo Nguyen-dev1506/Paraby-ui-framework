@@ -1,4 +1,8 @@
 import time
+import sys
+from test_cython.sync_transpiler import sync_transpiler
+sync_transpiler()
+
 from test_cython.transpiler_py import transpile_pb as transpile_py
 from paraby.parser import transpile_pb as transpile_cy
 

@@ -25,8 +25,8 @@ class ParabyFinder(MetaPathFinder):
         for p in search_paths:
             if not p:
                 p = os.getcwd()
-            # Support both .pb files and .py files with Paraby syntax
-            for ext in ('.pb', '.py'):
+            # Hỗ trợ các file .pui, .pb và .py có chứa cú pháp Paraby
+            for ext in ('.pui', '.pb', '.py'):
                 pb_path = os.path.join(p, f"{modname}{ext}")
                 if os.path.isfile(pb_path):
                     # Check if the file is a paraby file
