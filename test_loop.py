@@ -28,18 +28,31 @@ class TestDoubleMainLoop(unittest.TestCase):
         # Kiểm tra code sinh ra có dòng gán _pb_looped = True
         self.assertIn("_pb_looped = True", python_code)
         
-        local_scope = {}
-        # Mock pb.start_app và CTk.mainloop để đếm số lần gọi
-        with patch('paraby.start_app') as mock_start_app:
-            with patch.object(ctk.CTk, 'mainloop') as mock_mainloop:
-                exec(python_code, globals(), local_scope)
-                win_obj = local_scope.get('_win')
-                
-                self.assertIsNotNone(win_obj)
-                self.assertTrue(getattr(win_obj, "_pb_looped", False))
-                mock_start_app.assert_called_once()
-                # Vì _pb_looped = True nên mainloop() ở khối __main__ không được gọi
-                mock_mainloop.assert_not_called()
+        class FakeCTk:
+            def __init__(self, *a, **kw): pass
+            def title(self, *a, **kw): pass
+            def geometry(self, *a, **kw): pass
+            def configure(self, *a, **kw): pass
+            def iconphoto(self, *a, **kw): pass
+            def update_idletasks(self, *a, **kw): pass
+            def minsize(self, *a, **kw): pass
+            def maxsize(self, *a, **kw): pass
+            def attributes(self, *a, **kw): pass
+            def focus(self, *a, **kw): pass
+            def mainloop(self, *a, **kw): pass
+            def cget(self, *a, **kw): return "#000000"
+
+        exec_globals = {'__name__': '__main__'}
+        with patch('customtkinter.CTk', FakeCTk):
+            with patch.object(FakeCTk, 'mainloop') as mock_mainloop:
+                with patch('paraby.start_app') as mock_start_app:
+                    exec(python_code, exec_globals)
+                    win_obj = exec_globals.get('_win')
+                    
+                    self.assertIsNotNone(win_obj)
+                    self.assertTrue(getattr(win_obj, "_pb_looped", False))
+                    mock_start_app.assert_called_once()
+                    mock_mainloop.assert_not_called()
 
     def test_no_double_mainloop_without_loop(self):
         dsl_code = """
@@ -54,17 +67,31 @@ class TestDoubleMainLoop(unittest.TestCase):
         
         self.assertNotIn("_pb_looped = True", python_code)
         
-        local_scope = {}
-        with patch('paraby.start_app') as mock_start_app:
-            with patch.object(ctk.CTk, 'mainloop') as mock_mainloop:
-                exec(python_code, globals(), local_scope)
-                win_obj = local_scope.get('_win')
-                
-                self.assertIsNotNone(win_obj)
-                self.assertFalse(hasattr(win_obj, "_pb_looped"))
-                mock_start_app.assert_not_called()
-                # Vì không có loop, mainloop() ở khối __main__ SẼ được gọi 1 lần
-                mock_mainloop.assert_called_once()
+        class FakeCTk:
+            def __init__(self, *a, **kw): pass
+            def title(self, *a, **kw): pass
+            def geometry(self, *a, **kw): pass
+            def configure(self, *a, **kw): pass
+            def iconphoto(self, *a, **kw): pass
+            def update_idletasks(self, *a, **kw): pass
+            def minsize(self, *a, **kw): pass
+            def maxsize(self, *a, **kw): pass
+            def attributes(self, *a, **kw): pass
+            def focus(self, *a, **kw): pass
+            def mainloop(self, *a, **kw): pass
+            def cget(self, *a, **kw): return "#000000"
+
+        exec_globals = {'__name__': '__main__'}
+        with patch('customtkinter.CTk', FakeCTk):
+            with patch.object(FakeCTk, 'mainloop') as mock_mainloop:
+                with patch('paraby.start_app') as mock_start_app:
+                    exec(python_code, exec_globals)
+                    win_obj = exec_globals.get('_win')
+                    
+                    self.assertIsNotNone(win_obj)
+                    self.assertFalse(hasattr(win_obj, "_pb_looped"))
+                    mock_start_app.assert_not_called()
+                    mock_mainloop.assert_called_once()
 
 if __name__ == '__main__':
     unittest.main()
