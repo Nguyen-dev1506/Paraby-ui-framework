@@ -8,8 +8,8 @@ window(
             text: Paraby Auto-Generated Cheat Sheet
             font_size: 20
             type: bold
-        )
         
+        )
         out_box = text_box(
             place: center
             width: 660

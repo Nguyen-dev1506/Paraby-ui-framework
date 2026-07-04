@@ -182,9 +182,42 @@ my_frame = frame(
 )
 ```
 
+### 3.9. Image (`image` / `img` / `anh`)
+Automatically loads and displays an image. Easily pass dimensions via `size: 150x150`.
+```python
+my_logo = image(
+    path: "logo.png"
+    size: 150x150
+    place: top
+)
+```
+*(You can also use `image: "icon.png"` inside `btn()`)*
+
 ---
 
-## 4. How to Bind Events in the Logic File (.py)
+## 4. Popups & Dialogs System
+
+Paraby provides built-in Python functions for quick dialogs without designing a full UI:
+```python
+import paraby as pb
+
+# Alert Dialog
+pb.alert("Success", "Data saved successfully!")
+
+# Confirm Dialog (Yes/No)
+ans = pb.confirm("Warning", "Are you sure?")
+if ans: print("Confirmed!")
+
+# Input Prompt Dialog
+name = pb.prompt("Question", "Enter your name:")
+
+# Open another .pui file as a sub-window (Toplevel)
+pb.popup("settings.pui")
+```
+
+---
+
+## 5. How to Bind Events in the Logic File (.py)
 
 When using the separated programming approach (`.py` and `.pui` files), you write event logic in the `.py` file as pure Python `if` blocks:
 

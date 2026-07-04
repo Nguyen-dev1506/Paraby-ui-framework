@@ -355,6 +355,8 @@ class label:
     text: str
 
 class text(label): pass
+class lable(label): pass
+class txt(label): pass
 
 class entry:
     text: str
@@ -366,6 +368,8 @@ class checkbox:
     click: bool
     change: bool
 
+class tick(checkbox): pass
+
 class switch:
     text: str
     click: bool
@@ -373,6 +377,9 @@ class switch:
 
 class slider:
     change: bool
+
+class thanh_keo(slider): pass
+class nut_gat(switch): pass
 
 class combobox:
     change: bool
@@ -384,6 +391,15 @@ class progress:
     value: float
     
 class loading(progress): pass
+class thanh_tien_do(progress): pass
+
+class image:
+    path: str
+class img(image): pass
+class anh(image): pass
+
+class frame: pass
+class hop(frame): pass
 
 class frame: pass
 

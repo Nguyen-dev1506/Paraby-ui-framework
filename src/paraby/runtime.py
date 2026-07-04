@@ -70,6 +70,18 @@ def create_window(size=None, color=None, title=None, is_toplevel=False):
         window = ctk.CTk()
     else:
         window = ctk.CTkToplevel()
+        
+    try:
+        from PIL import Image, ImageTk
+        import os
+        import sys
+        logo_path = os.path.join(os.path.dirname(__file__), "logo.png")
+        if os.path.exists(logo_path) and sys.platform != "darwin":
+            img = Image.open(logo_path)
+            icon = ImageTk.PhotoImage(img)
+            window.iconphoto(True, icon)
+    except Exception:
+        pass
     
     if title:
         window.title(title)
@@ -131,7 +143,7 @@ def create_widget(parent, widget_type, **properties):
         if isinstance(font_name, (tuple, list)):
             properties["font"] = font_name
         else:
-            f_name = font_name if font_name else "Arial"
+            f_name = font_name if font_name else "SF Pro Display"
             f_size = int(font_size) if font_size else 12
             f_type = font_type if font_type else "normal"
             properties["font"] = (f_name, f_size, f_type)
@@ -145,6 +157,9 @@ def create_widget(parent, widget_type, **properties):
             
     if "font_color" in properties:
         properties["text_color"] = properties.pop("font_color")
+        
+    if "radius" in properties:
+        properties["corner_radius"] = properties.pop("radius")
             
     # Cảnh báo thông minh: Nhắc nhở programmer nếu màu chữ và màu nền quá giống nhau
     def get_luminance(hex_color):
@@ -187,10 +202,10 @@ def create_widget(parent, widget_type, **properties):
     img_target = img_path if img_path else btn_image
     ctk_image = None
     
+    sz = properties.pop("size", None)
     if img_target:
         try:
             pil_img = Image.open(img_target)
-            sz = properties.pop("size", None)
             parsed_sz = parse_size(sz) if sz else (pil_img.width, pil_img.height)
             ctk_image = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=parsed_sz)
         except Exception as e:
@@ -205,6 +220,7 @@ def create_widget(parent, widget_type, **properties):
         properties["image"] = ctk_image
         
     place_opt = properties.pop("place", None)
+    margin_opt = properties.pop("margin", None)
     input_var = properties.pop("input", None)
     
     widget_class = WIDGET_CLASSES.get(w_type)
@@ -220,6 +236,12 @@ def create_widget(parent, widget_type, **properties):
     if place_opt is not None:
         widget._pb_place = place_opt
         
+    if margin_opt is not None:
+        try:
+            widget._pb_margin = int(margin_opt)
+        except ValueError:
+            widget._pb_margin = 0
+            
     if input_var is not None:
         widget._pb_input_var = input_var
         
@@ -244,9 +266,25 @@ def place_widget(widget, place_opt=None):
         elif place_opt == "bottom":
             widget.pack(side="bottom", pady=10)
         elif place_opt == "left":
-            widget.pack(side="left", padx=10)
+            if type(widget).__name__ == "CTkFrame":
+                margin = getattr(widget, "_pb_margin", 0)
+                if margin > 0:
+                    widget.pack(side="left", fill="y", padx=(margin, margin//2), pady=margin)
+                else:
+                    widget.pack(side="left", fill="y", padx=0)
+                widget.pack_propagate(False)
+            else:
+                widget.pack(side="left", padx=10)
         elif place_opt == "right":
-            widget.pack(side="right", padx=10)
+            if type(widget).__name__ == "CTkFrame":
+                margin = getattr(widget, "_pb_margin", 0)
+                if margin > 0:
+                    widget.pack(side="right", fill="both", expand=True, padx=(margin//2, margin), pady=margin)
+                else:
+                    widget.pack(side="right", fill="both", expand=True, padx=0)
+                widget.pack_propagate(False)
+            else:
+                widget.pack(side="right", padx=10)
         elif place_opt == "top_left":
             widget.place(relx=0.0, rely=0.0, anchor="nw", x=10, y=10)
         elif place_opt == "top_right":

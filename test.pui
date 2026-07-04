@@ -9,7 +9,6 @@ window(
             text: Nhập tên của bạn...
             input: user_name
         )
-
         # Cách 2: Sử dụng thuộc tính name
         btn(
             name: my_btn
@@ -17,7 +16,6 @@ window(
             color: gray
             text: Click me
         )
-
         my_label = lable(
             place: bottom
             text: Chưa nhận tên
@@ -25,21 +23,21 @@ window(
             font_size: 18
             type: bold
             color: red
-        )
 
+        )
         my_slider = slider(
             place: bottom
             from: 0
             to: 100
             input: slider_val
-        )
 
+        )
         my_tick = tick(
             place: bottom
             text: Đồng ý điều khoản
             input: tick_status
-        )
 
+        )
         my_progress = progress(
             place: bottom
             color: green

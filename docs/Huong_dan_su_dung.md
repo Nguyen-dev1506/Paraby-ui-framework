@@ -176,9 +176,42 @@ my_frame = frame(
 )
 ```
 
+### 3.9. Hình ảnh (`image` / `img` / `anh`)
+Tự động nạp và hiển thị ảnh, truyền kích thước cực gọn gàng qua `size: 150x150`.
+```python
+my_logo = image(
+    path: "logo.png"
+    size: 150x150
+    place: top
+)
+```
+*(Bạn cũng có thể chèn thuộc tính `image: "icon.png"` vào bên trong `btn()`)*
+
 ---
 
-## 4. Cách Liên Kết Sự Kiện trong File Logic (.py)
+## 4. Hệ thống Cửa sổ phụ & Thông báo (Popups)
+
+Bạn có thể gọi các hàm thông báo dựng sẵn từ `paraby` trong file Python:
+```python
+import paraby as pb
+
+# Hiện thông báo (Alert)
+pb.alert("Thành công", "Đã lưu dữ liệu!")
+
+# Hỏi xác nhận Có/Không (Confirm)
+ans = pb.confirm("Cảnh báo", "Bạn có chắc không?")
+if ans: print("Đã đồng ý!")
+
+# Hộp thoại nhập liệu (Prompt)
+ten = pb.prompt("Câu hỏi", "Nhập tên của bạn:")
+
+# Bật một file .pui khác dưới dạng cửa sổ phụ
+pb.popup("cai_dat.pui")
+```
+
+---
+
+## 5. Cách Liên Kết Sự Kiện trong File Logic (.py)
 
 Khi sử dụng cách lập trình tách rời (file `.py` và `.pui`), bạn viết logic sự kiện trong file `.py` dưới dạng các khối `if` thuần Python:
 

@@ -1,27 +1,33 @@
 # Paraby UI Framework
 
-![Paraby Banner](https://via.placeholder.com/800x200.png?text=Paraby+UI+-+Fastest+Python+UI+Framework)
+![Paraby Banner](https://placeholder.com)
 
-Bạn đã quá mệt mỏi với việc phải gõ hàng chục dòng code `Tkinter` hay `PyQt` lằng nhằng chỉ để tạo một cái nút bấm?  
-Bạn muốn thiết kế giao diện Python nhanh như chớp, đẹp như mơ, cấu trúc rõ ràng như Flutter hay SwiftUI?
+Are you tired of writing dozens of messy `Tkinter` or `PyQt` lines just to create a simple button?  
+Do you want to design Python UIs as fast as lightning, as beautiful as modern apps, with a clean structure similar to Flutter or SwiftUI?
 
-Chào mừng bạn đến với **Paraby** - Framework thiết kế giao diện thế hệ mới!
+Welcome to **Paraby** - The next-generation UI framework!
 
-## Tính năng nổi bật
-- **Tốc độ ánh sáng:** Cú pháp Dấu Ngoặc `()` rút gọn cực kỳ thanh lịch.
-- **Đẹp sẵn không cần chỉnh:** Được xây dựng dựa trên `CustomTkinter`, Paraby tự động bọc giao diện của bạn bằng những ngôn ngữ thiết kế phẳng, bo góc hiện đại nhất (Hỗ trợ Dark Mode).
-- **Thông minh:** Tự động phát hiện màu chữ trùng màu nền và nhắc nhở lập trình viên!
-- **Tự động liên kết (Auto-binding):** Không cần khai báo `.get()` hay `.set()`. Biến UI tự động được liên kết thẳng với file logic Python của bạn!
-- **VS Code Extension:** Hỗ trợ Highlighting và Code Suggestion đầy đủ.
+## 📜 Special Note & Academic Honesty Statement
+> "The syntax concept of `.pui`, the overall framework architecture, and the Auto-binding feature were entirely designed by me (Phan Khoi Nguyen). As a 12-year-old student currently learning foundational computer science concepts for my CS50 Final Project, I utilized AI tools as assistants to implement the advanced string manipulation and parsing source code. I want to be 100% honest and transparent about this development process."
 
-## Cài đặt
+## Features
+- **Blazing Fast:** The elegant Parenthesis `()` syntax allows extremely fast prototyping.
+- **Beautiful by Default:** Built on top of `CustomTkinter`, Paraby automatically wraps your UI in modern, rounded, and flat design languages (Dark Mode supported).
+- **Popups & Images Ready:** Auto-load images and spawn sub-windows or popup dialogs (Alert, Confirm, Prompt) with a single line of Python code.
+- **Smart Engine:** Automatically detects low-contrast text/background colors and warns developers!
+- **Auto-binding:** No more `.get()` or `.set()`. UI variables are directly bound to your Python logic file!
+- **VS Code Extension:** Full Syntax Highlighting and Code Suggestion support.
+- **Declarative Event Binding:** Write inline events like `if_click: hide <widget>` directly inside your `.pui` UI code, without touching a single line of Python!
+- **Apple UI Native:** Supports Floating UI with `margin`, rounded corners, auto-transparent background fix for macOS, and exports native `.app` bundles via Native C-Launcher.
+
+## Installation
 ```bash
 pip install paraby
 ```
 
-## Ví dụ nhanh (Quick Start)
+## Quick Start
 
-**1. Tạo file giao diện `app.pui`**
+**1. Create a UI file `app.pui`**
 ```python
 window(
     size: 400, 300
@@ -29,13 +35,13 @@ window(
     
     my_button = btn(
         place: center
-        text: Bấm vào tôi!
+        text: Click me!
         color: blue
     )
 )
 ```
 
-**2. Viết file logic `app.py`**
+**2. Write logic in `app.py`**
 ```python
 import paraby as pb
 
@@ -44,18 +50,20 @@ pb.load("app.pui")
 my_button: pb.btn
 
 if my_button.click:
-    my_button.text = "Đã bấm!"
+    my_button.text = "Clicked!"
 ```
 
-Chỉ cần chạy `python app.py` và tận hưởng thành quả!
+Just run `python app.py` and enjoy your app!
 
-## Chế độ Showroom
-Không biết dùng Paraby thế nào? Hãy tạo một file `.pui` mới và chỉ gõ đúng 1 dòng:
+## Showroom Mode
+Don't know how to use Paraby? Just create a new `.pui` file and write exactly one line:
 ```python
 test()
 ```
-Một ứng dụng trình diễn toàn bộ chức năng (Kèm theo Cheat Sheet tạo sẵn cho IDE) sẽ tự động mở lên!
-Mục tiêu của chúng tôi là giúp đỡ lập trình viên xây dựng giao diện dễ dàng, nhanh chóng, đẹp và xịn. Nhưng mục tiêu lớn nhất của chúng tôi là **mang lại niềm vui khi gõ code**. Lập trình viên cũng là con người, không phải cỗ máy. Paraby được sinh ra để chăm sóc, nhắc nhở và giúp đỡ bạn một cách tận tình, nhẹ nhàng nhất thay vì ném vào mặt bạn những dòng lỗi đỏ lòm khô khan.
+A full-featured demo app (with IDE Cheat Sheet included) will automatically open up!
+
+## Philosophy
+Our goal is to help programmers build interfaces easily, quickly, and beautifully. But our main goal is to **bring joy back to coding**. Programmers are human beings, not machines. Paraby is built to care for, gently guide, and assist you with dedication, rather than throwing harsh, dry error logs at your face.
 
 ---
 *made by By, aka Nguyên developer*
