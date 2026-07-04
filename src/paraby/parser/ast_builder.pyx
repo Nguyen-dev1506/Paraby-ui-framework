@@ -38,15 +38,20 @@ def build_ast(list lines):
         return f"{w_type}_{widget_counters[w_type]}"
 
     in_event_node = None
+    cdef int event_indent = 0
     
     for raw_line in lines:
         stripped = raw_line.strip()
         
         # 1. Processing Python Event block
         if in_event_node:
+            if stripped == "" or stripped.startswith("#"):
+                in_event_node.code_lines.append((len(raw_line) - len(stripped), raw_line))
+                continue
+                
             indent = len(raw_line) - len(raw_line.lstrip())
-            # Exit Event block if the user types a new Widget at indent = 0, or closes a parenthesis
-            if indent == 0 and (re.match(r"^[a-zA-Z0-9_]+\s*=", stripped) or stripped == ")" or stripped.startswith("if ")):
+            # Exit Event block if indent is <= event_indent
+            if indent <= event_indent:
                 in_event_node = None
             else:
                 in_event_node.code_lines.append((indent, raw_line))
@@ -71,8 +76,12 @@ def build_ast(list lines):
         if stripped == "loop(":
             if stack:
                 stack[-1].properties['has_loop'] = True
-            # Create a pseudo-node on the stack so that popping when closing paren doesn't cause errors
-            stack.append(ASTNode('loop', 'loop', 'loop'))
+            node = ASTNode('loop', 'loop', 'loop')
+            if stack:
+                stack[-1].children.append(node)
+            else:
+                root_nodes.append(node)
+            stack.append(node)
             continue
 
         # Widget Definition
@@ -88,9 +97,7 @@ def build_ast(list lines):
                     
                 node = ASTNode('widget', v_name, std_type)
                 if stack:
-                    # If top of stack is loop, the true parent is the widget/window below it
-                    parent = stack[-2] if stack[-1].node_type == 'loop' else stack[-1]
-                    parent.children.append(node)
+                    stack[-1].children.append(node)
                 else:
                     root_nodes.append(node)
                 stack.append(node)
@@ -100,7 +107,7 @@ def build_ast(list lines):
         ev_match = re.match(r"^if\s+([a-zA-Z0-9_.]+)\s*:$", stripped)
         if ev_match:
             full_ev = ev_match.group(1)
-            parent = (stack[-2] if stack[-1].node_type == 'loop' else stack[-1]) if stack else None
+            parent = stack[-1] if stack else None
             
             if '.' in full_ev:
                 w_name, e_name = full_ev.split('.', 1)
@@ -116,6 +123,7 @@ def build_ast(list lines):
                 root_nodes.append(node)
                 
             in_event_node = node
+            event_indent = len(raw_line) - len(raw_line.lstrip())
             continue
             
         # Properties
@@ -135,9 +143,8 @@ def build_ast(list lines):
             else:
                 val = process_value(val)
                 
-            # Save property to the nearest parent tag (unless it is a loop tag)
-            parent = stack[-2] if stack[-1].node_type == 'loop' else stack[-1]
-            parent.properties[key] = val
+            # Save property to the nearest parent tag
+            stack[-1].properties[key] = val
             continue
 
         # Unrecognized lines (e.g. raw Python code)

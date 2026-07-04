@@ -1,5 +1,6 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
+import ast
 import paraby as pb
 import customtkinter as ctk
 
@@ -24,6 +25,9 @@ class TestDoubleMainLoop(unittest.TestCase):
         lines = clean_lines(dsl_code)
         ast_nodes = build_ast(lines)
         python_code = generate_python(ast_nodes)
+        
+        # Parse the generated python code to verify it is valid syntax (Rule 2)
+        ast.parse(python_code)
         
         # Kiểm tra code sinh ra có dòng gán _pb_looped = True
         self.assertIn("_pb_looped = True", python_code)
@@ -64,6 +68,9 @@ class TestDoubleMainLoop(unittest.TestCase):
         lines = clean_lines(dsl_code)
         ast_nodes = build_ast(lines)
         python_code = generate_python(ast_nodes)
+        
+        # Parse the generated python code to verify it is valid syntax (Rule 2)
+        ast.parse(python_code)
         
         self.assertNotIn("_pb_looped = True", python_code)
         

@@ -1,6 +1,7 @@
 import sys
 import os
 import unittest
+import ast
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
@@ -28,6 +29,7 @@ class TestLoopEvents(unittest.TestCase):
         lines = clean_lines_cy(dsl_code)
         ast_nodes = build_ast_cy(lines)
         python_code = generate_python_cy(ast_nodes)
+        ast.parse(python_code)
         
         self.assertIn('print("Clicked inside loop!")', python_code, "Event inside loop is missing in Cython output!")
         
@@ -44,8 +46,35 @@ class TestLoopEvents(unittest.TestCase):
         lines = clean_lines_py(dsl_code)
         ast_nodes = build_ast_py(lines)
         python_code = generate_python_py(ast_nodes)
+        ast.parse(python_code)
         
         self.assertIn('print("Clicked inside loop!")', python_code, "Event inside loop is missing in pure Python output!")
+        
+    def test_event_binding_complex_nesting(self):
+        # Kiểm chứng cấu trúc lồng sâu 2 frame + loop + multi-line event (Luật 5)
+        dsl_code = """
+        window(
+            size: 800, 600
+            main_frame = frame(
+                loop(
+                    inner_frame = frame(
+                        my_btn = btn(text: Click)
+                        if my_btn.click:
+                            if True:
+                                print("Hello Deep Nesting")
+                            else:
+                                pass
+                    )
+                )
+            )
+        )
+        """
+        lines = clean_lines_py(dsl_code)
+        ast_nodes = build_ast_py(lines)
+        python_code = generate_python_py(ast_nodes)
+        ast.parse(python_code)
+        
+        self.assertIn('print("Hello Deep Nesting")', python_code)
 
 if __name__ == '__main__':
     unittest.main()

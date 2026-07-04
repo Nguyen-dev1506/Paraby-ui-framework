@@ -25,6 +25,28 @@ def generate_python(list ast_nodes):
             
             def gen_widget(node, parent_var, ind_level=4):
                 ind = " " * ind_level
+                
+                # Bỏ qua việc tạo biến/gán properties nếu node là loop, chỉ duyệt tiếp các node con
+                if node.node_type == 'loop':
+                    for ev in node.events:
+                        out.append(f"{ind}def {ev.var_name}_{ev.std_type}():")
+                        out.append(f"{ind}    this = getattr({root.var_name}, '{ev.var_name}', {ev.var_name} if '{ev.var_name}' in locals() else None)")
+                        if ev.code_lines:
+                            min_ind = min([sp for sp, _ in ev.code_lines if _.strip()]) if ev.code_lines else 0
+                            for sp, c_line in ev.code_lines:
+                                if not c_line.strip():
+                                    out.append("")
+                                else:
+                                    rel_space = " " * max(0, sp - min_ind)
+                                    out.append(f"{ind}    {rel_space}{c_line.lstrip()}")
+                        else:
+                            out.append(f"{ind}    pass")
+                        out.append(f"{ind}pb.bind_event({ev.var_name}, '{ev.std_type}', {ev.var_name}_{ev.std_type})")
+                        
+                    for child in node.children:
+                        gen_widget(child, parent_var, ind_level)
+                    return
+                    
                 props = []
                 for k, v in node.properties.items():
                     if k == "from": k = "from_"
