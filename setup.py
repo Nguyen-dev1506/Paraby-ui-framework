@@ -8,6 +8,9 @@ except ImportError:
 
 ext = '.pyx' if USE_CYTHON else '.c'
 extensions = [
+    Extension("paraby.parser.lexer", [f"src/paraby/parser/lexer{ext}"]),
+    Extension("paraby.parser.ast_builder", [f"src/paraby/parser/ast_builder{ext}"]),
+    Extension("paraby.parser.codegen", [f"src/paraby/parser/codegen{ext}"]),
     Extension("paraby.parser.transpiler", [f"src/paraby/parser/transpiler{ext}"]),
 ]
 
