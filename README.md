@@ -18,9 +18,13 @@ Chào mừng bạn đến với **Paraby** - Framework thiết kế giao diện 
 - **Declarative Event Binding:** Gắn sự kiện nhúng (Inline Events) như `if_click: hide <vật_thể>` trực tiếp trong mã UI, không cần động đến một dòng Python!
 - **Apple UI Native:** Hỗ trợ mảng nổi (Floating UI) với thuộc tính `margin`, bo góc khối nổi, tự động khử viền trắng trong suốt và xuất `.app` bằng Native C-Launcher.
 
-## Cài đặt
+## Cài đặt (Từ mã nguồn)
+Tạm thời Paraby chưa được phát hành trên PyPI, bạn có thể cài đặt trực tiếp từ mã nguồn:
+
 ```bash
-pip install paraby
+git clone https://github.com/Nguyen-dev1506/Paraby-ui-framework.git
+cd Paraby-ui-framework
+python3 setup.py install
 ```
 
 ## Ví dụ nhanh (Quick Start)

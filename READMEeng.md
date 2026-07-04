@@ -16,12 +16,14 @@ Welcome to **Paraby** - A lightning-fast, highly readable UI framework for Pytho
 - **Declarative Event Binding:** Write inline events like `if_click: hide <widget>` directly inside your UI code.
 - **IDE Support:** Features dummy type hints (`.pyi` equivalents) so your IDE can autocomplete Paraby classes.
 
-## Installation
+## Installation (From Source)
 
-You can install Paraby via pip:
+Paraby is currently not on PyPI. You can install it directly from source:
 
 ```bash
-pip install paraby
+git clone https://github.com/Nguyen-dev1506/Paraby-ui-framework.git
+cd Paraby-ui-framework
+python3 setup.py install
 ```
 
 ## Quick Start
