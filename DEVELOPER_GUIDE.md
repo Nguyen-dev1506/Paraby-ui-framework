@@ -12,15 +12,16 @@ Paraby uses a standard Python C-Extension architecture for maximum performance.
 Paraby ui framwork/
 ├── src/
 │   └── paraby/              # 👉 CORE LOGIC
-│       ├── __init__.py      # Module coordinator. Contains `load()` for parsing .pui
-│       ├── runtime.py       # UI core: Window and Widget instantiation (CustomTkinter)
-│       ├── constants.py     # Single source of truth for widget aliases
-│       ├── cli.py           # CLI tool (invoked via `paraby` command)
-│       ├── vi.py            # Vietnamese keywords mapping
+│       ├── __init__.py      
+│       ├── runtime.py       
+│       ├── cli.py           
+│       ├── __main__.py      
+│       ├── help.pui         
 │       └── parser/          # 👉 C-EXTENSION COMPILER HEART
-│           ├── transpiler.pyx       # Cython source: Translates Paraby DSL to Python
-│           ├── transpiler.cpython-* # High-speed C binaries
-│           └── transpiler.pyi       # Type hint stubs for IDE support
+│           ├── constants.py
+│           ├── transpiler.pyx
+│           ├── transpiler.pyi
+│           └── __init__.py
 │
 ├── docs/                    # 👉 DOCUMENTATION
 │
@@ -33,7 +34,32 @@ Paraby ui framwork/
 
 ---
 
-## 🧠 2. Architecture & Pipeline (Lexer / AST / Codegen)
+## 📄 2. Detailed File Index
+
+Here is a breakdown of every core file in the framework, its purpose, and its size:
+
+### Core Framework (`src/paraby/`)
+- **`__init__.py`** (~428 lines): The module coordinator. Contains the core `load()`, `run()`, and `build()` functions. It orchestrates reading the `.pui` file, invoking the Cython transpiler, executing the generated Python code dynamically, and automatically injecting/binding variables and events to the caller's AST frame. Also contains dummy type hint classes for IDE autocomplete.
+- **`runtime.py`** (~452 lines): The UI runtime core. Responsible for creating CustomTkinter windows and widgets (`create_window`, `create_widget`, `place_widget`, `bind_event`). It also applies a global monkey-patch (`patch_classes`) to CustomTkinter components to support Paraby's "magic" properties like `.text`, `.value`, and declarative `.click` events.
+- **`cli.py`** (~110 lines): Provides the command-line interface logic (e.g., when the user types `paraby run <file>` or `paraby build <file>`).
+- **`__main__.py`** (~12 lines): The entry point for the CLI, allowing users to invoke Paraby via `python -m paraby`.
+- **`help.pui`** (~22 lines): A sample Paraby DSL file used to demonstrate features when `pb.load()` is called on a `test()` placeholder.
+
+### Cython Compiler (`src/paraby/parser/`)
+- **`transpiler.pyx`** (~376 lines): The high-speed Cython heart of the framework. It contains the `WidgetRegistry`, the Lexer (`clean_lines`), the AST Builder (`build_ast`), and the Code Generator (`generate_python`). It converts Paraby DSL directly into functional CustomTkinter Python code.
+- **`constants.py`** (~34 lines): The single source of truth for the framework. It defines `WIDGET_ALIASES`, mapping all English and Vietnamese DSL widget names (e.g., `nut_gat`, `btn`) to their standard internal types.
+- **`transpiler.pyi`** (~1 line): Type hint stubs to help IDEs understand that `transpile_pb` is available from the C-extension.
+- **`__init__.py`** (~1 line): Exposes `transpile_pb` from the compiled `transpiler.cpython-*.so` binary.
+
+### Build & Testing (Root Directory)
+- **`setup.py`** (~51 lines): The configuration file for compiling the Cython extensions and packaging Paraby for distribution via `pip`.
+- **`test_parser.py`** (~45 lines): The `pytest` test suite. It verifies that the Lexer, AST, and Codegen steps properly convert Paraby DSL strings into CustomTkinter code, and tests if `pb.load()` successfully initializes the UI.
+- **`test.py`** (~43 lines): A manual testing script that loads `test.pui` to visually verify the runtime components and auto-binding.
+- **`test.pui`** (~46 lines): The main playground DSL file used for manual GUI testing during development.
+
+---
+
+## 🧠 3. Architecture & Pipeline (Lexer / AST / Codegen)
 
 The magic of Paraby lies in combining **C speed** with **Python flexibility**. When a user runs `pb.load("app.pui")`, the following pipeline executes:
 
@@ -47,7 +73,7 @@ The magic of Paraby lies in combining **C speed** with **Python flexibility**. W
 
 ---
 
-## 🛠️ 3. Duck Typing & Flexible Syntax
+## 🛠️ 4. Duck Typing & Flexible Syntax
 
 Paraby embraces **Duck Typing**. Users do not need to worry about quotes `""` or data types when declaring properties in `.pui` files.
 
@@ -64,12 +90,12 @@ The Cython parser automatically detects `Click me` as a string and wraps it in q
 
 ---
 
-## 🔧 4. How to Extend Paraby (Adding New Widgets)
+## 🔧 5. How to Extend Paraby (Adding New Widgets)
 
 Adding a new widget (e.g., `scrollable_frame`) is incredibly easy and does not require touching the Cython parser!
 
-**Step 1: Register the Alias in `paraby/constants.py`**
-Open `src/paraby/constants.py` and add your standard type and its aliases to `WIDGET_ALIASES`.
+**Step 1: Register the Alias in `paraby/parser/constants.py`**
+Open `src/paraby/parser/constants.py` and add your standard type and its aliases to `WIDGET_ALIASES`.
 
 ```python
     "scrollable_frame": "scrollable_frame",
@@ -96,7 +122,7 @@ class cuon(scrollable_frame): pass
 
 ---
 
-## 🔨 5. Building the Cython Source
+## 🔨 6. Building the Cython Source
 
 If you modify anything inside `src/paraby/parser/` (the Cython transpiler), you **MUST** recompile the C extension. Otherwise, Python will continue using the old `.so` binary.
 
@@ -111,7 +137,7 @@ python3 setup.py build_ext --inplace
 
 ---
 
-## 🧪 6. Running Tests
+## 🧪 7. Running Tests
 
 Paraby uses `pytest` for unit testing. To run the test suite:
 

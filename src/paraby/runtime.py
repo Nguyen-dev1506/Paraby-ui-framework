@@ -3,7 +3,7 @@ import time
 import os
 from PIL import Image
 
-from paraby.constants import WIDGET_ALIASES
+from paraby.parser.constants import WIDGET_ALIASES
 
 # Modern color map for CustomTkinter supporting auto light/dark modes
 COLOR_MAP = {

@@ -13,7 +13,7 @@ from paraby.runtime import (
     start_app
 )
 from paraby.parser import transpile_pb
-from paraby.constants import WIDGET_ALIASES
+from paraby.parser.constants import WIDGET_ALIASES
 
 class ParabyFinder(MetaPathFinder):
     def find_spec(self, fullname, path, target=None):

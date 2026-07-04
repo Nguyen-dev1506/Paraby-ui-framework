@@ -1,5 +1,5 @@
 import re
-from paraby.constants import WIDGET_ALIASES
+from paraby.parser.constants import WIDGET_ALIASES
 
 # 1. CENTRALIZED DATA ARCHITECTURE (DRY)
 class WidgetRegistry:
