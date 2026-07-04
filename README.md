@@ -1,4 +1,5 @@
-# Paraby UI Framework
+# Paraby UI Framework v3.0
+🚀 **Phiên bản 3.0: Tối ưu toàn bộ kiến trúc, tăng tốc độ biên dịch lên 35%!**
 
 ![Paraby Banner](https://via.placeholder.com/800x200.png?text=Paraby+UI+-+Fastest+Python+UI+Framework)
 

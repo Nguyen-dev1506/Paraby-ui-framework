@@ -5,6 +5,8 @@ import tkinter.messagebox
 from importlib.machinery import ModuleSpec
 from importlib.abc import MetaPathFinder, SourceLoader
 
+__version__ = "3.0.0"
+
 from paraby.runtime import (
     create_window,
     create_widget,

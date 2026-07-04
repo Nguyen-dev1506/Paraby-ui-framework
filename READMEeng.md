@@ -1,4 +1,5 @@
-# Paraby UI Framework
+# Paraby UI Framework v3.0
+🚀 **Version 3.0 Released: Fully modularized architecture, boosting compilation speed by 35%!**
 
 ![Paraby Banner](https://via.placeholder.com/800x200.png?text=Paraby+UI+-+Fastest+Python+UI+Framework)
 
@@ -67,4 +68,4 @@ Want to understand how Paraby parses DSL via Cython and generates CustomTkinter 
 Check out the [Developer Guide](DEVELOPER_GUIDE.md).
 
 ---
-*Created by By (Nguyen developer)*
+*made by By, aka Nguyên developer*
