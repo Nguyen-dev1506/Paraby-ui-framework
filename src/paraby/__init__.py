@@ -33,7 +33,7 @@ class ParabyFinder(MetaPathFinder):
                     try:
                         with open(pb_path, 'r', encoding='utf-8') as f:
                             content = f.read()
-                        if "import paraby" in content or "new_window" in content or "New_window" in content:
+                        if "import paraby" in content or "New_window" in content:
                             return ModuleSpec(fullname, ParabyLoader(pb_path), origin=pb_path)
                     except Exception:
                         pass
@@ -101,10 +101,9 @@ def _execute_transpiled_code(python_code, pb_filepath, _is_popup):
     
     # Temporarily patch mainloop to avoid blocking during loading
     original_mainloop = ctk.CTk.mainloop
-    loaded_windows = []
     
     def dummy_mainloop(window, *args, **kwargs):
-        loaded_windows.append(window)
+        pass
         
     ctk.CTk.mainloop = dummy_mainloop
     
@@ -128,16 +127,12 @@ def _execute_transpiled_code(python_code, pb_filepath, _is_popup):
             window = val
             break
             
-    # If not run yet, execute New_window() manually
-    if not window and "New_window" in mod_dict:
-        window = mod_dict["New_window"]()
-        
     if not window:
         raise RuntimeError(f"Could not initialize window from UI file: {pb_filepath}")
         
     # Register automatic mainloop execution when the script exits
-    if not hasattr(window, "_pb_looped_later"):
-        window._pb_looped_later = True
+    if not hasattr(window, "_pb_atexit_registered"):
+        window._pb_atexit_registered = True
         if not _is_popup:
             atexit.register(window.mainloop)
             

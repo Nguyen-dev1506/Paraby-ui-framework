@@ -100,16 +100,18 @@ def build_ast(list lines):
         ev_match = re.match(r"^if\s+([a-zA-Z0-9_.]+)\s*:$", stripped)
         if ev_match:
             full_ev = ev_match.group(1)
+            parent = (stack[-2] if stack[-1].node_type == 'loop' else stack[-1]) if stack else None
+            
             if '.' in full_ev:
                 w_name, e_name = full_ev.split('.', 1)
             else:
                 # If not explicit, assign to parent
-                w_name = stack[-1].var_name if stack and stack[-1].node_type != 'loop' else "window"
+                w_name = parent.var_name if parent else "window"
                 e_name = full_ev
                 
             node = ASTNode('event', w_name, e_name)
-            if stack and stack[-1].node_type != 'loop':
-                stack[-1].events.append(node)
+            if parent:
+                parent.events.append(node)
             else:
                 root_nodes.append(node)
                 
