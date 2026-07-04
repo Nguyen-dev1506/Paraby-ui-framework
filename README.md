@@ -34,11 +34,11 @@ window(
         place: center
         text: Bấm vào tôi!
         color: blue
+    )
+)
 ```
 
 **2. Viết file logic `app.py`**
-    )
-)
 ```python
 import paraby as pb
 
