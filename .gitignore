@@ -36,3 +36,9 @@ venv.bak/
 
 # Các tệp build cũ không cần đưa lên Git
 extensions_build/
+
+# File build sinh ra từ Cython — KHÔNG commit
+*.c
+*.so
+build/
+*.egg-info/

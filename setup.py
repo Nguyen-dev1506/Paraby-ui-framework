@@ -9,14 +9,13 @@ except ImportError:
 ext = '.pyx' if USE_CYTHON else '.c'
 extensions = [
     Extension("paraby.parser.transpiler", [f"src/paraby/parser/transpiler{ext}"]),
-    Extension("paraby.parser.utils", [f"src/paraby/parser/utils{ext}"])
 ]
 
 if USE_CYTHON:
     extensions = cythonize(extensions, compiler_directives={'language_level': "3"})
 
 # Đọc nội dung file README tiếng Anh để làm giới thiệu dài trên PyPI
-with open("README_en.md", "r", encoding="utf-8") as fh:
+with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
