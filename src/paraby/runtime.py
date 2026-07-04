@@ -3,9 +3,11 @@ import time
 import os
 from PIL import Image
 
-# Bản đồ màu sắc hiện đại cho CustomTkinter hỗ trợ sáng/tối tự động
+from paraby.constants import WIDGET_ALIASES
+
+# Modern color map for CustomTkinter supporting auto light/dark modes
 COLOR_MAP = {
-    # Nhóm màu cơ bản (Trắng / Đen / Xám)
+    # Basic colors (White / Black / Gray)
     "white": ("#ffffff", "#dfe6e9"),
     "black": ("#2d3436", "#000000"),
     "gray": ("#95a5a6", "#7f8c8d"),
@@ -17,7 +19,7 @@ COLOR_MAP = {
     "light": ("#f5f6fa", "#f1f2f6"),
     "transparent": "transparent",
     
-    # Nhóm màu Đỏ / Hồng / Cam
+    # Red / Pink / Orange
     "red": ("#ff7675", "#d63031"),
     "crimson": ("#ff4757", "#c23616"),
     "maroon": ("#800000", "#5c0000"),
@@ -28,14 +30,14 @@ COLOR_MAP = {
     "gold": ("#f1c40f", "#f39c12"),
     "yellow": ("#ffeaa7", "#fdcb6e"),
 
-    # Nhóm màu Xanh lá
+    # Green
     "green": ("#55efc4", "#00b894"),
     "lime": ("#7bed9f", "#2ed573"),
     "emerald": ("#2ecc71", "#27ae60"),
     "teal": ("#81ecec", "#00cec9"),
     "olive": ("#808000", "#556b2f"),
     
-    # Nhóm màu Xanh dương / Cyan
+    # Blue / Cyan
     "blue": ("#3b8ed0", "#1f77b4"),
     "sky_blue": ("#74b9ff", "#0984e3"),
     "navy": ("#000080", "#000050"),
@@ -43,7 +45,7 @@ COLOR_MAP = {
     "aqua": ("#00ffff", "#008b8b"),
     "turquoise": ("#1abc9c", "#16a085"),
     
-    # Nhóm màu Tím
+    # Purple
     "purple": ("#a29bfe", "#6c5ce7"),
     "indigo": ("#4b0082", "#3b0066"),
     "violet": ("#ee82ee", "#ba55d3"),
@@ -52,7 +54,7 @@ COLOR_MAP = {
 
 def resolve_color(color):
     """
-    Chuyển đổi tên màu chuỗi (như 'gray', 'black') thành bộ màu CustomTkinter đẹp mắt.
+    Converts string color names (e.g. 'gray', 'black') into a CustomTkinter color tuple.
     """
     if isinstance(color, str):
         c_lower = color.strip().lower()
@@ -62,7 +64,7 @@ def resolve_color(color):
 
 def create_window(size=None, color=None, title=None, is_toplevel=False):
     """
-    Tạo và cấu hình cửa sổ chính hoặc cửa sổ con (CTkToplevel) CustomTkinter.
+    Creates and configures a CustomTkinter main window or Toplevel window.
     """
     if not is_toplevel:
         ctk.set_appearance_mode("System")
@@ -100,18 +102,19 @@ def create_window(size=None, color=None, title=None, is_toplevel=False):
         
     return window
 
+# Base map of standard widget types to CTk classes
 WIDGET_CLASSES = {
-    "btn": ctk.CTkButton, "button": ctk.CTkButton,
+    "btn": ctk.CTkButton,
     "entry": ctk.CTkEntry,
-    "label": ctk.CTkLabel, "lable": ctk.CTkLabel, "text": ctk.CTkLabel, "txt": ctk.CTkLabel,
-    "slider": ctk.CTkSlider, "thanh_keo": ctk.CTkSlider,
-    "checkbox": ctk.CTkCheckBox, "tick": ctk.CTkCheckBox,
-    "combobox": ctk.CTkComboBox, "dropdown": ctk.CTkComboBox, "select": ctk.CTkComboBox,
-    "switch": ctk.CTkSwitch, "nut_gat": ctk.CTkSwitch,
-    "frame": ctk.CTkFrame, "hop": ctk.CTkFrame,
-    "text_box": ctk.CTkTextbox, "textbox": ctk.CTkTextbox, "khung_chu": ctk.CTkTextbox,
-    "progress": ctk.CTkProgressBar, "loading": ctk.CTkProgressBar, "thanh_tien_do": ctk.CTkProgressBar,
-    "image": ctk.CTkLabel, "img": ctk.CTkLabel, "anh": ctk.CTkLabel
+    "label": ctk.CTkLabel,
+    "slider": ctk.CTkSlider,
+    "checkbox": ctk.CTkCheckBox,
+    "combobox": ctk.CTkComboBox,
+    "switch": ctk.CTkSwitch,
+    "frame": ctk.CTkFrame,
+    "text_box": ctk.CTkTextbox,
+    "progress": ctk.CTkProgressBar,
+    "image": ctk.CTkLabel
 }
 
 def parse_size(size_str):
@@ -125,16 +128,16 @@ def parse_size(size_str):
 
 def create_widget(parent, widget_type, **properties):
     """
-    Tạo widget CustomTkinter dựa trên loại widget và các thuộc tính.
+    Creates a CustomTkinter widget based on the widget type and properties.
     """
     w_type = widget_type.lower().strip()
     
-    # Tự động chuyển các tham số màu sắc qua resolve_color
+    # Automatically convert color parameters through resolve_color
     for key, val in list(properties.items()):
         if "color" in key:
             properties[key] = resolve_color(val)
             
-    # Xử lý gộp font, font_size, type thành thuộc tính font của CustomTkinter
+    # Process font, font_size, and type into a CustomTkinter font tuple
     font_name = properties.pop("font", None)
     font_size = properties.pop("font_size", None)
     font_type = properties.pop("type", None)
@@ -148,7 +151,7 @@ def create_widget(parent, widget_type, **properties):
             f_type = font_type if font_type else "normal"
             properties["font"] = (f_name, f_size, f_type)
 
-    # Chuẩn hoá các thuộc tính đặc biệt
+    # Normalize special properties
     if "color" in properties:
         if w_type in ("label", "lable", "text", "txt"):
             properties["text_color"] = properties.pop("color")
@@ -161,7 +164,7 @@ def create_widget(parent, widget_type, **properties):
     if "radius" in properties:
         properties["corner_radius"] = properties.pop("radius")
             
-    # Cảnh báo thông minh: Nhắc nhở programmer nếu màu chữ và màu nền quá giống nhau
+    # Smart warning: Remind programmer if text color and background color are too similar
     def get_luminance(hex_color):
         if not isinstance(hex_color, str) or not hex_color.startswith("#"):
             return 0.5
@@ -180,7 +183,7 @@ def create_widget(parent, widget_type, **properties):
     tc = properties.get("text_color")
     
     if fg and tc:
-        # Nếu dùng tuple (Sáng, Tối), lấy màu ở chế độ hiện tại để so sánh (giả sử lấy màu đầu tiên để check nhanh)
+        # If a tuple (Light, Dark) is used, take the first color to perform a quick check
         fg_check = fg[0] if isinstance(fg, (tuple, list)) else fg
         tc_check = tc[0] if isinstance(tc, (tuple, list)) else tc
         
@@ -188,9 +191,9 @@ def create_widget(parent, widget_type, **properties):
             lum_fg = get_luminance(fg_check)
             lum_tc = get_luminance(tc_check)
             if abs(lum_fg - lum_tc) < 0.2:
-                print(f"💡 [Paraby Gợi ý] Chào người anh em! Có vẻ widget '{w_type}' đang có màu nền và màu chữ quá giống nhau. Bạn cẩn thận kẻo chữ bị 'tàng hình' mất nhé!")
+                print(f"💡 [Paraby Hint] Hello! It looks like widget '{w_type}' has very similar text and background colors. Be careful not to make the text 'invisible'!")
         
-    # Xử lý text cho Entry thành placeholder_text
+    # Process text for Entry into placeholder_text
     if w_type == "entry" and "text" in properties and "placeholder_text" not in properties:
         properties["placeholder_text"] = properties.pop("text")
         
@@ -209,7 +212,7 @@ def create_widget(parent, widget_type, **properties):
             parsed_sz = parse_size(sz) if sz else (pil_img.width, pil_img.height)
             ctk_image = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=parsed_sz)
         except Exception as e:
-            print(f"Lỗi tải ảnh '{img_target}': {e}")
+            print(f"Error loading image '{img_target}': {e}")
             
     if w_type in ("image", "img", "anh"):
         if "text" not in properties:
@@ -223,11 +226,13 @@ def create_widget(parent, widget_type, **properties):
     margin_opt = properties.pop("margin", None)
     input_var = properties.pop("input", None)
     
-    widget_class = WIDGET_CLASSES.get(w_type)
+    std_type = WIDGET_ALIASES.get(w_type)
+    widget_class = WIDGET_CLASSES.get(std_type) if std_type else None
+    
     if not widget_class:
-        raise ValueError(f"Widget type '{w_type}' không được hỗ trợ trong Paraby UI.")
+        raise ValueError(f"Widget type '{w_type}' is not supported in Paraby UI.")
         
-    if w_type in ("progress", "loading", "thanh_tien_do"):
+    if std_type == "progress":
         if "from_" not in properties and "mode" not in properties:
             properties["mode"] = "determinate"
 
@@ -249,7 +254,7 @@ def create_widget(parent, widget_type, **properties):
 
 def place_widget(widget, place_opt=None):
     """
-    Xác định vị trí và hiển thị widget trên giao diện.
+    Determines the position and displays the widget on the interface.
     """
     if place_opt is None:
         place_opt = getattr(widget, "_pb_place", None)
@@ -320,7 +325,7 @@ def place_widget(widget, place_opt=None):
 
 def bind_event(widget, event_name, callback):
     """
-    Gắn kết sự kiện xử lý (callback).
+    Binds an event handler (callback) to a widget.
     """
     evt = event_name.strip().lower()
     w_class = widget.__class__.__name__
@@ -350,12 +355,22 @@ def bind_event(widget, event_name, callback):
 
 def start_app(window):
     """
-    Khởi chạy vòng lặp sự kiện chính của cửa sổ.
+    Starts the main event loop of the window.
     """
     window.mainloop()
     return window
 
 def patch_classes():
+    """
+    Monkey-patches CustomTkinter classes to provide seamless attribute access for inline events 
+    and virtual properties (e.g., .text, .value).
+    
+    WARNING: 
+    This patches `ctk.CTkBaseClass` and `ctk.CTk` globally when this module is imported.
+    While this enables the 'magic' auto-binding for Paraby, it alters standard CustomTkinter 
+    behavior in the same Python process. It is generally safe for apps running solely via Paraby, 
+    but use caution if mixing raw CustomTkinter code heavily in the same process.
+    """
     # 1. CTkBaseClass __getattr__ to return False for event attributes
     def custom_base_getattr(self, name):
         if name in ('click_me', 'click', 'press_enter', 'submit', 'change', 'slide', 'value_change', 'select'):
@@ -365,6 +380,7 @@ def patch_classes():
 
     # 2. CTk __getattr__ to search for auto-named widgets
     def custom_win_getattr(self, name):
+        # We define a mapping of standard widget types to their auto-generated prefixes
         known_types = {
             "btn": ("btn_", "button_"),
             "button": ("btn_", "button_"),
@@ -422,7 +438,7 @@ def patch_classes():
         
     setattr(ctk.CTkTextbox, "text", property(textbox_text_get, textbox_text_set))
 
-    # 4. Virtual property .value for CTkProgressBar (xử lý phần trăm 0-100)
+    # 4. Virtual property .value for CTkProgressBar (handles percentages 0-100)
     def progress_value_get(self):
         return self.get() * 100.0
     def progress_value_set(self, val):

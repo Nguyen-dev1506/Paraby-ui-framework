@@ -1,23 +1,10 @@
 import re
+from paraby.constants import WIDGET_ALIASES
 
-# 1. KIẾN TRÚC DỮ LIỆU TẬP TRUNG (DRY)
+# 1. CENTRALIZED DATA ARCHITECTURE (DRY)
 class WidgetRegistry:
-    """Từ điển trung tâm quản lý toàn bộ các Widget của Paraby"""
-    ALIASES = {
-        # Tiếng Anh
-        "btn": "btn", "button": "btn",
-        "entry": "entry", "textbox": "text_box", "text_box": "text_box",
-        "label": "label", "lable": "label", "text": "label", "txt": "label",
-        "slider": "slider", "checkbox": "checkbox", "tick": "checkbox",
-        "combobox": "combobox", "dropdown": "combobox", "select": "combobox",
-        "switch": "switch", "frame": "frame",
-        "progress": "progress", "loading": "progress",
-        "image": "image", "img": "image",
-        
-        # Tiếng Việt
-        "nut_gat": "switch", "thanh_keo": "slider", "thanh_tien_do": "progress",
-        "hop": "frame", "khung_chu": "text_box", "anh": "image"
-    }
+    """Central dictionary managing all Paraby Widgets"""
+    ALIASES = WIDGET_ALIASES
 
     @classmethod
     def get_std_type(cls, name):
@@ -28,11 +15,11 @@ class WidgetRegistry:
         return name in cls.ALIASES
 
 
-# 2. LEXER & TIỆN ÍCH
+# 2. LEXER & UTILS
 def clean_lines(code_text):
     """
-    Hàm 1: Đọc, làm sạch văn bản, bỏ comment và trả về danh sách các dòng Token.
-    Giữ nguyên các khoảng trắng đầu dòng để bảo toàn code Python trong các sự kiện.
+    Function 1: Reads, cleans text, removes comments, and returns a list of Token lines.
+    Preserves leading spaces to retain Python code in events.
     """
     if code_text.strip() in ("test()", "test():"):
         return ["__SHOWROOM__"]
@@ -64,7 +51,7 @@ def clean_lines(code_text):
             clean_line += char
             
         if clean_line.strip():
-            # Xoá phẩy cuối dòng để cú pháp lỏng lẻo giống CSS
+            # Remove trailing comma for loose CSS-like syntax
             if clean_line.rstrip().endswith(","):
                 clean_line = clean_line.rstrip()[:-1]
             result.append(clean_line.rstrip())
@@ -72,7 +59,7 @@ def clean_lines(code_text):
     return result
 
 def process_value(val_str):
-    """Bọc nháy kép cho chuỗi nếu cần thiết"""
+    """Wraps double quotes around strings if necessary"""
     val_str = val_str.strip()
     if not val_str: return '""'
     if (val_str.startswith('"') and val_str.endswith('"')) or (val_str.startswith("'") and val_str.endswith("'")):
@@ -112,15 +99,15 @@ class ASTNode:
     def __init__(self, node_type, var_name, std_type=None):
         self.node_type = node_type  # 'window', 'widget', 'event', 'raw'
         self.var_name = var_name
-        self.std_type = std_type    # Kiểu chuẩn hóa (vd: btn)
+        self.std_type = std_type    # Standardized type (e.g., btn)
         self.properties = {}
         self.children = []
         self.events = []
-        self.code_lines = []        # Dành cho Event
+        self.code_lines = []        # For Events
 
 def build_ast(lines):
     """
-    Hàm 2: Phân tích các dòng Token và dựng thành cây AST lồng nhau.
+    Function 2: Parses Token lines and builds a nested AST tree.
     """
     root_nodes = []
     stack = []
@@ -135,23 +122,23 @@ def build_ast(lines):
     for raw_line in lines:
         stripped = raw_line.strip()
         
-        # 1. Đang trong khối xử lý Event Python
+        # 1. Processing Python Event block
         if in_event_node:
             indent = len(raw_line) - len(raw_line.lstrip())
-            # Thoát khối Event nếu thợ code gõ Widget mới ở indent = 0, hoặc đóng ngoặc
+            # Exit Event block if the user types a new Widget at indent = 0, or closes a parenthesis
             if indent == 0 and (re.match(r"^[a-zA-Z0-9_]+\s*=", stripped) or stripped == ")" or stripped.startswith("if ")):
                 in_event_node = None
             else:
                 in_event_node.code_lines.append((indent, raw_line))
                 continue
 
-        # Đóng khối (nếu gặp dấu đóng ngoặc)
+        # Close block (if encounters a closing parenthesis)
         if stripped == ")" or stripped == "),":
             if stack:
                 stack.pop()
             continue
 
-        # Định nghĩa Cửa sổ (Window)
+        # Window Definition
         win_match = re.match(r"^(?:([a-zA-Z0-9_]+)\s*=\s*)?(?:window|Window)\($", stripped)
         if win_match:
             v_name = win_match.group(1) or "window"
@@ -160,15 +147,15 @@ def build_ast(lines):
             stack.append(node)
             continue
 
-        # Vòng lặp (loop)
+        # Loop (loop)
         if stripped == "loop(":
             if stack:
                 stack[-1].properties['has_loop'] = True
-            # Tạo một pseudo-node trên stack để khi đóng ngoặc pop ra không bị lỗi
+            # Create a pseudo-node on the stack so that popping when closing paren doesn't cause errors
             stack.append(ASTNode('loop', 'loop', 'loop'))
             continue
 
-        # Định nghĩa Widget
+        # Widget Definition
         w_match = re.match(r"^(?:([a-zA-Z0-9_]+)\s*=\s*)?([a-zA-Z0-9_]+)\($", stripped)
         if w_match:
             v_name = w_match.group(1)
@@ -181,7 +168,7 @@ def build_ast(lines):
                     
                 node = ASTNode('widget', v_name, std_type)
                 if stack:
-                    # Nếu trên đỉnh stack là loop, thì cha thực sự là widget/window ở dưới
+                    # If top of stack is loop, the true parent is the widget/window below it
                     parent = stack[-2] if stack[-1].node_type == 'loop' else stack[-1]
                     parent.children.append(node)
                 else:
@@ -189,14 +176,14 @@ def build_ast(lines):
                 stack.append(node)
                 continue
                 
-        # Định nghĩa Sự kiện (Event Binding)
+        # Event Binding Definition
         ev_match = re.match(r"^if\s+([a-zA-Z0-9_.]+)\s*:$", stripped)
         if ev_match:
             full_ev = ev_match.group(1)
             if '.' in full_ev:
                 w_name, e_name = full_ev.split('.', 1)
             else:
-                # Nếu không viết tường minh, tự gán cho cha
+                # If not explicit, assign to parent
                 w_name = stack[-1].var_name if stack and stack[-1].node_type != 'loop' else "window"
                 e_name = full_ev
                 
@@ -209,7 +196,7 @@ def build_ast(lines):
             in_event_node = node
             continue
             
-        # Các thuộc tính (Properties)
+        # Properties
         prop_match = re.match(r"^([a-zA-Z0-9_]+)\s*[:=]\s*(.*)$", stripped)
         if prop_match and stack:
             key = prop_match.group(1)
@@ -219,19 +206,19 @@ def build_ast(lines):
                 parts = [p.strip() for p in val.split(',')]
                 val = "[" + ", ".join(f"'{p}'" for p in parts if p) + "]"
             elif key == "name":
-                # Đổi tên biến nếu người dùng gán 'name: my_var'
+                # Rename variable if user assigns 'name: my_var'
                 clean_name = val.strip().strip("'").strip('"')
                 stack[-1].var_name = clean_name
                 continue
             else:
                 val = process_value(val)
                 
-            # Lưu property vào thẻ cha gần nhất (trừ khi nó là thẻ loop)
+            # Save property to the nearest parent tag (unless it is a loop tag)
             parent = stack[-2] if stack[-1].node_type == 'loop' else stack[-1]
             parent.properties[key] = val
             continue
 
-        # Các dòng không nhận diện được (ví dụ mã raw Python)
+        # Unrecognized lines (e.g. raw Python code)
         if not stack and not in_event_node:
             root_nodes.append(ASTNode('raw', None, raw_line))
 
@@ -241,7 +228,7 @@ def build_ast(lines):
 # 4. CODE GENERATOR
 def generate_python(ast_nodes):
     """
-    Hàm 3: Duyệt cây AST và sinh mã nguồn Python (CustomTkinter) hoàn chỉnh
+    Function 3: Traverses the AST tree and generates complete Python (CustomTkinter) source code
     """
     out = []
     out.append("import customtkinter as ctk")
@@ -250,7 +237,7 @@ def generate_python(ast_nodes):
     
     for root in ast_nodes:
         if root.node_type == 'raw':
-            out.append(root.std_type) # Chứa dòng text gốc
+            out.append(root.std_type) # Contains original raw text line
             continue
             
         if root.node_type == 'window':
@@ -379,7 +366,7 @@ if __name__ == "__main__":
 
 def transpile_pb(code_text):
     """
-    Main Compiler Entry Point: Chạy tuần tự Lexer -> AST -> Code Gen
+    Main Compiler Entry Point: Runs sequentially Lexer -> AST -> Code Gen
     """
     lines = clean_lines(code_text)
     if lines and lines[0] == "__SHOWROOM__":
