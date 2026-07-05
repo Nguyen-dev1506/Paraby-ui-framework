@@ -23,7 +23,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='paraby',
-    version='3.0.0',
+    version='3.0.1',
     author='By, aka Nguyên developer',
     author_email='khoinguyenphan2014@gmail.com',
     description='A lightning-fast, highly readable UI framework for Python based on CustomTkinter',
