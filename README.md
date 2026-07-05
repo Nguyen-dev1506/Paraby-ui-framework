@@ -66,4 +66,22 @@ Một ứng dụng trình diễn toàn bộ chức năng (Kèm theo Cheat Sheet 
 Mục tiêu của chúng tôi là giúp đỡ lập trình viên xây dựng giao diện dễ dàng, nhanh chóng, đẹp và xịn. Nhưng mục tiêu lớn nhất của chúng tôi là **mang lại niềm vui khi gõ code**. Lập trình viên cũng là con người, không phải cỗ máy. Paraby được sinh ra để chăm sóc, nhắc nhở và giúp đỡ bạn một cách tận tình, nhẹ nhàng nhất thay vì ném vào mặt bạn những dòng lỗi đỏ lòm khô khan.
 
 ---
-*made by By, aka Nguyên developer*
+*made by By, aka Nguyên developer* - một developer trẻ tuổi yêu công nghệ và muốn giúp đỡ những người cũng yêu công nghệ giống mình.
+
+Cảm ơn bạn đã ghé thăm Paraby!
+
+---
+
+## Lời tri ân & Giấy phép (Acknowledgements & Licenses)
+
+Dự án này sẽ không thể thành hiện thực nếu thiếu đi những công nghệ nền tảng tuyệt vời mã nguồn mở sau đây. Paraby UI Framework được xây dựng trên vai của những người khổng lồ:
+
+### CustomTkinter
+- **Tác giả:** Tom Schimansky
+- **Giấy phép:** [MIT License](https://github.com/TomSchimansky/CustomTkinter/blob/master/LICENSE)
+- *Lời tri ân:* Cảm ơn CustomTkinter đã mang đến một diện mạo hiện đại, tuyệt đẹp cho Tkinter. Mọi thành phần UI của Paraby đều được ánh xạ (map) trực tiếp lên sức mạnh của CustomTkinter.
+
+### Cython
+- **Tác giả:** Stefan Behnel, Robert Bradshaw, và cộng đồng Cython
+- **Giấy phép:** [Apache License 2.0](https://github.com/cython/cython/blob/master/LICENSE.txt)
+- *Lời tri ân:* Trái tim phân tích cú pháp (Parser) của Paraby sở hữu tốc độ sấm sét là nhờ sức mạnh biên dịch mã C từ Cython. Cảm ơn cộng đồng Cython đã tạo ra một công cụ tối ưu hóa hiệu năng kinh ngạc cho Python.
