@@ -1,5 +1,22 @@
 # cython: language_level=3
 
+def _emit_event_handler(out, ind, bind_target_var, this_expr, ev):
+    out.append(f"{ind}def {bind_target_var}_{ev.std_type}():")
+    out.append(f"{ind}    this = {this_expr}")
+        
+    if ev.code_lines:
+        min_ind = min([sp for sp, _ in ev.code_lines if _.strip()]) if ev.code_lines else 0
+        for sp, c_line in ev.code_lines:
+            if not c_line.strip():
+                out.append("")
+            else:
+                rel_space = " " * max(0, sp - min_ind)
+                out.append(f"{ind}    {rel_space}{c_line.lstrip()}")
+    else:
+        out.append(f"{ind}    pass")
+    out.append(f"{ind}pb.bind_event({bind_target_var}, '{ev.std_type}', {bind_target_var}_{ev.std_type})")
+
+
 def generate_python(list ast_nodes):
     """
     Traverses the AST tree and generates complete Python (CustomTkinter) source code
@@ -29,19 +46,8 @@ def generate_python(list ast_nodes):
                 # Bỏ qua việc tạo biến/gán properties nếu node là loop, chỉ duyệt tiếp các node con
                 if node.node_type == 'loop':
                     for ev in node.events:
-                        out.append(f"{ind}def {ev.var_name}_{ev.std_type}():")
-                        out.append(f"{ind}    this = getattr({root.var_name}, '{ev.var_name}', {ev.var_name} if '{ev.var_name}' in locals() else None)")
-                        if ev.code_lines:
-                            min_ind = min([sp for sp, _ in ev.code_lines if _.strip()]) if ev.code_lines else 0
-                            for sp, c_line in ev.code_lines:
-                                if not c_line.strip():
-                                    out.append("")
-                                else:
-                                    rel_space = " " * max(0, sp - min_ind)
-                                    out.append(f"{ind}    {rel_space}{c_line.lstrip()}")
-                        else:
-                            out.append(f"{ind}    pass")
-                        out.append(f"{ind}pb.bind_event({ev.var_name}, '{ev.std_type}', {ev.var_name}_{ev.std_type})")
+                        this_expr = f"getattr({root.var_name}, '{ev.var_name}', {ev.var_name} if '{ev.var_name}' in locals() else None)"
+                        _emit_event_handler(out, ind, ev.var_name, this_expr, ev)
                         
                     for child in node.children:
                         gen_widget(child, parent_var, ind_level)
@@ -61,19 +67,7 @@ def generate_python(list ast_nodes):
                 out.append(f"{ind}pb.place_widget({node.var_name})")
                 
                 for ev in node.events:
-                    out.append(f"{ind}def {node.var_name}_{ev.std_type}():")
-                    out.append(f"{ind}    this = {node.var_name}")
-                    if ev.code_lines:
-                        min_ind = min([sp for sp, _ in ev.code_lines if _.strip()]) if ev.code_lines else 0
-                        for sp, c_line in ev.code_lines:
-                            if not c_line.strip():
-                                out.append("")
-                            else:
-                                rel_space = " " * max(0, sp - min_ind)
-                                out.append(f"{ind}    {rel_space}{c_line.lstrip()}")
-                    else:
-                        out.append(f"{ind}    pass")
-                    out.append(f"{ind}pb.bind_event({node.var_name}, '{ev.std_type}', {node.var_name}_{ev.std_type})")
+                    _emit_event_handler(out, ind, node.var_name, node.var_name, ev)
                     
                 for child in node.children:
                     gen_widget(child, node.var_name, ind_level)
@@ -82,19 +76,8 @@ def generate_python(list ast_nodes):
                 gen_widget(child, root.var_name, 4)
                 
             for ev in root.events:
-                out.append(f"    def {ev.var_name}_{ev.std_type}():")
-                out.append(f"        this = getattr({root.var_name}, '{ev.var_name}', None)")
-                if ev.code_lines:
-                    min_ind = min([sp for sp, _ in ev.code_lines if _.strip()]) if ev.code_lines else 0
-                    for sp, c_line in ev.code_lines:
-                        if not c_line.strip():
-                            out.append("")
-                        else:
-                            rel_space = " " * max(0, sp - min_ind)
-                            out.append(f"        {rel_space}{c_line.lstrip()}")
-                else:
-                    out.append(f"        pass")
-                out.append(f"    pb.bind_event({ev.var_name}, '{ev.std_type}', {ev.var_name}_{ev.std_type})")
+                this_expr = f"getattr({root.var_name}, '{ev.var_name}', None)"
+                _emit_event_handler(out, "    ", ev.var_name, this_expr, ev)
                 
             if root.properties.get('has_loop'):
                 out.append(f"    pb.start_app({root.var_name})")

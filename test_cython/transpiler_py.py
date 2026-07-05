@@ -120,15 +120,20 @@ def build_ast(lines):
         return f"{w_type}_{widget_counters[w_type]}"
 
     in_event_node = None
+    event_indent = 0
     
     for raw_line in lines:
         stripped = raw_line.strip()
         
         # 1. Processing Python Event block
         if in_event_node:
+            if stripped == "" or stripped.startswith("#"):
+                in_event_node.code_lines.append((len(raw_line) - len(stripped), raw_line))
+                continue
+                
             indent = len(raw_line) - len(raw_line.lstrip())
-            # Exit Event block if the user types a new Widget at indent = 0, or closes a parenthesis
-            if indent == 0 and (re.match(r"^[a-zA-Z0-9_]+\s*=", stripped) or stripped == ")" or stripped.startswith("if ")):
+            # Exit Event block if indent is <= event_indent
+            if indent <= event_indent:
                 in_event_node = None
             else:
                 in_event_node.code_lines.append((indent, raw_line))
@@ -153,8 +158,12 @@ def build_ast(lines):
         if stripped == "loop(":
             if stack:
                 stack[-1].properties['has_loop'] = True
-            # Create a pseudo-node on the stack so that popping when closing paren doesn't cause errors
-            stack.append(ASTNode('loop', 'loop', 'loop'))
+            node = ASTNode('loop', 'loop', 'loop')
+            if stack:
+                stack[-1].children.append(node)
+            else:
+                root_nodes.append(node)
+            stack.append(node)
             continue
 
         # Widget Definition
@@ -170,9 +179,7 @@ def build_ast(lines):
                     
                 node = ASTNode('widget', v_name, std_type)
                 if stack:
-                    # If top of stack is loop, the true parent is the widget/window below it
-                    parent = stack[-2] if stack[-1].node_type == 'loop' else stack[-1]
-                    parent.children.append(node)
+                    stack[-1].children.append(node)
                 else:
                     root_nodes.append(node)
                 stack.append(node)
@@ -182,20 +189,39 @@ def build_ast(lines):
         ev_match = re.match(r"^if\s+([a-zA-Z0-9_.]+)\s*:$", stripped)
         if ev_match:
             full_ev = ev_match.group(1)
+            parent = stack[-1] if stack else None
+            
             if '.' in full_ev:
                 w_name, e_name = full_ev.split('.', 1)
             else:
+                if parent and parent.node_type == 'loop':
+                    raise ValueError("Cú pháp 'if click:' không hợp lệ trực tiếp trong loop() — phải ghi rõ tên widget, ví dụ 'if ten_widget.click:'")
                 # If not explicit, assign to parent
-                w_name = stack[-1].var_name if stack and stack[-1].node_type != 'loop' else "window"
+                w_name = parent.var_name if parent else "window"
                 e_name = full_ev
                 
             node = ASTNode('event', w_name, e_name)
-            if stack and stack[-1].node_type != 'loop':
-                stack[-1].events.append(node)
+            
+            # Find the actual target node (Rule 8: General logic)
+            target_node = None
+            if parent:
+                if w_name == parent.var_name:
+                    target_node = parent
+                else:
+                    for child in parent.children:
+                        if child.var_name == w_name:
+                            target_node = child
+                            break
+            
+            if target_node:
+                target_node.events.append(node)
+            elif parent:
+                parent.events.append(node)
             else:
                 root_nodes.append(node)
                 
             in_event_node = node
+            event_indent = len(raw_line) - len(raw_line.lstrip())
             continue
             
         # Properties
@@ -215,9 +241,8 @@ def build_ast(lines):
             else:
                 val = process_value(val)
                 
-            # Save property to the nearest parent tag (unless it is a loop tag)
-            parent = stack[-2] if stack[-1].node_type == 'loop' else stack[-1]
-            parent.properties[key] = val
+            # Save property to the nearest parent tag
+            stack[-1].properties[key] = val
             continue
 
         # Unrecognized lines (e.g. raw Python code)
@@ -225,6 +250,23 @@ def build_ast(lines):
             root_nodes.append(ASTNode('raw', None, raw_line))
 
     return root_nodes
+
+def _emit_event_handler(out, ind, bind_target_var, this_expr, ev):
+    out.append(f"{ind}def {bind_target_var}_{ev.std_type}():")
+    out.append(f"{ind}    this = {this_expr}")
+        
+    if ev.code_lines:
+        min_ind = min([sp for sp, _ in ev.code_lines if _.strip()]) if ev.code_lines else 0
+        for sp, c_line in ev.code_lines:
+            if not c_line.strip():
+                out.append("")
+            else:
+                rel_space = " " * max(0, sp - min_ind)
+                out.append(f"{ind}    {rel_space}{c_line.lstrip()}")
+    else:
+        out.append(f"{ind}    pass")
+    out.append(f"{ind}pb.bind_event({bind_target_var}, '{ev.std_type}', {bind_target_var}_{ev.std_type})")
+
 
 def generate_python(ast_nodes):
     """
@@ -251,6 +293,17 @@ def generate_python(ast_nodes):
             
             def gen_widget(node, parent_var, ind_level=4):
                 ind = " " * ind_level
+                
+                # Bỏ qua việc tạo biến/gán properties nếu node là loop, chỉ duyệt tiếp các node con
+                if node.node_type == 'loop':
+                    for ev in node.events:
+                        this_expr = f"getattr({root.var_name}, '{ev.var_name}', {ev.var_name} if '{ev.var_name}' in locals() else None)"
+                        _emit_event_handler(out, ind, ev.var_name, this_expr, ev)
+                        
+                    for child in node.children:
+                        gen_widget(child, parent_var, ind_level)
+                    return
+                    
                 props = []
                 for k, v in node.properties.items():
                     if k == "from": k = "from_"
@@ -265,19 +318,7 @@ def generate_python(ast_nodes):
                 out.append(f"{ind}pb.place_widget({node.var_name})")
                 
                 for ev in node.events:
-                    out.append(f"{ind}def {node.var_name}_{ev.std_type}():")
-                    out.append(f"{ind}    this = {node.var_name}")
-                    if ev.code_lines:
-                        min_ind = min([sp for sp, _ in ev.code_lines if _.strip()]) if ev.code_lines else 0
-                        for sp, c_line in ev.code_lines:
-                            if not c_line.strip():
-                                out.append("")
-                            else:
-                                rel_space = " " * max(0, sp - min_ind)
-                                out.append(f"{ind}    {rel_space}{c_line.lstrip()}")
-                    else:
-                        out.append(f"{ind}    pass")
-                    out.append(f"{ind}pb.bind_event({node.var_name}, '{ev.std_type}', {node.var_name}_{ev.std_type})")
+                    _emit_event_handler(out, ind, node.var_name, node.var_name, ev)
                     
                 for child in node.children:
                     gen_widget(child, node.var_name, ind_level)
@@ -286,19 +327,8 @@ def generate_python(ast_nodes):
                 gen_widget(child, root.var_name, 4)
                 
             for ev in root.events:
-                out.append(f"    def {ev.var_name}_{ev.std_type}():")
-                out.append(f"        this = getattr({root.var_name}, '{ev.var_name}', None)")
-                if ev.code_lines:
-                    min_ind = min([sp for sp, _ in ev.code_lines if _.strip()]) if ev.code_lines else 0
-                    for sp, c_line in ev.code_lines:
-                        if not c_line.strip():
-                            out.append("")
-                        else:
-                            rel_space = " " * max(0, sp - min_ind)
-                            out.append(f"        {rel_space}{c_line.lstrip()}")
-                else:
-                    out.append(f"        pass")
-                out.append(f"    pb.bind_event({ev.var_name}, '{ev.std_type}', {ev.var_name}_{ev.std_type})")
+                this_expr = f"getattr({root.var_name}, '{ev.var_name}', None)"
+                _emit_event_handler(out, "    ", ev.var_name, this_expr, ev)
                 
             if root.properties.get('has_loop'):
                 out.append(f"    pb.start_app({root.var_name})")
