@@ -2,9 +2,9 @@ import os
 import re
 
 def sync_transpiler():
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    parser_dir = os.path.join(base_dir, 'src', 'paraby', 'parser')
-    out_file = os.path.join(base_dir, 'test_cython', 'transpiler_py.py')
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    parser_dir = os.path.join(base_dir, 'src', 'paraby', 'core', 'parser')
+    out_file = os.path.join(base_dir, 'tests', 'test_cython', 'transpiler_py.py')
     
     files_to_sync = ['lexer.pyx', 'ast_builder.pyx', 'codegen.pyx', 'transpiler.pyx']
     

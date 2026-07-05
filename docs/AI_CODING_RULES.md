@@ -40,3 +40,6 @@ Không để lại các file nháp tạm thời (vd: `baselines/`, `save_fixture
 
 ## Luật 13 — Luôn đồng bộ tài liệu Developer Guide khi tách/thêm file
 Mọi thao tác tạo file mới hoặc tách file (đặc biệt trong `src/paraby/`) phải đi kèm hành động cập nhật bảng danh sách file trong `DEVELOPER_GUIDE.md` ngay lập tức. Không bao giờ để tài liệu kiến trúc bị lệch pha (out of sync) với code thật.
+
+## Luật 14 — Bắt buộc grep tìm đường dẫn cũ sau mỗi lần refactor
+Mọi lần di chuyển/đổi tên file hoặc thư mục trong repo, PHẢI grep toàn bộ repo tìm các chuỗi đường dẫn cứng (hardcoded path) tham chiếu tới vị trí cũ trước khi coi refactor là xong. Lệnh gợi ý: `grep -rn "src/paraby/parser\|'test_cython'\|test_parser.py\|test_loop" --include='*.py' --include='*.yml' .` — kiểm tra từng kết quả xem có còn trỏ path cũ không, sửa hết rồi mới chạy lại toàn bộ test để xác nhận.
