@@ -1,8 +1,12 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
-from test_cython.transpiler_py import clean_lines, build_ast, generate_python
+# Thêm đường dẫn tường minh để chạy standalone (không qua pytest)
+_project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, _project_root)
+sys.path.insert(0, os.path.join(_project_root, 'src'))
+
+from tests.test_cython.transpiler_py import clean_lines, build_ast, generate_python
 
 fixtures = [
     # Fixture 1: Simple window

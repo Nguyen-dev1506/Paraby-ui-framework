@@ -29,8 +29,7 @@ env.bak/
 venv.bak/
 
 # File riêng của IDE (VS Code, Cursor...)
-.vscode/*
-!.vscode/settings.json
+.vscode/
 .idea/
 
 # File tạm hệ thống Mac

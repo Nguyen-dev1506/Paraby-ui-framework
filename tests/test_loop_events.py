@@ -4,13 +4,11 @@ import unittest
 import ast
 from unittest.mock import patch, MagicMock
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
-
-from test_cython.transpiler_py import clean_lines as clean_lines_py, build_ast as build_ast_py, generate_python as generate_python_py
+from tests.test_cython.transpiler_py import clean_lines as clean_lines_py, build_ast as build_ast_py, generate_python as generate_python_py
 from paraby.core.parser.lexer import clean_lines as clean_lines_cy
 from paraby.core.parser.ast_builder import build_ast as build_ast_cy
 from paraby.core.parser.codegen import generate_python as generate_python_cy
-from test_cython.sync_transpiler import sync_transpiler
+from tests.test_cython.sync_transpiler import sync_transpiler
 
 class FakeCTk:
     def __init__(self, *a, **kw): pass

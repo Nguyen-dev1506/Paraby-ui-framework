@@ -14,6 +14,12 @@ from paraby.core.finder import ParabyFinder, ParabyLoader, register
 from paraby.components.popup import alert, confirm, prompt
 from paraby.core.runner import load, run, build, popup
 
+# Inject dummy types at runtime so `my_btn: pui.btn` doesn't throw AttributeError
+class _DummyType: pass
+for _alias in WIDGET_ALIASES.keys():
+    globals()[_alias] = _DummyType
+globals()["window"] = _DummyType
+
 __all__ = [
     "__version__",
     "create_window",

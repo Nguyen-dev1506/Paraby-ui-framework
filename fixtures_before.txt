@@ -8,9 +8,9 @@ def New_window():
 
 if __name__ == "__main__":
     import sys
-    _win = New_window()
-    if _win and not hasattr(_win, "_pb_looped"):
-        _win.mainloop()
+    _window = New_window()
+    if _window and not hasattr(_window, "_pb_looped"):
+        _window.mainloop()
 --- FIXTURE 2 ---
 import customtkinter as ctk
 import paraby as pb
@@ -23,9 +23,9 @@ def New_window():
 
 if __name__ == "__main__":
     import sys
-    _win = New_window()
-    if _win and not hasattr(_win, "_pb_looped"):
-        _win.mainloop()
+    _window = New_window()
+    if _window and not hasattr(_window, "_pb_looped"):
+        _window.mainloop()
 --- FIXTURE 3 ---
 import customtkinter as ctk
 import paraby as pb
@@ -45,9 +45,9 @@ def New_window():
 
 if __name__ == "__main__":
     import sys
-    _win = New_window()
-    if _win and not hasattr(_win, "_pb_looped"):
-        _win.mainloop()
+    _window = New_window()
+    if _window and not hasattr(_window, "_pb_looped"):
+        _window.mainloop()
 --- FIXTURE 4 ---
 import customtkinter as ctk
 import paraby as pb
@@ -74,9 +74,9 @@ def New_window():
 
 if __name__ == "__main__":
     import sys
-    _win = New_window()
-    if _win and not hasattr(_win, "_pb_looped"):
-        _win.mainloop()
+    _window = New_window()
+    if _window and not hasattr(_window, "_pb_looped"):
+        _window.mainloop()
 --- FIXTURE 5 ---
 import customtkinter as ctk
 import paraby as pb
@@ -93,6 +93,6 @@ def New_window():
 
 if __name__ == "__main__":
     import sys
-    _win = New_window()
-    if _win and not hasattr(_win, "_pb_looped"):
-        _win.mainloop()
+    _window = New_window()
+    if _window and not hasattr(_window, "_pb_looped"):
+        _window.mainloop()
