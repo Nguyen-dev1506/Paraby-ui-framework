@@ -81,7 +81,7 @@ cpdef str process_value(str val_str):
                     try:
                         float(pc)
                         q_parts.append(pc)
-                    except:
+                    except Exception:
                         q_parts.append('"' + pc + '"')
             return "(" + ", ".join(q_parts) + ")"
     return '"' + val_str + '"'

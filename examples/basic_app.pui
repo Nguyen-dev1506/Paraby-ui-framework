@@ -1,7 +1,7 @@
 window(
     size: 600, 600
     title: My first app by paraby
-    color: yellow
+    color: pink
 
     loop(
         # Cách 1: Gán biến trực tiếp

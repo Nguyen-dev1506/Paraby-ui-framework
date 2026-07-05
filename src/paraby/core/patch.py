@@ -90,7 +90,7 @@ def patch_classes():
     def progress_value_set(self, val):
         try:
             self.set(float(val) / 100.0)
-        except:
+        except Exception:
             pass
             
     setattr(ctk.CTkProgressBar, "value", property(progress_value_get, progress_value_set))

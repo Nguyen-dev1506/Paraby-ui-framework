@@ -78,7 +78,7 @@ def process_value(val_str):
                     try:
                         float(pc)
                         q_parts.append(pc)
-                    except:
+                    except Exception:
                         q_parts.append('"' + pc + '"')
             return "(" + ", ".join(q_parts) + ")"
     return '"' + val_str + '"'
@@ -106,6 +106,12 @@ class ASTNode:
         self.children = []
         self.events = []
         self.code_lines = []        # For Events
+
+# Khai báo trước các Regex Pattern để tối ưu vòng lặp
+WINDOW_REGEX = re.compile(r"^(?:([a-zA-Z0-9_]+)\s*=\s*)?(?:window|Window)\($")
+WIDGET_REGEX = re.compile(r"^(?:([a-zA-Z0-9_]+)\s*=\s*)?([a-zA-Z0-9_]+)\($")
+EVENT_REGEX = re.compile(r"^if\s+([a-zA-Z0-9_.]+)\s*:$")
+PROP_REGEX = re.compile(r"^([a-zA-Z0-9_]+)\s*[:=]\s*(.*)$")
 
 def build_ast(lines):
     """
@@ -146,7 +152,7 @@ def build_ast(lines):
             continue
 
         # Window Definition
-        win_match = re.match(r"^(?:([a-zA-Z0-9_]+)\s*=\s*)?(?:window|Window)\($", stripped)
+        win_match = WINDOW_REGEX.match(stripped)
         if win_match:
             v_name = win_match.group(1) or "window"
             node = ASTNode('window', v_name, 'window')
@@ -167,7 +173,7 @@ def build_ast(lines):
             continue
 
         # Widget Definition
-        w_match = re.match(r"^(?:([a-zA-Z0-9_]+)\s*=\s*)?([a-zA-Z0-9_]+)\($", stripped)
+        w_match = WIDGET_REGEX.match(stripped)
         if w_match:
             v_name = w_match.group(1)
             w_type = w_match.group(2)
@@ -186,7 +192,7 @@ def build_ast(lines):
                 continue
                 
         # Event Binding Definition
-        ev_match = re.match(r"^if\s+([a-zA-Z0-9_.]+)\s*:$", stripped)
+        ev_match = EVENT_REGEX.match(stripped)
         if ev_match:
             full_ev = ev_match.group(1)
             parent = stack[-1] if stack else None
@@ -225,7 +231,7 @@ def build_ast(lines):
             continue
             
         # Properties
-        prop_match = re.match(r"^([a-zA-Z0-9_]+)\s*[:=]\s*(.*)$", stripped)
+        prop_match = PROP_REGEX.match(stripped)
         if prop_match and stack:
             key = prop_match.group(1)
             val = prop_match.group(2)
