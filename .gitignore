@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+.pytest_cache/
 build/
 develop-eggs/
 dist/
@@ -28,7 +29,8 @@ env.bak/
 venv.bak/
 
 # File riêng của IDE (VS Code, Cursor...)
-.vscode/
+.vscode/*
+!.vscode/settings.json
 .idea/
 
 # File tạm hệ thống Mac
