@@ -1,0 +1,19 @@
+window(
+    size: 500, 400
+    title: Window Color Demo
+    color: red
+
+    loop(
+        label(
+            text: Chào mừng đến với Paraby!
+            font_size: 20
+            type: bold
+            place: top
+        )
+        label(
+            text: Nền cửa sổ này đã được đổi thành màu đỏ (red).
+            place: center
+            color: white
+        )
+    )
+)

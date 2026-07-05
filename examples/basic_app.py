@@ -1,6 +1,6 @@
 import paraby as pui
 
-pui.load("test.pui")
+pui.load("basic_app.pui")
 
 # Khai báo kiểu (Type Hint) để IDE không báo lỗi đỏ và tự động gợi ý code (Autocomplete) cực xịn!
 my_btn: pui.btn

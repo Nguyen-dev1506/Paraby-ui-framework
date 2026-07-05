@@ -689,7 +689,7 @@ classDiagram
 ---
 
 #### `src/paraby/components/window.py`
-- **Chức năng chính:** **Trình khởi tạo cửa sổ.** Cung cấp hàm `create_window()` để tạo và cấu hình đối tượng `ctk.CTk` hoặc `ctk.CTkToplevel`, bao gồm: đặt theme (`System`), tiêu đề, kích thước, màu nền, và logo tùy chỉnh. Cung cấp hàm `start_app()` để khởi động vòng lặp sự kiện chính (`mainloop`).
+- **Chức năng chính:** **Trình khởi tạo cửa sổ.** Cung cấp hàm `create_window()` để tạo và cấu hình đối tượng `ctk.CTk` hoặc `ctk.CTkToplevel`, bao gồm: đặt theme (`System`), tiêu đề, kích thước, logo tùy chỉnh. Đặc biệt hỗ trợ **thay đổi màu nền cửa sổ (Window background color)** thông qua thuộc tính `color: "mã_màu"` trong file `.pui` (tự động mapping vào `fg_color` của CTk). Cung cấp hàm `start_app()` để khởi động vòng lặp sự kiện chính (`mainloop`).
 - **Kích thước ước tính:** 50 dòng
 - **Thư viện/Độ phụ thuộc sử dụng:**
   - Bên thứ ba: `customtkinter`, `Pillow` (lazy import trong hàm)
