@@ -112,12 +112,28 @@ def build_ast(list lines):
             if '.' in full_ev:
                 w_name, e_name = full_ev.split('.', 1)
             else:
+                if parent and parent.node_type == 'loop':
+                    raise ValueError("Cú pháp 'if click:' không hợp lệ trực tiếp trong loop() — phải ghi rõ tên widget, ví dụ 'if ten_widget.click:'")
                 # If not explicit, assign to parent
                 w_name = parent.var_name if parent else "window"
                 e_name = full_ev
                 
             node = ASTNode('event', w_name, e_name)
+            
+            # Find the actual target node (Rule 8: General logic)
+            target_node = None
             if parent:
+                if w_name == parent.var_name:
+                    target_node = parent
+                else:
+                    for child in parent.children:
+                        if child.var_name == w_name:
+                            target_node = child
+                            break
+            
+            if target_node:
+                target_node.events.append(node)
+            elif parent:
                 parent.events.append(node)
             else:
                 root_nodes.append(node)
