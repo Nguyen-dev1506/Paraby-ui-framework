@@ -21,7 +21,13 @@ def test_transpile_pb():
     assert "'btn'" in python_code
 
 def test_load_pui(tmp_path):
-    # 1. Create a mock pui file
+    """
+    Integration test for pb.load() using FakeCTk mock.
+    Ensures the full load pipeline works (file read → transpile → exec → inject)
+    WITHOUT creating a real GUI window or registering atexit hooks that hang.
+    """
+    from unittest.mock import patch, MagicMock
+
     pui_code_chuan = """window(
     size: 400, 300
     title: Hello Paraby
@@ -34,15 +40,29 @@ def test_load_pui(tmp_path):
     test_file = tmp_path / "test_temp.pui"
     test_file.write_text(pui_code_chuan, encoding="utf-8")
 
-    # 2. Test if load works
-    try:
-        window = pb.load(str(test_file))
-        assert window is not None
-        
-        # Test if widget is injected/created
-        assert hasattr(window, "my_button")
-    except Exception as e:
-        pytest.fail(f"pb.load() failed: {e}")
+    class FakeCTk:
+        def __init__(self, *a, **kw): pass
+        def title(self, *a, **kw): pass
+        def geometry(self, *a, **kw): pass
+        def configure(self, *a, **kw): pass
+        def iconphoto(self, *a, **kw): pass
+        def update_idletasks(self, *a, **kw): pass
+        def minsize(self, *a, **kw): pass
+        def maxsize(self, *a, **kw): pass
+        def attributes(self, *a, **kw): pass
+        def focus(self, *a, **kw): pass
+        def mainloop(self, *a, **kw): pass
+        def cget(self, *a, **kw): return "#000000"
+
+    fake_widget = MagicMock()
+
+    with patch('customtkinter.CTk', FakeCTk):
+        with patch('atexit.register'):
+            with patch('paraby.create_widget', return_value=fake_widget):
+                with patch('paraby.place_widget'):
+                    window = pb.load(str(test_file))
+                    assert window is not None
+                    assert hasattr(window, "my_button")
 
 def test_widget_types_consistency():
     from paraby.core.parser.constants import WIDGET_ALIASES

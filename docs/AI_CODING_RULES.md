@@ -42,4 +42,8 @@ Không để lại các file nháp tạm thời (vd: `baselines/`, `save_fixture
 Mọi thao tác tạo file mới hoặc tách file (đặc biệt trong `src/paraby/`) phải đi kèm hành động cập nhật bảng danh sách file trong `DEVELOPER_GUIDE.md` ngay lập tức. Không bao giờ để tài liệu kiến trúc bị lệch pha (out of sync) với code thật.
 
 ## Luật 14 — Bắt buộc grep tìm đường dẫn cũ sau mỗi lần refactor
-Mọi lần di chuyển/đổi tên file hoặc thư mục trong repo, PHẢI grep toàn bộ repo tìm các chuỗi đường dẫn cứng (hardcoded path) tham chiếu tới vị trí cũ trước khi coi refactor là xong. Lệnh gợi ý: `grep -rn "src/paraby/parser\|'test_cython'\|test_parser.py\|test_loop" --include='*.py' --include='*.yml' .` — kiểm tra từng kết quả xem có còn trỏ path cũ không, sửa hết rồi mới chạy lại toàn bộ test để xác nhận.
+Mọi lần di chuyển/đổi tên file hoặc thư mục trong repo, PHẢI grep toàn bộ repo tìm các chuỗi đường dẫn cứng (hardcoded path) tham chiếu tới vị trí cũ trước khi coi refactor là xong. Phải dùng **cả 2 dạng grep**:
+1. **Grep đường dẫn file hệ thống (dấu `/`):** `grep -rn "src/paraby/parser\b\|'test_cython'\|test_parser.py\|test_loop" --include='*.py' --include='*.yml' .`
+2. **Grep import kiểu Python module (dấu `.`):** `grep -rn "from paraby\.parser\b\|import paraby\.parser\b" --include='*.py' --include='*.pyx' .`
+
+Lệnh ở mục 1 chỉ bắt được path dạng filesystem (`src/paraby/parser`), KHÔNG bắt được import Python dạng `from paraby.parser import X` (vì không có dấu `/`). Phải chạy cả mục 2 để bắt đủ. Kiểm tra từng kết quả, sửa hết, rồi mới chạy lại toàn bộ test để xác nhận.

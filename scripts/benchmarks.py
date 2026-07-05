@@ -1,10 +1,16 @@
 import time
 import sys
-from test_cython.sync_transpiler import sync_transpiler
+import os
+
+# Thêm root project vào sys.path để import được cả tests/ và src/
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
+
+from tests.test_cython.sync_transpiler import sync_transpiler
 sync_transpiler()
 
-from test_cython.transpiler_py import transpile_pb as transpile_py
-from paraby.parser import transpile_pb as transpile_cy
+from tests.test_cython.transpiler_py import transpile_pb as transpile_py
+from paraby.core.parser import transpile_pb as transpile_cy
 
 # Tạo một đoạn code DSL cực lớn để benchmark
 dummy_dsl = """window(
