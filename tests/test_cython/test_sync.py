@@ -2,8 +2,8 @@ import sys
 import os
 import unittest
 
-from tests.test_cython.sync_transpiler import sync_transpiler
-from tests.test_cython.transpiler_py import transpile_pb as transpile_py
+from test_cython.sync_transpiler import sync_transpiler  # type: ignore
+from test_cython.transpiler_py import transpile_pb as transpile_py  # type: ignore
 from paraby.core.parser import transpile_pb as transpile_cy
 
 class TestSyncTranspiler(unittest.TestCase):
