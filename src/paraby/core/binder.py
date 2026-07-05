@@ -1,7 +1,7 @@
 import os
 import ast
 import customtkinter as ctk
-from paraby.runtime import bind_event
+from paraby.core.runtime import bind_event
 
 def _generate_type_hint_suggestions(tree, pb_alias, injected_widgets, window):
     # Find variables with type annotations

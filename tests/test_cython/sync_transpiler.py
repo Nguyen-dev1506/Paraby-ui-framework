@@ -10,7 +10,7 @@ def sync_transpiler():
     
     combined_code = []
     combined_code.append("import re")
-    combined_code.append("from paraby.parser.constants import WIDGET_ALIASES\n")
+    combined_code.append("from paraby.core.parser.constants import WIDGET_ALIASES\n")
     
     for fname in files_to_sync:
         fpath = os.path.join(parser_dir, fname)

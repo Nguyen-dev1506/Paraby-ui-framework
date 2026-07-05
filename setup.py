@@ -8,10 +8,10 @@ except ImportError:
 
 ext = '.pyx' if USE_CYTHON else '.c'
 extensions = [
-    Extension("paraby.parser.lexer", [f"src/paraby/parser/lexer{ext}"]),
-    Extension("paraby.parser.ast_builder", [f"src/paraby/parser/ast_builder{ext}"]),
-    Extension("paraby.parser.codegen", [f"src/paraby/parser/codegen{ext}"]),
-    Extension("paraby.parser.transpiler", [f"src/paraby/parser/transpiler{ext}"]),
+    Extension("paraby.core.parser.lexer", [f"src/paraby/core/parser/lexer{ext}"]),
+    Extension("paraby.core.parser.ast_builder", [f"src/paraby/core/parser/ast_builder{ext}"]),
+    Extension("paraby.core.parser.codegen", [f"src/paraby/core/parser/codegen{ext}"]),
+    Extension("paraby.core.parser.transpiler", [f"src/paraby/core/parser/transpiler{ext}"]),
 ]
 
 if USE_CYTHON:
@@ -37,7 +37,7 @@ setup(
     ext_modules=extensions,
     entry_points={
         'console_scripts': [
-            'paraby=paraby.cli:main',
+            'paraby=paraby.core.cli:main',
         ],
     },
     install_requires=[

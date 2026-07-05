@@ -13,8 +13,8 @@ def show_help(pui_file):
     data_vars = []
     
     try:
-        from paraby.parser.lexer import clean_lines
-        from paraby.parser.ast_builder import build_ast
+        from paraby.core.parser.lexer import clean_lines
+        from paraby.core.parser.ast_builder import build_ast
         
         lines = clean_lines(content)
         ast_nodes = build_ast(lines)

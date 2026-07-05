@@ -1,18 +1,18 @@
 __version__ = "3.0.0"
 
-from paraby.runtime import (
+from paraby.core.runtime import (
     create_window,
     create_widget,
     place_widget,
     bind_event,
     start_app
 )
-from paraby.parser import transpile_pb
-from paraby.parser.constants import WIDGET_ALIASES
+from paraby.core.parser import transpile_pb
+from paraby.core.parser.constants import WIDGET_ALIASES
 
-from paraby._finder import ParabyFinder, ParabyLoader, register
-from paraby._dialogs import alert, confirm, prompt
-from paraby._loader import load, run, build, popup
+from paraby.core.finder import ParabyFinder, ParabyLoader, register
+from paraby.components.popup import alert, confirm, prompt
+from paraby.core.runner import load, run, build, popup
 
 __all__ = [
     "__version__",

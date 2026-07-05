@@ -45,9 +45,9 @@ def test_load_pui(tmp_path):
         pytest.fail(f"pb.load() failed: {e}")
 
 def test_widget_types_consistency():
-    from paraby.parser.constants import WIDGET_ALIASES
-    from paraby.widgets import WIDGET_CLASSES
-    from paraby.patch import KNOWN_TYPES
+    from paraby.core.parser.constants import WIDGET_ALIASES
+    from paraby.components.widgets import WIDGET_CLASSES
+    from paraby.core.patch import KNOWN_TYPES
     
     for alias, std_type in WIDGET_ALIASES.items():
         assert std_type in WIDGET_CLASSES, f"Missing '{std_type}' in WIDGET_CLASSES for alias '{alias}'"

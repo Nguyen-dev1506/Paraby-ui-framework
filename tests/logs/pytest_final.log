@@ -1,0 +1,25 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.13.1, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/mac/Program apps of By/Paraby ui framwork
+plugins: anyio-4.13.0
+collecting ... collected 16 items
+
+test_parser.py::test_transpile_pb PASSED                                 [  6%]
+test_parser.py::test_load_pui PASSED                                     [ 12%]
+test_parser.py::test_widget_types_consistency PASSED                     [ 18%]
+test_loop.py::TestDoubleMainLoop::test_double_mainloop_with_loop PASSED  [ 25%]
+test_loop.py::TestDoubleMainLoop::test_no_double_mainloop_without_loop PASSED [ 31%]
+test_loop_events.py::TestLoopEvents::test_bug_a_event_ordering PASSED    [ 37%]
+test_loop_events.py::TestLoopEvents::test_bug_b_implicit_event_in_loop PASSED [ 43%]
+test_loop_events.py::TestLoopEvents::test_event_binding_complex_nesting PASSED [ 50%]
+test_loop_events.py::TestLoopEvents::test_event_binding_inside_loop_cython PASSED [ 56%]
+test_loop_events.py::TestLoopEvents::test_event_binding_inside_loop_pure_python PASSED [ 62%]
+test_cython/test_sync.py::TestSyncTranspiler::test_transpiler_output_identical PASSED [ 68%]
+test_advanced.py::test_unnamed_widget_auto_naming PASSED                 [ 75%]
+test_advanced.py::test_list_property_values PASSED                       [ 81%]
+test_advanced.py::test_name_property_rename PASSED                       [ 87%]
+test_advanced.py::test_multiple_windows PASSED                           [ 93%]
+test_advanced.py::test_comment_in_event_body PASSED                      [100%]
+
+============================== 16 passed in 1.10s ==============================

@@ -5,9 +5,9 @@ import paraby as pb
 import customtkinter as ctk
 
 try:
-    from paraby.parser.lexer import clean_lines
-    from paraby.parser.ast_builder import build_ast
-    from paraby.parser.codegen import generate_python
+    from paraby.core.parser.lexer import clean_lines
+    from paraby.core.parser.ast_builder import build_ast
+    from paraby.core.parser.codegen import generate_python
 except ImportError:
     # If not built yet, we can't test directly this way, but let's assume it's built
     pass
@@ -51,7 +51,7 @@ class TestDoubleMainLoop(unittest.TestCase):
             with patch.object(FakeCTk, 'mainloop') as mock_mainloop:
                 with patch('paraby.start_app') as mock_start_app:
                     exec(python_code, exec_globals)
-                    win_obj = exec_globals.get('_win')
+                    win_obj = exec_globals.get('_window')
                     
                     self.assertIsNotNone(win_obj)
                     self.assertTrue(getattr(win_obj, "_pb_looped", False))
@@ -93,7 +93,7 @@ class TestDoubleMainLoop(unittest.TestCase):
             with patch.object(FakeCTk, 'mainloop') as mock_mainloop:
                 with patch('paraby.start_app') as mock_start_app:
                     exec(python_code, exec_globals)
-                    win_obj = exec_globals.get('_win')
+                    win_obj = exec_globals.get('_window')
                     
                     self.assertIsNotNone(win_obj)
                     self.assertFalse(hasattr(win_obj, "_pb_looped"))

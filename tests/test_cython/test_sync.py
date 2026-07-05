@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'src
 
 from test_cython.sync_transpiler import sync_transpiler
 from test_cython.transpiler_py import transpile_pb as transpile_py
-from paraby.parser import transpile_pb as transpile_cy
+from paraby.core.parser import transpile_pb as transpile_cy
 
 class TestSyncTranspiler(unittest.TestCase):
     @classmethod

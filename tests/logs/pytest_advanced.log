@@ -1,0 +1,54 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.13.1, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/mac/Program apps of By/Paraby ui framwork
+plugins: anyio-4.13.0
+collecting ... collected 5 items
+
+test_advanced.py::test_unnamed_widget_auto_naming FAILED                 [ 20%]
+test_advanced.py::test_list_property_values PASSED                       [ 40%]
+test_advanced.py::test_name_property_rename PASSED                       [ 60%]
+test_advanced.py::test_multiple_windows PASSED                           [ 80%]
+test_advanced.py::test_comment_in_event_body FAILED                      [100%]
+
+=================================== FAILURES ===================================
+_______________________ test_unnamed_widget_auto_naming ________________________
+
+    def test_unnamed_widget_auto_naming():
+        pui_code = """window(
+        btn(text: click)
+        label(text: hello)
+        btn(text: click2)
+    )"""
+        python_code = pb.transpile_pb(pui_code)
+    
+>       assert "btn_1 = pb.create_widget" in python_code
+E       assert 'btn_1 = pb.create_widget' in 'import customtkinter as ctk\nimport paraby as pb\n\ndef New_window():\n    window = pb.create_window(size=(400, 300), color=("#242424", "#ebebeb"), title="Paraby App")\n    return window\n\nif __name__ == "__main__":\n    import sys\n    _window = New_window()\n    if _window and not hasattr(_window, "_pb_looped"):\n        _window.mainloop()'
+
+test_advanced.py:13: AssertionError
+__________________________ test_comment_in_event_body __________________________
+
+    def test_comment_in_event_body():
+        pui_code = """window(
+        btn()
+        if btn_1.click:
+            # this is a comment
+            print("clicked")
+            # another comment
+    
+            print("done")
+    )"""
+        python_code = pb.transpile_pb(pui_code)
+    
+        # Comments are preserved if they are indented correctly or ignored if empty,
+        # but the logic should not break indentation.
+        assert "print(\"clicked\")" in python_code
+        assert "print(\"done\")" in python_code
+>       assert "# this is a comment" in python_code
+E       assert '# this is a comment' in 'import customtkinter as ctk\nimport paraby as pb\n\ndef New_window():\n    window = pb.create_window(size=(400, 300), color=("#242424", "#ebebeb"), title="Paraby App")\n    def btn_1_click():\n        this = getattr(window, \'btn_1\', None)\n        print("clicked")\n        print("done")\n    pb.bind_event(btn_1, \'click\', btn_1_click)\n    return window\n\nif __name__ == "__main__":\n    import sys\n    _window = New_window()\n    if _window and not hasattr(_window, "_pb_looped"):\n        _window.mainloop()'
+
+test_advanced.py:70: AssertionError
+=========================== short test summary info ============================
+FAILED test_advanced.py::test_unnamed_widget_auto_naming - assert 'btn_1 = pb...
+FAILED test_advanced.py::test_comment_in_event_body - assert '# this is a com...
+========================= 2 failed, 3 passed in 1.08s ==========================

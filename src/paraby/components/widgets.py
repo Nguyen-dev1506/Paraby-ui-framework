@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from PIL import Image
-from paraby.parser.constants import WIDGET_ALIASES
-from paraby.colors import resolve_color
+from paraby.core.parser.constants import WIDGET_ALIASES
+from paraby.components.colors import resolve_color
 
 # Base map of standard widget types to CTk classes
 WIDGET_CLASSES = {

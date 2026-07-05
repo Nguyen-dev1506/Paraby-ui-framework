@@ -2,7 +2,7 @@ import sys
 import os
 from importlib.machinery import ModuleSpec
 from importlib.abc import MetaPathFinder, SourceLoader
-from paraby.parser import transpile_pb
+from paraby.core.parser import transpile_pb
 
 class ParabyFinder(MetaPathFinder):
     def find_spec(self, fullname, path, target=None):

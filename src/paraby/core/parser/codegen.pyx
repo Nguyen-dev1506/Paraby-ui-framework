@@ -32,7 +32,7 @@ def generate_python(list ast_nodes):
             continue
             
         if root.node_type == 'window':
-            out.append("def New_window():")
+            out.append(f"def New_{root.var_name}():")
             
             w_size = root.properties.get('size', '(400, 300)')
             w_color = root.properties.get('color', '("#242424", "#ebebeb")')
@@ -88,9 +88,18 @@ def generate_python(list ast_nodes):
             
     out.append('if __name__ == "__main__":')
     out.append('    import sys')
-    out.append('    _win = New_window()')
-    out.append('    if _win and not hasattr(_win, "_pb_looped"):')
-    out.append('        _win.mainloop()')
+    
+    cdef list windows = []
+    for root in ast_nodes:
+        if root.node_type == 'window':
+            windows.append(root.var_name)
+            
+    if windows:
+        for w in windows:
+            out.append(f'    _{w} = New_{w}()')
+        first_w = windows[0]
+        out.append(f'    if _{first_w} and not hasattr(_{first_w}, "_pb_looped"):')
+        out.append(f'        _{first_w}.mainloop()')
     
     return "\n".join(out)
 

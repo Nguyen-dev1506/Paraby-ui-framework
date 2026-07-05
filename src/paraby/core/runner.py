@@ -1,6 +1,6 @@
 import os
-from paraby.parser import transpile_pb
-from paraby._binding import _inject_globals_and_bind_events
+from paraby.core.parser import transpile_pb
+from paraby.core.binder import _inject_globals_and_bind_events
 
 def _load_file_content(pb_filepath):
     if not os.path.isfile(pb_filepath):

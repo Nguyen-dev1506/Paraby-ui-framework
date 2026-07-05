@@ -1,7 +1,7 @@
 # cython: language_level=3
-from paraby.parser.lexer import clean_lines
-from paraby.parser.ast_builder import build_ast
-from paraby.parser.codegen import generate_python, get_showroom_code
+from paraby.core.parser.lexer import clean_lines
+from paraby.core.parser.ast_builder import build_ast
+from paraby.core.parser.codegen import generate_python, get_showroom_code
 
 cpdef str transpile_pb(str code_text):
     """

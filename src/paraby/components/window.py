@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from paraby.colors import resolve_color
+from paraby.components.colors import resolve_color
 
 def create_window(size=None, color=None, title=None, is_toplevel=False):
     """

@@ -1,7 +1,7 @@
 # cython: language_level=3
 import re
-from paraby.parser.constants import WIDGET_ALIASES
-from paraby.parser.lexer import process_value
+from paraby.core.parser.constants import WIDGET_ALIASES
+from paraby.core.parser.lexer import process_value
 
 class WidgetRegistry:
     """Central dictionary managing all Paraby Widgets"""

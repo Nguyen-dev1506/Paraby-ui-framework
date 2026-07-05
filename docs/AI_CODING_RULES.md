@@ -28,3 +28,15 @@ Nếu một bug được sửa bằng cách thêm 1 điều kiện `if node_type
 
 ## Luật 9 — Không có CI xanh thì không được coi là xong
 Bất kỳ ai (AI hay người) claim một thay đổi đã "hoàn thành" đều phải kèm bằng chứng CI pass (hoặc output pytest đầy đủ tương đương nếu chưa có CI). "Tôi nghĩ nó đúng" không phải bằng chứng.
+
+## Luật 10 — Không tự chạy GUI thật khi test, luôn dùng Mock
+Tuyệt đối không bao giờ mở cửa sổ CTk thật trong quá trình kiểm thử hoặc xác minh code (ví dụ: lệnh `python test.py` gọi display). Luôn sử dụng `MagicMock` hoặc chạy trong môi trường ảo (`xvfb`) để đảm bảo không treo CI/Local và không cần tương tác tay.
+
+## Luật 11 — Không tự push code và poll chờ CI
+Quá trình push code lên GitHub và theo dõi Actions là trách nhiệm của người dùng (User). AI chỉ được phép chạy test ở LOCAL và báo cáo kết quả. Tuyệt đối không tự ý dùng git push hoặc hẹn giờ vòng lặp vô hạn chờ CI.
+
+## Luật 12 — Dọn dẹp file nháp/scratch ngay sau khi xong việc
+Không để lại các file nháp tạm thời (vd: `baselines/`, `save_fixtures.py`, `fixtures_before.txt`...) ở thư mục gốc repo. Phải chủ động dọn dẹp và di chuyển vào thư mục ẩn như `.dev/` hoặc `scripts/dev/` ngay lập tức để giữ vệ sinh dự án.
+
+## Luật 13 — Luôn đồng bộ tài liệu Developer Guide khi tách/thêm file
+Mọi thao tác tạo file mới hoặc tách file (đặc biệt trong `src/paraby/`) phải đi kèm hành động cập nhật bảng danh sách file trong `DEVELOPER_GUIDE.md` ngay lập tức. Không bao giờ để tài liệu kiến trúc bị lệch pha (out of sync) với code thật.
