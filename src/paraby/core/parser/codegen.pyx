@@ -14,7 +14,7 @@ def _emit_event_handler(out, ind, bind_target_var, this_expr, ev):
                 out.append(f"{ind}    {rel_space}{c_line.lstrip()}")
     else:
         out.append(f"{ind}    pass")
-    out.append(f"{ind}pb.bind_event({bind_target_var}, '{ev.std_type}', {bind_target_var}_{ev.std_type})")
+    out.append(f"{ind}pb.bind_event({bind_target_var}, {repr(ev.std_type)}, {bind_target_var}_{ev.std_type})")
 
 
 def generate_python(list ast_nodes):
@@ -46,7 +46,7 @@ def generate_python(list ast_nodes):
                 # Bỏ qua việc tạo biến/gán properties nếu node là loop, chỉ duyệt tiếp các node con
                 if node.node_type == 'loop':
                     for ev in node.events:
-                        this_expr = f"getattr({root.var_name}, '{ev.var_name}', {ev.var_name} if '{ev.var_name}' in locals() else None)"
+                        this_expr = f"getattr({root.var_name}, {repr(ev.var_name)}, {ev.var_name} if {repr(ev.var_name)} in locals() else None)"
                         _emit_event_handler(out, ind, ev.var_name, this_expr, ev)
                         
                     for child in node.children:
@@ -59,7 +59,7 @@ def generate_python(list ast_nodes):
                     props.append(f"{k}={v}")
                 
                 prop_str = ", ".join(props)
-                w_args = f"{parent_var}, '{node.std_type}'"
+                w_args = f"{parent_var}, {repr(node.std_type)}"
                 if prop_str: w_args += f", {prop_str}"
                     
                 out.append(f"{ind}{node.var_name} = pb.create_widget({w_args})")
@@ -76,7 +76,7 @@ def generate_python(list ast_nodes):
                 gen_widget(child, root.var_name, 4)
                 
             for ev in root.events:
-                this_expr = f"getattr({root.var_name}, '{ev.var_name}', None)"
+                this_expr = f"getattr({root.var_name}, {repr(ev.var_name)}, None)"
                 _emit_event_handler(out, "    ", ev.var_name, this_expr, ev)
                 
             if root.properties.get('has_loop'):

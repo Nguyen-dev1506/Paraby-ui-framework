@@ -1,6 +1,7 @@
 import re
 from paraby.core.parser.constants import WIDGET_ALIASES
 
+import ast as _ast
 
 def clean_lines(code_text):
     """
@@ -49,20 +50,46 @@ def clean_lines(code_text):
     return result
 
 def process_value(val_str):
-    """Wraps double quotes around strings if necessary"""
+    """Chuyển giá trị thô thành Python literal AN TOÀN. 
+    Mọi nhánh trả về string đều đi qua repr()/ast.literal_eval, không bao giờ 
+    nội suy chuỗi thô chưa escape."""
     val_str = val_str.strip()
-    if not val_str: return '""'
+    if not val_str:
+        return '""'
+
+    def _safe_string_literal(s):
+        try:
+            parsed = _ast.literal_eval(s)
+            if isinstance(parsed, str):
+                return repr(parsed)
+        except (ValueError, SyntaxError):
+            pass
+        return repr(s)
+
+    # Người dùng đã tự bọc dấu nháy -> parse lại và re-emit AN TOÀN qua repr()
     if (val_str.startswith('"') and val_str.endswith('"')) or (val_str.startswith("'") and val_str.endswith("'")):
-        return val_str
+        return _safe_string_literal(val_str)
+
+    # Số
     try:
         float(val_str)
         return val_str
     except ValueError:
         pass
-    if val_str in ('True', 'False', 'None'): return val_str
-    if val_str.startswith('(') and val_str.endswith(')'): return val_str
-    if val_str.startswith('[') and val_str.endswith(']'): return val_str
-    if val_str.startswith('{') and val_str.endswith('}'): return val_str
+
+    if val_str in ('True', 'False', 'None'):
+        return val_str
+
+    # tuple/list/dict -> validate bằng literal_eval, không cho lọt source thô chưa kiểm chứng
+    if (val_str.startswith('(') and val_str.endswith(')')) or \
+       (val_str.startswith('[') and val_str.endswith(']')) or \
+       (val_str.startswith('{') and val_str.endswith('}')):
+        try:
+            parsed = _ast.literal_eval(val_str)
+            return repr(parsed)
+        except (ValueError, SyntaxError):
+            pass  # không parse được -> rơi xuống xử lý như text thô bên dưới
+
     if ',' in val_str:
         parts = [p.strip() for p in val_str.split(',')]
         try:
@@ -73,15 +100,16 @@ def process_value(val_str):
             for pc in parts:
                 pc = pc.strip()
                 if (pc.startswith('"') and pc.endswith('"')) or (pc.startswith("'") and pc.endswith("'")):
-                    q_parts.append(pc)
+                    q_parts.append(_safe_string_literal(pc))
                 else:
                     try:
                         float(pc)
                         q_parts.append(pc)
                     except Exception:
-                        q_parts.append('"' + pc + '"')
+                        q_parts.append(repr(pc))
             return "(" + ", ".join(q_parts) + ")"
-    return '"' + val_str + '"'
+
+    return repr(val_str)
 from paraby.core.parser.constants import WIDGET_ALIASES
 from paraby.core.parser.lexer import process_value
 
