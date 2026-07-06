@@ -61,6 +61,7 @@
         "setup_windows_hint": "Để Cython biên dịch tốt trên Windows, hãy đảm bảo bạn đã cài Microsoft Visual C++ Build Tools.",
         "setup_installing": "Đang tự động cài đặt Paraby framework...",
         "setup_success": "Cài đặt Paraby thành công! Bây giờ bạn đã có thể dùng lệnh 'paraby'.",
-        "setup_fail": "Cài đặt thất bại. Vui lòng kiểm tra log lỗi bên trên."
+        "setup_fail": "Cài đặt thất bại. Vui lòng kiểm tra log lỗi bên trên.",
+        "setup_already_installed": "Paraby đã được cài đặt trong môi trường của bạn! Không cần cài đặt lại."
     }
 }

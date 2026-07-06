@@ -24,14 +24,23 @@ if __name__ == "__main__" and len(sys.argv) == 1:
     elif sys_name == "darwin":
         print(_t("setup_mac_hint"))
         
-    print("\n" + _t("setup_installing"))
-    cmd = [sys.executable, "-m", "pip", "install", "-e", "."]
-    
     try:
-        subprocess.check_call(cmd)
-        print("\n" + _t("setup_success"))
-    except subprocess.CalledProcessError:
-        print("\n" + _t("setup_fail"))
+        import importlib.metadata
+        importlib.metadata.version("paraby")
+        is_installed = True
+    except Exception:
+        is_installed = False
+
+    if is_installed:
+        print("\n" + _t("setup_already_installed"))
+    else:
+        print("\n" + _t("setup_installing"))
+        cmd = [sys.executable, "-m", "pip", "install", "-e", "."]
+        try:
+            subprocess.check_call(cmd)
+            print("\n" + _t("setup_success"))
+        except subprocess.CalledProcessError:
+            print("\n" + _t("setup_fail"))
         
     print("=" * 60)
     sys.exit(0)

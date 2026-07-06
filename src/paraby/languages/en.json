@@ -61,6 +61,7 @@
         "setup_windows_hint": "For Cython to compile properly on Windows, make sure Microsoft Visual C++ Build Tools are installed.",
         "setup_installing": "Auto-installing Paraby framework...",
         "setup_success": "Paraby successfully installed! You can now use the 'paraby' command.",
-        "setup_fail": "Installation failed. Please check the error logs above."
+        "setup_fail": "Installation failed. Please check the error logs above.",
+        "setup_already_installed": "Paraby is already installed in your environment! No installation needed."
     }
 }
