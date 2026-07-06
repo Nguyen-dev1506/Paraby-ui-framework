@@ -1,4 +1,5 @@
 # cython: language_level=3
+# cython: boundscheck=False, wraparound=False
 import ast as _ast
 
 cpdef list clean_lines(str code_text):
@@ -6,14 +7,13 @@ cpdef list clean_lines(str code_text):
     Reads, cleans text, removes comments, and returns a list of Token lines.
     Preserves leading spaces to retain Python code in events.
     """
-    if code_text.strip() in ("test()", "test():"):
-        return ["__SHOWROOM__"]
 
     cdef list lines = code_text.splitlines()
     cdef list result = []
     cdef str line
     cdef str stripped
     cdef bint in_double, in_single, escape
+    cdef list char_list
     cdef str clean_line
     cdef str char
 
@@ -25,16 +25,16 @@ cpdef list clean_lines(str code_text):
         in_double = False
         in_single = False
         escape = False
-        clean_line = ""
+        char_list = []
         
         for char in line:
             if escape:
                 escape = False
-                clean_line += char
+                char_list.append(char)
                 continue
             if char == '\\':
                 escape = True
-                clean_line += char
+                char_list.append(char)
                 continue
             if char == '"' and not in_single:
                 in_double = not in_double
@@ -42,7 +42,9 @@ cpdef list clean_lines(str code_text):
                 in_single = not in_single
             elif char == '#' and not in_double and not in_single:
                 break
-            clean_line += char
+            char_list.append(char)
+            
+        clean_line = "".join(char_list)
             
         if clean_line.strip():
             # Remove trailing comma for loose CSS-like syntax
