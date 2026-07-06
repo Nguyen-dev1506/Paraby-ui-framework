@@ -8,8 +8,6 @@ def clean_lines(code_text):
     Reads, cleans text, removes comments, and returns a list of Token lines.
     Preserves leading spaces to retain Python code in events.
     """
-    if code_text.strip() in ("test()", "test():"):
-        return ["__SHOWROOM__"]
 
     lines = code_text.splitlines()
     result = []
@@ -22,16 +20,16 @@ def clean_lines(code_text):
         in_double = False
         in_single = False
         escape = False
-        clean_line = ""
+        char_list = []
         
         for char in line:
             if escape:
                 escape = False
-                clean_line += char
+                char_list.append(char)
                 continue
             if char == '\\':
                 escape = True
-                clean_line += char
+                char_list.append(char)
                 continue
             if char == '"' and not in_single:
                 in_double = not in_double
@@ -39,15 +37,27 @@ def clean_lines(code_text):
                 in_single = not in_single
             elif char == '#' and not in_double and not in_single:
                 break
-            clean_line += char
+            char_list.append(char)
+            
+        clean_line = "".join(char_list)
             
         if clean_line.strip():
             # Remove trailing comma for loose CSS-like syntax
-            if clean_line.rstrip().endswith(","):
-                clean_line = clean_line.rstrip()[:-1]
+            stripped_clean = clean_line.rstrip()
+            if stripped_clean.endswith(","):
+                clean_line = stripped_clean[:len(stripped_clean) - 1]
             result.append(clean_line.rstrip())
             
     return result
+
+def _safe_string_literal_impl(s):
+    try:
+        parsed = _ast.literal_eval(s)
+        if isinstance(parsed, str):
+            return repr(parsed)
+    except (ValueError, SyntaxError):
+        pass
+    return repr(s)
 
 def process_value(val_str):
     """Chuyển giá trị thô thành Python literal AN TOÀN. 
@@ -57,18 +67,9 @@ def process_value(val_str):
     if not val_str:
         return '""'
 
-    def _safe_string_literal(s):
-        try:
-            parsed = _ast.literal_eval(s)
-            if isinstance(parsed, str):
-                return repr(parsed)
-        except (ValueError, SyntaxError):
-            pass
-        return repr(s)
-
     # Người dùng đã tự bọc dấu nháy -> parse lại và re-emit AN TOÀN qua repr()
     if (val_str.startswith('"') and val_str.endswith('"')) or (val_str.startswith("'") and val_str.endswith("'")):
-        return _safe_string_literal(val_str)
+        return _safe_string_literal_impl(val_str)
 
     # Số
     try:
@@ -100,7 +101,7 @@ def process_value(val_str):
             for pc in parts:
                 pc = pc.strip()
                 if (pc.startswith('"') and pc.endswith('"')) or (pc.startswith("'") and pc.endswith("'")):
-                    q_parts.append(_safe_string_literal(pc))
+                    q_parts.append(_safe_string_literal_impl(pc))
                 else:
                     try:
                         float(pc)
@@ -299,7 +300,7 @@ def _emit_event_handler(out, ind, bind_target_var, this_expr, ev):
                 out.append(f"{ind}    {rel_space}{c_line.lstrip()}")
     else:
         out.append(f"{ind}    pass")
-    out.append(f"{ind}pb.bind_event({bind_target_var}, '{ev.std_type}', {bind_target_var}_{ev.std_type})")
+    out.append(f"{ind}pb.bind_event({bind_target_var}, {repr(ev.std_type)}, {bind_target_var}_{ev.std_type})")
 
 
 def generate_python(ast_nodes):
@@ -331,7 +332,7 @@ def generate_python(ast_nodes):
                 # Bỏ qua việc tạo biến/gán properties nếu node là loop, chỉ duyệt tiếp các node con
                 if node.node_type == 'loop':
                     for ev in node.events:
-                        this_expr = f"getattr({root.var_name}, '{ev.var_name}', {ev.var_name} if '{ev.var_name}' in locals() else None)"
+                        this_expr = f"getattr({root.var_name}, {repr(ev.var_name)}, {ev.var_name} if {repr(ev.var_name)} in locals() else None)"
                         _emit_event_handler(out, ind, ev.var_name, this_expr, ev)
                         
                     for child in node.children:
@@ -344,7 +345,7 @@ def generate_python(ast_nodes):
                     props.append(f"{k}={v}")
                 
                 prop_str = ", ".join(props)
-                w_args = f"{parent_var}, '{node.std_type}'"
+                w_args = f"{parent_var}, {repr(node.std_type)}"
                 if prop_str: w_args += f", {prop_str}"
                     
                 out.append(f"{ind}{node.var_name} = pb.create_widget({w_args})")
@@ -361,7 +362,7 @@ def generate_python(ast_nodes):
                 gen_widget(child, root.var_name, 4)
                 
             for ev in root.events:
-                this_expr = f"getattr({root.var_name}, '{ev.var_name}', None)"
+                this_expr = f"getattr({root.var_name}, {repr(ev.var_name)}, None)"
                 _emit_event_handler(out, "    ", ev.var_name, this_expr, ev)
                 
             if root.properties.get('has_loop'):
@@ -389,66 +390,16 @@ def generate_python(ast_nodes):
     return "\n".join(out)
 
 
-def get_showroom_code():
-    return '''import customtkinter as ctk
-import paraby as pb
-
-def New_window():
-    window = pb.create_window(size=(500, 650), color=("#242424", "#ebebeb"), title="Paraby demo app")
-    
-    title_lbl = pb.create_widget(window, 'label', text="Paraby demo app", font=("Arial", 20, "bold"))
-    window.title_lbl = title_lbl
-    pb.place_widget(title_lbl)
-    
-    desc_lbl = pb.create_widget(window, 'label', text="Trải nghiệm tất cả các widget có sẵn bên dưới", font=("Arial", 12, "italic"))
-    window.desc_lbl = desc_lbl
-    pb.place_widget(desc_lbl)
-    
-    main_frame = pb.create_widget(window, 'frame', width=450, height=450)
-    window.main_frame = main_frame
-    pb.place_widget(main_frame)
-    
-    lbl1 = pb.create_widget(main_frame, 'label', text="1. Ô nhập liệu (Entry) & Nút nhấn (Button):")
-    window.lbl1 = lbl1
-    pb.place_widget(lbl1)
-    
-    my_entry = pb.create_widget(main_frame, 'entry', placeholder_text="Nhập gì đó vào đây...")
-    window.my_entry = my_entry
-    pb.place_widget(my_entry)
-    
-    my_btn = pb.create_widget(main_frame, 'btn', text="Hiển thị giá trị")
-    window.my_btn = my_btn
-    pb.place_widget(my_btn)
-    
-    output_lbl = pb.create_widget(main_frame, 'label', text="Kết quả: (chưa có)", text_color="cyan")
-    window.output_lbl = output_lbl
-    pb.place_widget(output_lbl)
-    
-    def my_btn_click():
-        output_lbl.configure(text=f"Kết quả: {my_entry.get()}")
-    pb.bind_event(my_btn, 'click', my_btn_click)
-    
-    pb.start_app(window)
-    window._pb_looped = True
-    return window
-
-if __name__ == "__main__":
-    import sys
-    _win = New_window()
-    if _win and not hasattr(_win, "_pb_looped"):
-        _win.mainloop()
-'''
 from paraby.core.parser.lexer import clean_lines
 from paraby.core.parser.ast_builder import build_ast
-from paraby.core.parser.codegen import generate_python, get_showroom_code
+from paraby.core.parser.codegen import generate_python
 
 def transpile_pb(code_text):
     """
     Main Compiler Entry Point: Runs sequentially Lexer -> AST -> Code Gen
     """
+
     lines = clean_lines(code_text)
-    if lines and lines[0] == "__SHOWROOM__":
-        return get_showroom_code()
         
     ast_tree = build_ast(lines)
     return generate_python(ast_tree)
