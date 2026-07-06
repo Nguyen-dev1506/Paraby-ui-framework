@@ -58,9 +58,9 @@ if my_button.click:
 Chỉ cần chạy `python app.py` và tận hưởng thành quả!
 
 ## Chế độ Showroom
-Không biết dùng Paraby thế nào? Hãy tạo một file `.pui` mới và chỉ gõ đúng 1 dòng:
-```python
-test()
+Không biết dùng Paraby thế nào? Hãy mở Terminal lên và gõ:
+```bash
+paraby demo
 ```
 Một ứng dụng trình diễn toàn bộ chức năng (Kèm theo Cheat Sheet tạo sẵn cho IDE) sẽ tự động mở lên!
 Mục tiêu của chúng tôi là giúp đỡ lập trình viên xây dựng giao diện dễ dàng, nhanh chóng, đẹp và xịn. Nhưng mục tiêu lớn nhất của chúng tôi là **mang lại niềm vui khi gõ code**. Lập trình viên cũng là con người, không phải cỗ máy. Paraby được sinh ra để chăm sóc, nhắc nhở và giúp đỡ bạn một cách tận tình, nhẹ nhàng nhất thay vì ném vào mặt bạn những dòng lỗi đỏ lòm khô khan.
