@@ -94,8 +94,22 @@ def show_help(pui_file):
 def main():
     if len(sys.argv) < 2:
         print(_t("cli_syntax_usage"))
-    else:
-        show_help(sys.argv[1])
+        sys.exit(1)
+        
+    if sys.argv[1] == "inspect":
+        if len(sys.argv) < 3:
+            print("Usage: paraby inspect <file.pui>")
+            sys.exit(1)
+        show_help(sys.argv[2])
+        return
+        
+    if sys.argv[1] == "--lang":
+        from paraby.language_manager import interactive_select
+        interactive_select()
+        return
+
+    from paraby import run
+    run(sys.argv[1])
 
 if __name__ == "__main__":
     main()
