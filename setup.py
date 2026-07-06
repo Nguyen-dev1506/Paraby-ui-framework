@@ -1,4 +1,40 @@
 from setuptools import setup, find_packages, Extension
+import sys
+import os
+import platform
+import subprocess
+
+# Chặn thực thi setup.py không đối số để làm file bootstrap cho người mới
+if __name__ == "__main__" and len(sys.argv) == 1:
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
+    try:
+        from paraby.language_manager import get as _t
+    except ImportError:
+        _t = lambda key, **kw: key
+
+    print("=" * 60)
+    print(_t("setup_welcome"))
+    print(_t("setup_detect_os", os=platform.system()))
+    
+    sys_name = platform.system().lower()
+    if sys_name == "linux":
+        print(_t("setup_linux_hint"))
+    elif sys_name == "windows":
+        print(_t("setup_windows_hint"))
+    elif sys_name == "darwin":
+        print(_t("setup_mac_hint"))
+        
+    print("\n" + _t("setup_installing"))
+    cmd = [sys.executable, "-m", "pip", "install", "-e", "."]
+    
+    try:
+        subprocess.check_call(cmd)
+        print("\n" + _t("setup_success"))
+    except subprocess.CalledProcessError:
+        print("\n" + _t("setup_fail"))
+        
+    print("=" * 60)
+    sys.exit(0)
 
 try:
     from Cython.Build import cythonize

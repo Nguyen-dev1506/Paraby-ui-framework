@@ -52,6 +52,15 @@
         "lang_select_prompt": "Vui lòng chọn ngôn ngữ của bạn:",
         "lang_select_input": "Nhập số (mặc định: 1): ",
         "lang_select_saved": "✅ Ngôn ngữ '{name}' đã được lưu! Cài đặt này sẽ được ghi nhớ.",
-        "lang_select_invalid": "⚠️ Lựa chọn không hợp lệ. Mặc định sẽ dùng Tiếng Anh."
+        "lang_select_invalid": "⚠️ Lựa chọn không hợp lệ. Mặc định sẽ dùng Tiếng Anh.",
+        
+        "setup_welcome": "Chào mừng đến với trình cài đặt Paraby!",
+        "setup_detect_os": "Đã nhận diện hệ điều hành: {os}",
+        "setup_linux_hint": "Để Cython biên dịch tốt trên Linux, hãy đảm bảo bạn đã cài 'build-essential' và 'python3-dev'.",
+        "setup_mac_hint": "Để Cython biên dịch tốt trên macOS, hãy đảm bảo bạn đã cài Xcode Command Line Tools.",
+        "setup_windows_hint": "Để Cython biên dịch tốt trên Windows, hãy đảm bảo bạn đã cài Microsoft Visual C++ Build Tools.",
+        "setup_installing": "Đang tự động cài đặt Paraby framework...",
+        "setup_success": "Cài đặt Paraby thành công! Bây giờ bạn đã có thể dùng lệnh 'paraby'.",
+        "setup_fail": "Cài đặt thất bại. Vui lòng kiểm tra log lỗi bên trên."
     }
 }
