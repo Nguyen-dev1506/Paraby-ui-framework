@@ -57,12 +57,7 @@ class StateBinder:
 
     def _generate_type_hint_suggestions(self, visitor):
         missing_hints = []
-        WIDGET_TYPE_MAP = {
-            "CTkButton": "btn", "CTkLabel": "label", "CTkEntry": "entry",
-            "CTkCheckBox": "checkbox", "CTkSwitch": "switch", "CTkSlider": "slider",
-            "CTkComboBox": "combobox", "CTkProgressBar": "progress",
-            "CTkFrame": "frame", "CTkTextbox": "text_box"
-        }
+        from paraby.core.parser.widget_registry import WIDGET_TYPE_MAP
         
         for w_name in self.injected_widgets:
             if w_name not in visitor.annotated_vars:

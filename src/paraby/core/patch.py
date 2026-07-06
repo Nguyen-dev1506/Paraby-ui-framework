@@ -1,34 +1,6 @@
 import customtkinter as ctk
 
-KNOWN_TYPES = {
-    "btn": ("btn_", "button_"),
-    "button": ("btn_", "button_"),
-    "entry": ("entry_",),
-    "label": ("label_", "lable_"),
-    "lable": ("label_", "lable_"),
-    "text": ("text_", "txt_"),
-    "txt": ("text_", "txt_"),
-    "slider": ("slider_", "thanh_keo_"),
-    "thanh_keo": ("slider_", "thanh_keo_"),
-    "checkbox": ("checkbox_", "tick_"),
-    "tick": ("checkbox_", "tick_"),
-    "combobox": ("combobox_", "dropdown_", "select_"),
-    "dropdown": ("combobox_", "dropdown_", "select_"),
-    "select": ("combobox_", "dropdown_", "select_"),
-    "switch": ("switch_", "nut_gat_"),
-    "nut_gat": ("switch_", "nut_gat_"),
-    "frame": ("frame_", "hop_"),
-    "hop": ("frame_", "hop_"),
-    "text_box": ("text_box_", "textbox_", "khung_chu_"),
-    "textbox": ("text_box_", "textbox_", "khung_chu_"),
-    "khung_chu": ("text_box_", "textbox_", "khung_chu_"),
-    "progress": ("progress_", "loading_", "thanh_tien_do_"),
-    "loading": ("progress_", "loading_", "thanh_tien_do_"),
-    "thanh_tien_do": ("progress_", "loading_", "thanh_tien_do_"),
-    "image": ("image_", "img_", "anh_"),
-    "img": ("image_", "img_", "anh_"),
-    "anh": ("image_", "img_", "anh_"),
-}
+from paraby.core.parser.widget_registry import KNOWN_TYPES
 
 def patch_classes():
     """
