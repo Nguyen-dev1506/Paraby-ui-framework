@@ -1,0 +1,57 @@
+{
+    "name": "English",
+    "meta": {
+        "code": "en",
+        "author": "Paraby Team"
+    },
+    "messages": {
+        "cli_main_syntax": "Syntax: python3 -m paraby <file_name.py | file_name.pb>",
+        "cli_syntax_usage": "Syntax: paraby <file_name.pui>",
+        "cli_file_read_error": "Error reading file {file}: {error}",
+        "cli_ast_parse_error": "AST parse error: {error}",
+        "cli_cheat_sheet_title": "🛠️  PARABY CHEAT SHEET FOR FILE: {file} 🛠️",
+        "cli_widget_list_title": "[1] UI WIDGET VARIABLES:",
+        "cli_widget_list_empty": "  (No named widget variables found)",
+        "cli_data_binding_title": "[2] DATA BINDING VARIABLES (REAL-TIME):",
+        "cli_data_binding_empty": "  (No data variables declared via `input` property)",
+        "cli_data_binding_item": "  - {var} (Auto-updates without calling .get())",
+        "cli_code_suggestion_title": "[3] CODE LOGIC SUGGESTIONS (COPY-PASTE INTO .py FILE):",
+        "cli_code_enable_autocomplete": "# --- ENABLE IDE AUTOCOMPLETE ---",
+        "cli_code_data_var_comment": "  # Data variable",
+        "cli_code_event_section": "# --- EVENT BINDING ---",
+        "cli_code_print_data": "    print('User input data:', {var})",
+        "cli_code_print_click": "    print('Button {var} was clicked!')",
+        "cli_cheat_sheet_open_error": "Error opening Cheat Sheet UI:",
+
+        "core_file_not_found": "UI file not found: {filepath}",
+        "core_window_init_error": "Could not initialize window from UI file: {filepath}",
+        "core_event_binding_error": "[Paraby Warning] Automatic event binding error: {error}",
+
+        "binder_suggestion_title": "✨ [PARABY SUGGESTION] ACTIVATE IDE AUTOCOMPLETE ✨",
+        "binder_suggestion_body_1": "Your IDE might highlight UI variables in red because they are missing type hints.",
+        "binder_suggestion_body_2": "Copy the code below and paste it into your logic file",
+        "binder_suggestion_body_3": "(right below the .pui file load statement) to fix red errors and enable",
+        "binder_suggestion_body_4": "awesome code autocomplete:",
+        "binder_runtime_error": "🔥 [Paraby Runtime Error] Error in event block '{event}' of widget '{widget}':",
+
+        "widget_image_load_error": "Error loading image '{target}': {error}",
+        "widget_type_not_supported": "Widget type '{type}' is not supported in Paraby UI.",
+        "widget_color_contrast_hint": "💡 [Paraby Hint] Hello! It looks like widget '{type}' has very similar text and background colors. Be careful not to make the text 'invisible'!",
+
+        "bench_title": "🚀 PARABY SPEED BENCHMARK 🚀",
+        "bench_testing_with": "Testing with DSL file containing {lines} lines of code...",
+        "bench_iterations": "Iterations per compiler: {count} times",
+        "bench_running_python": "⏳ Running Pure Python Transpiler...",
+        "bench_time_python": "   -> Pure Python time: {time:.4f} seconds",
+        "bench_running_cython": "⏳ Running Cython Transpiler (.so / .pyd) ...",
+        "bench_time_cython": "   -> Cython time:      {time:.4f} seconds",
+        "bench_result_title": "============== RESULT ==================",
+        "bench_cython_faster": "✅ Cython is FASTER than Pure Python by {speedup:.2f}x!",
+        "bench_cython_slower": "❌ Cython is slower? (Make sure you compiled the C-Extension successfully with `python3 setup.py build_ext --inplace`)",
+
+        "lang_select_prompt": "Please select your language:",
+        "lang_select_input": "Enter number (default: 1): ",
+        "lang_select_saved": "✅ Language '{name}' has been saved! This setting will be remembered.",
+        "lang_select_invalid": "⚠️ Invalid choice. Defaulting to English."
+    }
+}

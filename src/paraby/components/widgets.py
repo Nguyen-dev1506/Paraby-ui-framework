@@ -3,6 +3,7 @@ from PIL import Image
 from paraby.core.parser.constants import WIDGET_ALIASES
 from paraby.components.colors import resolve_color
 from paraby.utils.properties import parse_size, build_font_tuple, check_color_contrast
+from paraby.language_manager import get as _t
 
 # Base map of standard widget types to CTk classes
 WIDGET_CLASSES = {
@@ -75,7 +76,7 @@ def create_widget(parent, widget_type, **properties):
             parsed_sz = parse_size(sz) if sz else (pil_img.width, pil_img.height)
             ctk_image = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=parsed_sz)
         except Exception as e:
-            print(f"Error loading image '{img_target}': {e}")
+            print(_t("widget_image_load_error", target=img_target, error=e))
             
     if w_type in ("image", "img", "anh"):
         if "text" not in properties:
@@ -93,7 +94,7 @@ def create_widget(parent, widget_type, **properties):
     widget_class = WIDGET_CLASSES.get(std_type) if std_type else None
     
     if not widget_class:
-        raise ValueError(f"Widget type '{w_type}' is not supported in Paraby UI.")
+        raise ValueError(_t("widget_type_not_supported", type=w_type))
         
     if std_type == "progress":
         if "from_" not in properties and "mode" not in properties:

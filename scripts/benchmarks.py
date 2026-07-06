@@ -11,6 +11,7 @@ sync_transpiler()
 
 from tests.test_cython.transpiler_py import transpile_pb as transpile_py  # type: ignore
 from paraby.core.parser import transpile_pb as transpile_cy  # type: ignore
+from paraby.language_manager import get as _t  # type: ignore
 
 # Tạo một đoạn code DSL cực lớn để benchmark
 dummy_dsl = """window(
@@ -36,38 +37,38 @@ dummy_dsl += "\n)"
 
 def test_speed():
     print("========================================")
-    print("🚀 PARABY SPEED BENCHMARK 🚀")
+    print(_t("bench_title"))
     print("========================================")
-    print(f"Đang kiểm tra với file DSL chứa {len(dummy_dsl.splitlines())} dòng code...")
+    print(_t("bench_testing_with", lines=len(dummy_dsl.splitlines())))
     
     iterations = 20
-    print(f"Số vòng lặp mỗi trình biên dịch: {iterations} lần\n")
+    print(_t("bench_iterations", count=iterations) + "\n")
     
     # 1. Test Pure Python
-    print("⏳ Đang chạy bằng Pure Python Transpiler...")
+    print(_t("bench_running_python"))
     start_py = time.perf_counter()
     for _ in range(iterations):
         _ = transpile_py(dummy_dsl)
     end_py = time.perf_counter()
     time_py = end_py - start_py
-    print(f"   -> Thời gian Pure Python: {time_py:.4f} giây\n")
+    print(_t("bench_time_python", time=time_py) + "\n")
     
     # 2. Test Cython
-    print("⏳ Đang chạy bằng Cython Transpiler (.so / .pyd) ...")
+    print(_t("bench_running_cython"))
     start_cy = time.perf_counter()
     for _ in range(iterations):
         _ = transpile_cy(dummy_dsl)
     end_cy = time.perf_counter()
     time_cy = end_cy - start_cy
-    print(f"   -> Thời gian Cython:      {time_cy:.4f} giây\n")
+    print(_t("bench_time_cython", time=time_cy) + "\n")
     
     # 3. Compare
-    print("============== KẾT QUẢ ==================")
+    print(_t("bench_result_title"))
     if time_cy < time_py:
         speedup = time_py / time_cy
-        print(f"✅ Cython NHANH HƠN Pure Python gấp {speedup:.2f} lần!")
+        print(_t("bench_cython_faster", speedup=speedup))
     else:
-        print("❌ Cython chậm hơn? (Hãy chắc chắn bạn đã compile thành công C-Extension bằng `python3 setup.py build_ext --inplace`)")
+        print(_t("bench_cython_slower"))
     print("=========================================")
 
 if __name__ == "__main__":

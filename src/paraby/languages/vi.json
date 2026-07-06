@@ -1,0 +1,57 @@
+{
+    "name": "Tiếng Việt",
+    "meta": {
+        "code": "vi",
+        "author": "Paraby Team"
+    },
+    "messages": {
+        "cli_main_syntax": "Cú pháp: python3 -m paraby <tên_file.py | tên_file.pb>",
+        "cli_syntax_usage": "Cú pháp: paraby <ten_file.pui>",
+        "cli_file_read_error": "Lỗi đọc file {file}: {error}",
+        "cli_ast_parse_error": "Lỗi phân tích AST: {error}",
+        "cli_cheat_sheet_title": "🛠️  PARABY CHEAT SHEET CHO FILE: {file} 🛠️",
+        "cli_widget_list_title": "[1] DANH SÁCH BIẾN GIAO DIỆN (UI WIDGETS):",
+        "cli_widget_list_empty": "  (Không tìm thấy biến widget nào có đặt tên)",
+        "cli_data_binding_title": "[2] DANH SÁCH BIẾN DỮ LIỆU (DATA BINDINGS - THỜI GIAN THỰC):",
+        "cli_data_binding_empty": "  (Không tìm thấy biến dữ liệu nào khai báo qua thuộc tính `input`)",
+        "cli_data_binding_item": "  - {var} (Cập nhật tự động không cần gọi .get())",
+        "cli_code_suggestion_title": "[3] GỢI Ý CODE LOGIC (COPY-PASTE VÀO FILE .py CHẠY NGAY):",
+        "cli_code_enable_autocomplete": "# --- BẬT AUTOCOMPLETE CHO IDE ---",
+        "cli_code_data_var_comment": "  # Biến dữ liệu",
+        "cli_code_event_section": "# --- BẮT SỰ KIỆN ---",
+        "cli_code_print_data": "    print('Dữ liệu người dùng vừa gõ:', {var})",
+        "cli_code_print_click": "    print('Nút {var} được bấm!')",
+        "cli_cheat_sheet_open_error": "Lỗi khi mở giao diện Cheat Sheet:",
+
+        "core_file_not_found": "Không tìm thấy file giao diện: {filepath}",
+        "core_window_init_error": "Không thể khởi tạo cửa sổ từ file giao diện: {filepath}",
+        "core_event_binding_error": "[Paraby Cảnh báo] Lỗi gắn sự kiện tự động: {error}",
+
+        "binder_suggestion_title": "✨ [GỢI Ý TỪ PARABY] BẬT GỢI Ý TỰ ĐỘNG CHO IDE ✨",
+        "binder_suggestion_body_1": "IDE của bạn có thể gạch đỏ các biến UI vì chúng thiếu khai báo kiểu (type hints).",
+        "binder_suggestion_body_2": "Hãy sao chép đoạn code dưới đây và dán vào file logic của bạn",
+        "binder_suggestion_body_3": "(ngay dưới dòng lệnh tải file .pui) để tắt lỗi đỏ và bật",
+        "binder_suggestion_body_4": "gợi ý code tự động cực mượt:",
+        "binder_runtime_error": "🔥 [Paraby Lỗi Runtime] Lỗi xảy ra trong khối sự kiện '{event}' của widget '{widget}':",
+
+        "widget_image_load_error": "Lỗi tải hình ảnh '{target}': {error}",
+        "widget_type_not_supported": "Loại widget '{type}' không được hỗ trợ trong Paraby UI.",
+        "widget_color_contrast_hint": "💡 [Gợi ý Paraby] Xin chào! Có vẻ widget '{type}' đang có màu chữ và màu nền quá giống nhau. Hãy cẩn thận kẻo chữ bị 'tàng hình' nhé!",
+
+        "bench_title": "🚀 PARABY ĐO TỐC ĐỘ 🚀",
+        "bench_testing_with": "Đang kiểm tra với file DSL chứa {lines} dòng code...",
+        "bench_iterations": "Số vòng lặp mỗi trình biên dịch: {count} lần",
+        "bench_running_python": "⏳ Đang chạy bằng Pure Python Transpiler...",
+        "bench_time_python": "   -> Thời gian Pure Python: {time:.4f} giây",
+        "bench_running_cython": "⏳ Đang chạy bằng Cython Transpiler (.so / .pyd) ...",
+        "bench_time_cython": "   -> Thời gian Cython:      {time:.4f} giây",
+        "bench_result_title": "============== KẾT QUẢ ==================",
+        "bench_cython_faster": "✅ Cython NHANH HƠN Pure Python gấp {speedup:.2f} lần!",
+        "bench_cython_slower": "❌ Cython chậm hơn? (Hãy chắc chắn bạn đã compile thành công C-Extension bằng `python3 setup.py build_ext --inplace`)",
+
+        "lang_select_prompt": "Vui lòng chọn ngôn ngữ của bạn:",
+        "lang_select_input": "Nhập số (mặc định: 1): ",
+        "lang_select_saved": "✅ Ngôn ngữ '{name}' đã được lưu! Cài đặt này sẽ được ghi nhớ.",
+        "lang_select_invalid": "⚠️ Lựa chọn không hợp lệ. Mặc định sẽ dùng Tiếng Anh."
+    }
+}

@@ -4,6 +4,7 @@ import traceback
 import customtkinter as ctk
 import tkinter as tk
 from paraby.core.runtime import bind_event
+from paraby.language_manager import get as _t
 
 class EventVisitor(ast.NodeVisitor):
     def __init__(self):
@@ -76,11 +77,11 @@ class StateBinder:
                 
         if missing_hints:
             print("\n" + "="*65)
-            print("✨ [PARABY SUGGESTION] ACTIVATE IDE AUTOCOMPLETE ✨")
-            print("Your IDE might highlight UI variables in red because they are missing type hints.")
-            print("Copy the code below and paste it into your logic file")
-            print("(right below the .pui file load statement) to fix red errors and enable")
-            print("awesome code autocomplete:\n")
+            print(_t("binder_suggestion_title"))
+            print(_t("binder_suggestion_body_1"))
+            print(_t("binder_suggestion_body_2"))
+            print(_t("binder_suggestion_body_3"))
+            print(_t("binder_suggestion_body_4") + "\n")
             for line in missing_hints:
                 print(line)
             print("="*65 + "\n")
@@ -179,7 +180,7 @@ class StateBinder:
                                 try:
                                     exec(c_obj, g_dict, l_copy)
                                 except Exception as e:
-                                    print(f"\n🔥 [Paraby Runtime Error] Lỗi xảy ra trong khối sự kiện '{ev_name}' của widget '{w_name}':")
+                                    print(f"\n{_t('binder_runtime_error', event=ev_name, widget=w_name)}")
                                     traceback.print_exc()
                                     print("-" * 65 + "\n")
                             return cb

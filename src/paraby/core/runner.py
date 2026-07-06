@@ -1,6 +1,7 @@
 import os
 from paraby.core.parser import transpile_pb
 from paraby.core.binder import _inject_globals_and_bind_events
+from paraby.language_manager import get as _t
 
 def _load_file_content(pb_filepath):
     if not os.path.isfile(pb_filepath):
@@ -10,7 +11,7 @@ def _load_file_content(pb_filepath):
                 pb_filepath = pb_filepath + ext
                 break
         else:
-            raise FileNotFoundError(f"UI file not found: {pb_filepath}")
+            raise FileNotFoundError(_t("core_file_not_found", filepath=pb_filepath))
         
     with open(pb_filepath, 'r', encoding='utf-8') as f:
         source = f.read()
@@ -50,7 +51,7 @@ def _execute_transpiled_code(python_code, pb_filepath, _is_popup):
             break
             
     if not window:
-        raise RuntimeError(f"Could not initialize window from UI file: {pb_filepath}")
+        raise RuntimeError(_t("core_window_init_error", filepath=pb_filepath))
         
     # Register automatic mainloop execution when the script exits
     if not hasattr(window, "_pb_atexit_registered"):
@@ -77,7 +78,7 @@ def load(pb_filepath, _is_popup=False):
         frame = inspect.currentframe().f_back
         _inject_globals_and_bind_events(window, frame)
     except Exception as e:
-        print(f"[Paraby Warning] Automatic event binding error: {e}")
+        print(_t("core_event_binding_error", error=e))
         
     if _is_popup:
         window.focus()

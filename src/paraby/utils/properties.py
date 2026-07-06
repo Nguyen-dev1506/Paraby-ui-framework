@@ -1,3 +1,5 @@
+from paraby.language_manager import get as _t
+
 def parse_size(size_str):
     if isinstance(size_str, str) and "x" in size_str:
         try:
@@ -39,4 +41,4 @@ def check_color_contrast(w_type, fg, tc):
             lum_fg = get_luminance(fg_check)
             lum_tc = get_luminance(tc_check)
             if abs(lum_fg - lum_tc) < 0.2:
-                print(f"💡 [Paraby Hint] Hello! It looks like widget '{w_type}' has very similar text and background colors. Be careful not to make the text 'invisible'!")
+                print(_t("widget_color_contrast_hint", type=w_type))

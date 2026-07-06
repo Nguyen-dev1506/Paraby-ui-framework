@@ -1,4 +1,4 @@
-__version__ = "3.0.1"
+__version__ = "3.1"
 
 from paraby.core.runtime import (
     create_window,
@@ -13,6 +13,7 @@ from paraby.core.parser.constants import WIDGET_ALIASES
 from paraby.core.finder import ParabyFinder, ParabyLoader, register
 from paraby.components.popup import alert, confirm, prompt
 from paraby.core.runner import load, run, build, popup
+from paraby import language_manager as lang
 
 # Inject dummy types at runtime so `my_btn: pui.btn` doesn't throw AttributeError
 class _DummyType: pass
@@ -38,5 +39,6 @@ __all__ = [
     "load",
     "run",
     "build",
-    "popup"
+    "popup",
+    "lang"
 ]

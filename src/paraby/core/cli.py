@@ -1,12 +1,13 @@
 import sys
 import re
+from paraby.language_manager import get as _t
 
 def show_help(pui_file):
     try:
         with open(pui_file, 'r', encoding='utf-8') as f:
             content = f.read()
     except Exception as e:
-        print(f"Lỗi đọc file {pui_file}: {e}")
+        print(_t("cli_file_read_error", file=pui_file, error=e))
         return
 
     widgets = {}
@@ -35,46 +36,46 @@ def show_help(pui_file):
         traverse(ast_nodes)
         
     except Exception as e:
-        print(f"Lỗi phân tích AST: {e}")
+        print(_t("cli_ast_parse_error", error=e))
         return
 
     cheat_sheet_str = "\n" + "="*65 + "\n"
-    cheat_sheet_str += f"🛠️  PARABY CHEAT SHEET CHO FILE: {pui_file} 🛠️\n"
+    cheat_sheet_str += _t("cli_cheat_sheet_title", file=pui_file) + "\n"
     cheat_sheet_str += "="*65 + "\n\n"
     
-    cheat_sheet_str += "[1] DANH SÁCH BIẾN GIAO DIỆN (UI WIDGETS):\n"
+    cheat_sheet_str += _t("cli_widget_list_title") + "\n"
     if widgets:
         for var, wtype in widgets.items():
             cheat_sheet_str += f"  - {var} ({wtype})\n"
     else:
-        cheat_sheet_str += "  (Không tìm thấy biến widget nào có đặt tên)\n"
+        cheat_sheet_str += _t("cli_widget_list_empty") + "\n"
 
-    cheat_sheet_str += "\n[2] DANH SÁCH BIẾN DỮ LIỆU (DATA BINDINGS - THỜI GIAN THỰC):\n"
+    cheat_sheet_str += "\n" + _t("cli_data_binding_title") + "\n"
     if data_vars:
         for var in data_vars:
-            cheat_sheet_str += f"  - {var} (Cập nhật tự động không cần gọi .get())\n"
+            cheat_sheet_str += _t("cli_data_binding_item", var=var) + "\n"
     else:
-        cheat_sheet_str += "  (Không tìm thấy biến dữ liệu nào khai báo qua thuộc tính `input`)\n"
+        cheat_sheet_str += _t("cli_data_binding_empty") + "\n"
 
-    cheat_sheet_str += "\n[3] GỢI Ý CODE LOGIC (COPY-PASTE VÀO FILE .py CHẠY NGAY):\n"
+    cheat_sheet_str += "\n" + _t("cli_code_suggestion_title") + "\n"
     cheat_sheet_str += "```python\n"
     cheat_sheet_str += "import paraby as pb\n\n"
     cheat_sheet_str += f"pb.load('{pui_file}')\n\n"
-    cheat_sheet_str += "# --- BẬT AUTOCOMPLETE CHO IDE ---\n"
+    cheat_sheet_str += _t("cli_code_enable_autocomplete") + "\n"
     for var, wtype in widgets.items():
         cheat_sheet_str += f"{var}: pb.{wtype}\n"
         
     for var in data_vars:
-        cheat_sheet_str += f"{var}: str  # Biến dữ liệu\n"
+        cheat_sheet_str += f"{var}: str" + _t("cli_code_data_var_comment") + "\n"
         
-    cheat_sheet_str += "\n# --- BẮT SỰ KIỆN ---\n"
+    cheat_sheet_str += "\n" + _t("cli_code_event_section") + "\n"
     if widgets:
         first_var = list(widgets.keys())[0]
         cheat_sheet_str += f"if {first_var}.click:\n"
         if data_vars:
-            cheat_sheet_str += f"    print('Dữ liệu người dùng vừa gõ:', {data_vars[0]})\n"
+            cheat_sheet_str += _t("cli_code_print_data", var=data_vars[0]) + "\n"
         else:
-            cheat_sheet_str += f"    print('Nút {first_var} được bấm!')\n"
+            cheat_sheet_str += _t("cli_code_print_click", var=first_var) + "\n"
             
     cheat_sheet_str += "```\n"
     cheat_sheet_str += "="*65 + "\n"
@@ -87,12 +88,12 @@ def show_help(pui_file):
         win = pb.load(help_pui_path)
         win.out_box.text = cheat_sheet_str
     except Exception as e:
-        print("Lỗi khi mở giao diện Cheat Sheet:", e)
+        print(_t("cli_cheat_sheet_open_error"), e)
         print(cheat_sheet_str)
 
 def main():
     if len(sys.argv) < 2:
-        print("Cú pháp: paraby <ten_file.pui>")
+        print(_t("cli_syntax_usage"))
     else:
         show_help(sys.argv[1])
 
