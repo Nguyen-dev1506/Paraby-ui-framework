@@ -6,11 +6,11 @@ import os
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
-from tests.test_cython.sync_transpiler import sync_transpiler
+from tests.test_cython.sync_transpiler import sync_transpiler  # type: ignore
 sync_transpiler()
 
-from tests.test_cython.transpiler_py import transpile_pb as transpile_py
-from paraby.core.parser import transpile_pb as transpile_cy
+from tests.test_cython.transpiler_py import transpile_pb as transpile_py  # type: ignore
+from paraby.core.parser import transpile_pb as transpile_cy  # type: ignore
 
 # Tạo một đoạn code DSL cực lớn để benchmark
 dummy_dsl = """window(
