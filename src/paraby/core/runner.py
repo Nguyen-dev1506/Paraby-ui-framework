@@ -61,7 +61,7 @@ def _execute_transpiled_code(python_code, pb_filepath, _is_popup):
             
     return window, mod_dict
 
-def load(pb_filepath, _is_popup=False):
+def load(pb_filepath, _is_popup=False, _frame=None):
     """
     Loads and directly compiles a UI file (.pui or .pb), automatically binding events from the caller file.
     """
@@ -75,7 +75,7 @@ def load(pb_filepath, _is_popup=False):
     # ----------------------------------------------------
     try:
         import inspect
-        frame = inspect.currentframe().f_back
+        frame = _frame.f_back if _frame else inspect.currentframe().f_back
         _inject_globals_and_bind_events(window, frame)
     except Exception as e:
         print(_t("core_event_binding_error", error=e))
@@ -92,8 +92,9 @@ def run(pb_filepath):
     # But wait, run calls load. So if we just call load, `frame = inspect.currentframe().f_back` in load
     # will point to `run`, not the caller of `run`.
     # Let's see original code: run just calls load. Wait, if it calls load, then `f_back` in load gets `run`?
-    # Yes, the original code had a bug! "run just calls load". We'll keep it exactly the same to not change behavior.
-    load(pb_filepath)
+    # Yes, the original code had a bug! "run just calls load". We'll keep it exactly the same to not change behavior. (Ghi chú: đã sửa)
+    import inspect
+    load(pb_filepath, _frame=inspect.currentframe())
 
 def build(dsl_code, globals_dict=None, locals_dict=None):
     """
