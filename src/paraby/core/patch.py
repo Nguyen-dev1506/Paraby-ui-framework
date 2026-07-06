@@ -12,9 +12,18 @@ def patch_classes():
     While this enables the 'magic' auto-binding for Paraby, it alters standard CustomTkinter 
     behavior in the same Python process. It is generally safe for apps running solely via Paraby, 
     but use caution if mixing raw CustomTkinter code heavily in the same process.
+    
+    To opt-out of this behavior, set the environment variable PARABY_DISABLE_PATCH=1 
+    before importing Paraby, or call `unpatch_classes()` manually.
     """
     if getattr(ctk.CTkBaseClass, "_paraby_patched", False): return
     try:
+        # Save originals
+        if not hasattr(ctk.CTkBaseClass, "_original_getattr"):
+            ctk.CTkBaseClass._original_getattr = getattr(ctk.CTkBaseClass, "__getattr__", None)
+        if not hasattr(ctk.CTk, "_original_getattr"):
+            ctk.CTk._original_getattr = getattr(ctk.CTk, "__getattr__", None)
+            
         # 1. CTkBaseClass __getattr__ to return False for event attributes
         def custom_base_getattr(self, name):
             if name in ('click_me', 'click', 'press_enter', 'submit', 'change', 'slide', 'value_change', 'select'):
@@ -72,3 +81,29 @@ def patch_classes():
         ctk.CTkBaseClass._paraby_patched = True
     except Exception as e:
         print(f"Error: Failed to patch CustomTkinter classes. CustomTkinter API might have changed. Details: {e}")
+
+def unpatch_classes():
+    """
+    Restores original CustomTkinter classes by removing monkey-patches.
+    """
+    if not getattr(ctk.CTkBaseClass, "_paraby_patched", False): return
+    try:
+        if hasattr(ctk.CTkBaseClass, "_original_getattr"):
+            if ctk.CTkBaseClass._original_getattr is not None:
+                ctk.CTkBaseClass.__getattr__ = ctk.CTkBaseClass._original_getattr
+            else:
+                del ctk.CTkBaseClass.__getattr__
+                
+        if hasattr(ctk.CTk, "_original_getattr"):
+            if ctk.CTk._original_getattr is not None:
+                ctk.CTk.__getattr__ = ctk.CTk._original_getattr
+            else:
+                del ctk.CTk.__getattr__
+                
+        for cls, prop in [(ctk.CTkLabel, "text"), (ctk.CTkButton, "text"), (ctk.CTkEntry, "text"), (ctk.CTkTextbox, "text"), (ctk.CTkProgressBar, "value")]:
+            if hasattr(cls, prop):
+                delattr(cls, prop)
+                
+        ctk.CTkBaseClass._paraby_patched = False
+    except Exception as e:
+        print(f"Error: Failed to unpatch CustomTkinter classes: {e}")

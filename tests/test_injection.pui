@@ -1,0 +1,9 @@
+window(
+    title: "Test"
+    size: (200, 200)
+    
+    label(
+        name: lbl
+        text: ""); open('INJECTED.txt', 'w').write('HACKED'); pb.create_widget(window, 'label', text=""
+    )
+)

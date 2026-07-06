@@ -91,6 +91,56 @@ def show_help(pui_file):
         print(_t("cli_cheat_sheet_open_error"), e)
         print(cheat_sheet_str)
 
+def run_demo():
+    SHOWROOM_CODE = '''import customtkinter as ctk
+import paraby as pb
+
+def New_window():
+    window = pb.create_window(size=(500, 650), color=("#242424", "#ebebeb"), title="Paraby demo app")
+    
+    title_lbl = pb.create_widget(window, 'label', text="Paraby demo app", font=("Arial", 20, "bold"))
+    window.title_lbl = title_lbl
+    pb.place_widget(title_lbl)
+    
+    desc_lbl = pb.create_widget(window, 'label', text="Trải nghiệm tất cả các widget có sẵn bên dưới", font=("Arial", 12, "italic"))
+    window.desc_lbl = desc_lbl
+    pb.place_widget(desc_lbl)
+    
+    main_frame = pb.create_widget(window, 'frame', width=450, height=450)
+    window.main_frame = main_frame
+    pb.place_widget(main_frame)
+    
+    lbl1 = pb.create_widget(main_frame, 'label', text="1. Ô nhập liệu (Entry) & Nút nhấn (Button):")
+    window.lbl1 = lbl1
+    pb.place_widget(lbl1)
+    
+    my_entry = pb.create_widget(main_frame, 'entry', placeholder_text="Nhập gì đó vào đây...")
+    window.my_entry = my_entry
+    pb.place_widget(my_entry)
+    
+    my_btn = pb.create_widget(main_frame, 'btn', text="Hiển thị giá trị")
+    window.my_btn = my_btn
+    pb.place_widget(my_btn)
+    
+    output_lbl = pb.create_widget(main_frame, 'label', text="Kết quả: (chưa có)", text_color="cyan")
+    window.output_lbl = output_lbl
+    pb.place_widget(output_lbl)
+    
+    def my_btn_click():
+        output_lbl.configure(text=f"Kết quả: {my_entry.get()}")
+    pb.bind_event(my_btn, 'click', my_btn_click)
+    
+    pb.start_app(window)
+    window._pb_looped = True
+    return window
+
+_win = New_window()
+if _win and not hasattr(_win, "_pb_looped"):
+    _win.mainloop()
+'''
+    mod_dict = {'__name__': '__main__'}
+    exec(SHOWROOM_CODE, mod_dict)
+
 def main():
     if len(sys.argv) < 2:
         print(_t("cli_syntax_usage"))
@@ -101,6 +151,10 @@ def main():
             print("Usage: paraby inspect <file.pui>")
             sys.exit(1)
         show_help(sys.argv[2])
+        return
+        
+    if sys.argv[1] == "demo":
+        run_demo()
         return
         
     if sys.argv[1] == "--lang":

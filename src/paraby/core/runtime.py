@@ -5,5 +5,8 @@ from paraby.components.widgets import WIDGET_CLASSES, parse_size, create_widget,
 from paraby.core.events import bind_event
 from paraby.core.patch import patch_classes
 
+import os
+
 # Apply the global monkey-patch to CustomTkinter components
-patch_classes()
+if not os.environ.get("PARABY_DISABLE_PATCH"):
+    patch_classes()

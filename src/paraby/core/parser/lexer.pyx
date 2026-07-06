@@ -48,11 +48,21 @@ cpdef list clean_lines(str code_text):
             
         if clean_line.strip():
             # Remove trailing comma for loose CSS-like syntax
-            if clean_line.rstrip().endswith(","):
-                clean_line = clean_line.rstrip()[:-1]
+            stripped_clean = clean_line.rstrip()
+            if stripped_clean.endswith(","):
+                clean_line = stripped_clean[:len(stripped_clean) - 1]
             result.append(clean_line.rstrip())
             
     return result
+
+def _safe_string_literal_impl(s):
+    try:
+        parsed = _ast.literal_eval(s)
+        if isinstance(parsed, str):
+            return repr(parsed)
+    except (ValueError, SyntaxError):
+        pass
+    return repr(s)
 
 cpdef str process_value(str val_str):
     """Chuyển giá trị thô thành Python literal AN TOÀN. 
@@ -62,18 +72,9 @@ cpdef str process_value(str val_str):
     if not val_str:
         return '""'
 
-    def _safe_string_literal(s):
-        try:
-            parsed = _ast.literal_eval(s)
-            if isinstance(parsed, str):
-                return repr(parsed)
-        except (ValueError, SyntaxError):
-            pass
-        return repr(s)
-
     # Người dùng đã tự bọc dấu nháy -> parse lại và re-emit AN TOÀN qua repr()
     if (val_str.startswith('"') and val_str.endswith('"')) or (val_str.startswith("'") and val_str.endswith("'")):
-        return _safe_string_literal(val_str)
+        return _safe_string_literal_impl(val_str)
 
     # Số
     try:
@@ -105,7 +106,7 @@ cpdef str process_value(str val_str):
             for pc in parts:
                 pc = pc.strip()
                 if (pc.startswith('"') and pc.endswith('"')) or (pc.startswith("'") and pc.endswith("'")):
-                    q_parts.append(_safe_string_literal(pc))
+                    q_parts.append(_safe_string_literal_impl(pc))
                 else:
                     try:
                         float(pc)
