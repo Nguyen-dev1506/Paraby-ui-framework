@@ -6,6 +6,8 @@ import tkinter as tk
 from paraby.core.runtime import bind_event
 from paraby.language_manager import get as _t
 
+_AST_CACHE = {}
+
 class EventVisitor(ast.NodeVisitor):
     def __init__(self):
         self.annotated_vars = set()
@@ -122,16 +124,29 @@ class StateBinder:
                                 def trace_cb(*args):
                                     g[name] = v.get()
                                 return trace_cb
-                            tk_var.trace_add("write", make_trace(tk_var, self.caller_globals, input_var))
+                            trace_id = tk_var.trace_add("write", make_trace(tk_var, self.caller_globals, input_var))
+                            attr_val._pb_trace_info = (tk_var, trace_id)
+                            
+                            def cleanup_fn(event, v=tk_var, t_id=trace_id):
+                                try:
+                                    v.trace_remove("write", t_id)
+                                except Exception:
+                                    pass
+                            attr_val.bind("<Destroy>", cleanup_fn, add="+")
 
     def process_ast_events(self):
         if not os.path.isfile(self.caller_filepath):
             return
             
-        with open(self.caller_filepath, 'r', encoding='utf-8') as f:
-            caller_source = f.read()
-            
-        tree = ast.parse(caller_source)
+        mtime = os.path.getmtime(self.caller_filepath)
+        cached = _AST_CACHE.get(self.caller_filepath)
+        if cached and cached[0] == mtime:
+            tree = cached[1]
+        else:
+            with open(self.caller_filepath, 'r', encoding='utf-8') as f:
+                caller_source = f.read()
+            tree = ast.parse(caller_source)
+            _AST_CACHE[self.caller_filepath] = (mtime, tree)
         
         # Single pass AST Walk!
         visitor = EventVisitor()
