@@ -54,14 +54,14 @@ def resolve_safe_image_path(base_dir, path):
             return path
             
     if base_dir:
-        full_path = os.path.abspath(os.path.join(base_dir, path))
+        full_path = os.path.realpath(os.path.join(base_dir, path))
     else:
-        full_path = os.path.abspath(path)
+        full_path = os.path.realpath(path)
         
     full_path = os.path.normpath(full_path)
     
     if base_dir:
-        abs_base = os.path.normpath(os.path.abspath(base_dir))
+        abs_base = os.path.normpath(os.path.realpath(base_dir))
         try:
             common = os.path.commonpath([abs_base, full_path])
             if common != abs_base:

@@ -99,3 +99,24 @@ def test_image_path_traversal():
     absolute = resolve_safe_image_path(base, "/etc/passwd")
     assert absolute == "/etc/passwd"
     del os.environ["PARABY_ALLOW_ABSOLUTE_IMAGE_PATH"]
+
+def test_image_path_symlink_traversal(tmp_path):
+    import os
+    from paraby.utils.properties import resolve_safe_image_path
+    
+    # 1. Create a secret file OUTSIDE the base_dir
+    secret_file = tmp_path / "secret_outside.txt"
+    secret_file.write_text("HACKED")
+    
+    # 2. Create the base_dir
+    base_dir = tmp_path / "proj_test"
+    base_dir.mkdir()
+    
+    # 3. Create a symlink INSIDE the base_dir pointing to the secret file outside
+    symlink_path = base_dir / "evil_link.txt"
+    os.symlink(str(secret_file), str(symlink_path))
+    
+    # 4. Resolve the path using symlink filename
+    with pytest.raises(ValueError) as e:
+        resolve_safe_image_path(str(base_dir), "evil_link.txt")
+    assert "nằm ngoài thư mục dự án" in str(e.value)
