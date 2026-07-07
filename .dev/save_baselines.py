@@ -48,9 +48,9 @@ fixtures = {
 )"""
 }
 
-os.makedirs("baselines", exist_ok=True)
+os.makedirs(".dev/baselines", exist_ok=True)
 for name, pui_code in fixtures.items():
     python_code = pb.transpile_pb(pui_code)
-    with open(f"baselines/{name}.py", "w", encoding="utf-8") as f:
+    with open(f".dev/baselines/{name}.py", "w", encoding="utf-8") as f:
         f.write(python_code)
-print("Baselines saved to baselines/")
+print("Baselines saved to .dev/baselines/")
