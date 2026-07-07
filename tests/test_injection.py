@@ -28,3 +28,26 @@ def test_code_injection_prevention():
     # Actually Paraby adds widgets as attributes
     assert hasattr(win, 'lbl')
     assert win.lbl.cget("text") == '"); open(\'INJECTED.txt\', \'w\').write(\'HACKED\'); pb.create_widget(window, \'label\', text="'
+
+def test_name_property_rejects_invalid_identifier():
+    import paraby as pb
+    pui_code = '''window(
+    lbl = label(
+        name: x'); import os; os.system('id'); y
+        text: hi
+    )
+    )'''
+    with pytest.raises(ValueError) as exc:
+        pb.transpile_pb(pui_code)
+    assert "Tên không hợp lệ" in str(exc.value)
+
+def test_name_property_accepts_valid_identifier():
+    import paraby as pb
+    pui_code = '''window(
+        lbl = label(
+            name: my_button
+            text: hi
+        )
+    )'''
+    code = pb.transpile_pb(pui_code)
+    assert "my_button" in code

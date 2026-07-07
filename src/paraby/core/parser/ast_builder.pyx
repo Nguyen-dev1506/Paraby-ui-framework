@@ -3,6 +3,16 @@ import re
 from paraby.core.parser.constants import WIDGET_ALIASES
 from paraby.core.parser.lexer import process_value
 
+_IDENTIFIER_REGEX = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
+
+def _validate_identifier(name, context=""):
+    if not _IDENTIFIER_REGEX.match(name):
+        raise ValueError(
+            f"Tên không hợp lệ '{name}' tại {context}. "
+            f"Tên biến/widget chỉ được chứa chữ, số, dấu gạch dưới, và không được bắt đầu bằng số."
+        )
+    return name
+
 class WidgetRegistry:
     """Central dictionary managing all Paraby Widgets"""
     ALIASES = WIDGET_ALIASES
@@ -160,7 +170,7 @@ def build_ast(list lines):
             elif key == "name":
                 # Rename variable if user assigns 'name: my_var'
                 clean_name = val.strip().strip("'").strip('"')
-                stack[-1].var_name = clean_name
+                stack[-1].var_name = _validate_identifier(clean_name, context="thuộc tính 'name:'")
                 continue
             else:
                 val = process_value(val)

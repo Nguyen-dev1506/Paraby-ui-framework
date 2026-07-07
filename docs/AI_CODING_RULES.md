@@ -1,6 +1,6 @@
 # Luật bắt buộc cho AI khi sửa code trong Paraby UI Framework
 
-Áp dụng cho MỌI thay đổi liên quan tới `src/paraby/parser/*.pyx`, `test_cython/*`, hoặc bất kỳ phần nào sinh ra Python code động (codegen).
+Áp dụng cho MỌI thay đổi liên quan tới `src/paraby/core/parser/*.pyx`, `tests/test_cython/*`, hoặc bất kỳ phần nào sinh ra Python code động (codegen).
 
 ## Luật 1 — Không bao giờ báo "hoàn thành" chỉ dựa trên exit code
 Một lệnh chạy không lỗi (exit code 0) KHÔNG đồng nghĩa với đúng. Bằng chứng hợp lệ duy nhất là: (a) output đầy đủ của lệnh test, (b) nội dung thật của code được sinh ra (nếu liên quan tới codegen), (c) test case tái hiện CHÍNH XÁC vấn đề đã báo cáo, không phải test case dễ hơn.
@@ -44,7 +44,10 @@ Mọi thao tác tạo file mới hoặc tách file (đặc biệt trong `src/par
 
 ## Luật 14 — Bắt buộc grep tìm đường dẫn cũ sau mỗi lần refactor
 Mọi lần di chuyển/đổi tên file hoặc thư mục trong repo, PHẢI grep toàn bộ repo tìm các chuỗi đường dẫn cứng (hardcoded path) tham chiếu tới vị trí cũ trước khi coi refactor là xong. Phải dùng **cả 2 dạng grep**:
-1. **Grep đường dẫn file hệ thống (dấu `/`):** `grep -rn "src/paraby/parser\b\|'test_cython'\|test_parser.py\|test_loop" --include='*.py' --include='*.yml' .`
-2. **Grep import kiểu Python module (dấu `.`):** `grep -rn "from paraby\.parser\b\|import paraby\.parser\b" --include='*.py' --include='*.pyx' .`
+1. **Grep đường dẫn file hệ thống (dấu `/`):** `grep -rn "src/paraby/core/parser\b\|'tests/test_cython'\|test_parser.py\|test_loop" --include='*.py' --include='*.yml' .`
+2. **Grep import kiểu Python module (dấu `.`):** `grep -rn "from paraby\.core\.parser\b\|import paraby\.core\.parser\b" --include='*.py' --include='*.pyx' .`
 
-Lệnh ở mục 1 chỉ bắt được path dạng filesystem (`src/paraby/parser`), KHÔNG bắt được import Python dạng `from paraby.parser import X` (vì không có dấu `/`). Phải chạy cả mục 2 để bắt đủ. Kiểm tra từng kết quả, sửa hết, rồi mới chạy lại toàn bộ test để xác nhận.
+Lệnh ở mục 1 chỉ bắt được path dạng filesystem (`src/paraby/core/parser`), KHÔNG bắt được import Python dạng `from paraby.core.parser import X` (vì không có dấu `/`). Phải chạy cả mục 2 để bắt đủ. Kiểm tra từng kết quả, sửa hết, rồi mới chạy lại toàn bộ test để xác nhận.
+
+## Luật 15 — Mọi giá trị từ input người dùng dùng làm định danh (identifier) trong code sinh ra PHẢI qua validate identifier, mọi giá trị dùng làm literal PHẢI qua process_value()
+Bất kỳ chuỗi nào lấy từ input người dùng (.pui) mà sẽ được chèn vào code Python sinh ra dưới dạng TÊN BIẾN/TÊN HÀM/TÊN THUỘC TÍNH (không phải string literal) đều phải đi qua `_validate_identifier()` (hoặc tương đương) để đảm bảo chỉ chứa ký tự hợp lệ theo ngữ pháp Python định danh. Bất kỳ chuỗi nào sẽ được chèn dưới dạng GIÁ TRỊ (string/number/list literal) đều phải đi qua `process_value()` trong `lexer.pyx`, không được tự nối bằng f-string thô. Đây là nguyên nhân trực tiếp của 2 lỗ hổng code-injection đã phát hiện trong dự án này (qua "values:" và "name:") — cả hai đều do bỏ qua lớp sanitize chung khi thêm property đặc biệt (special-case) mới.
