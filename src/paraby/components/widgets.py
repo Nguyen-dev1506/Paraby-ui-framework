@@ -77,9 +77,9 @@ def create_widget(parent, widget_type, **properties):
     sz = properties.pop("size", None)
     if img_target:
         try:
-            import paraby
-            base_dir = getattr(paraby, "_current_base_dir", None)
-            from paraby.utils.properties import resolve_safe_image_path
+            from paraby.core.context import get_base_dir
+            base_dir = get_base_dir()
+            from paraby.core.security import resolve_safe_image_path
             img_target = resolve_safe_image_path(base_dir, img_target)
             pil_img = Image.open(img_target)
             parsed_sz = parse_size(sz) if sz else (pil_img.width, pil_img.height)

@@ -57,7 +57,8 @@ Thư mục này chứa logic vận hành (Runtime) nền tảng của Paraby, ba
 | `events.py` | Xử lý logic gán (bind) các sự kiện nhúng vào các Widget tương ứng. |
 | `finder.py` | Định nghĩa Custom Importer (`ParabyFinder`), cho phép Python import trực tiếp file `.pui` như module. |
 | `patch.py` | Logic "Monkey-patching" vào CustomTkinter hỗ trợ gọi trực tiếp biến và properties, có thể tắt qua cờ `PARABY_DISABLE_PATCH`. |
-
+| `security.py` | Validate đường dẫn file ngoại vi (ví dụ: ảnh), ngăn chặn Path Traversal và bảo mật ứng dụng. |
+| `context.py` | Quản lý state của `base_dir` hiện tại một cách an toàn qua contextvars, hỗ trợ gọi ứng dụng lồng nhau. |
 ---
 
 ## 📄 Chi tiết Thư mục Components: `src/paraby/components/`

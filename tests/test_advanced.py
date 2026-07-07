@@ -75,7 +75,7 @@ def test_comment_in_event_body():
 
 def test_image_path_traversal():
     import os
-    from paraby.utils.properties import resolve_safe_image_path
+    from paraby.core.security import resolve_safe_image_path
     
     # Mocking base dir
     base = os.path.abspath("/fake/project/dir")
@@ -102,7 +102,7 @@ def test_image_path_traversal():
 
 def test_image_path_symlink_traversal(tmp_path):
     import os
-    from paraby.utils.properties import resolve_safe_image_path
+    from paraby.core.security import resolve_safe_image_path
     
     # 1. Create a secret file OUTSIDE the base_dir
     secret_file = tmp_path / "secret_outside.txt"
@@ -120,3 +120,25 @@ def test_image_path_symlink_traversal(tmp_path):
     with pytest.raises(ValueError) as e:
         resolve_safe_image_path(str(base_dir), "evil_link.txt")
     assert "nằm ngoài thư mục dự án" in str(e.value)
+
+def test_base_dir_context_isolation():
+    from paraby.core.context import set_base_dir, get_base_dir, reset_base_dir
+    
+    # Giả lập load() file A
+    token_a = set_base_dir("/project/A")
+    assert get_base_dir() == "/project/A"
+    
+    # Đang load() file A, lại gọi popup() hay load() file B lồng nhau
+    token_b = set_base_dir("/project/B")
+    assert get_base_dir() == "/project/B"
+    
+    # File B kết thúc
+    reset_base_dir(token_b)
+    
+    # State của file A vẫn được giữ nguyên
+    assert get_base_dir() == "/project/A"
+    
+    # File A kết thúc
+    reset_base_dir(token_a)
+    
+    assert get_base_dir() is None
