@@ -37,10 +37,19 @@ def _execute_transpiled_code(python_code, pb_filepath, _is_popup):
     }
     
     try:
+        import paraby as pb
+        if pb_filepath:
+            pb._current_base_dir = os.path.dirname(os.path.abspath(pb_filepath))
+        else:
+            pb._current_base_dir = None
+        
         code_obj = compile(python_code, pb_filepath, 'exec')
         exec(code_obj, mod_dict)
     finally:
         ctk.CTk.mainloop = original_mainloop
+        # Clear the base dir context after execution
+        if hasattr(pb, '_current_base_dir'):
+            del pb._current_base_dir
         
     # Extract window
     window = None
@@ -110,7 +119,13 @@ def build(dsl_code, globals_dict=None, locals_dict=None):
         locals_dict = frame.f_locals
         
     code_obj = compile(python_code, "<string>", "exec")
-    exec(code_obj, globals_dict, locals_dict)
+    try:
+        import paraby as pb
+        pb._current_base_dir = os.path.dirname(os.path.abspath(frame.f_code.co_filename)) if hasattr(frame, 'f_code') and frame.f_code.co_filename else None
+        exec(code_obj, globals_dict, locals_dict)
+    finally:
+        if hasattr(pb, '_current_base_dir'):
+            del pb._current_base_dir
 
 def popup(filepath):
     """Opens a .pui file as a secondary window (Toplevel)."""

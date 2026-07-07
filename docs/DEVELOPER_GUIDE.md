@@ -126,3 +126,6 @@ python -m pytest test_parser.py test_loop.py test_loop_events.py test_cython/tes
 4. **Cơ chế Monkey-patch toàn cục (`patch.py`)**
    - Giải thích: `patch.py` can thiệp vào `__getattr__` của gốc `ctk.CTkBaseClass`. Điều này cho phép "ma thuật" gọi UI bằng tên không cần setup (`self.btn_1`) và giả lập virtual properties (`.text` thay vì `.cget("text")`). 
    - **Rủi ro:** Điều này thay đổi vĩnh viễn cấu trúc của thư viện CustomTkinter ở Python Process hiện tại. Sẽ rất nguy hiểm nếu code được nhúng chung vào dự án có sử dụng CustomTkinter gốc theo chuẩn cũ, vì nó thay đổi luồng try-catch Exception của các thuộc tính mặc định.
+
+5. **Xử lý Reserved Keyword trong thuộc tính (`codegen.pyx` & `widgets.py`)**
+   - Giải thích: Nếu người dùng đặt tên property trùng với reserved keyword của Python (vd `class`, `import`, `from`), parser sẽ tự động thêm hậu tố `_` vào key khi sinh code (như `class_`, `import_`, `from_`) để tránh `SyntaxError` (dùng thư viện `keyword`). Khi code sinh ra được chạy và gọi tới `create_widget()` trong `widgets.py`, các property này được tự động map ngược lại về nguyên bản trước khi cấu hình cho CustomTkinter. Người dùng `.pui` hoàn toàn không cần biết hay xử lý gì thêm.

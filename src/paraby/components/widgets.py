@@ -26,6 +26,11 @@ def create_widget(parent, widget_type, **properties):
     """
     w_type = widget_type.lower().strip()
     
+    import keyword
+    for k in list(properties.keys()):
+        if k.endswith("_") and (keyword.iskeyword(k[:-1]) or keyword.issoftkeyword(k[:-1])):
+            properties[k[:-1]] = properties.pop(k)
+            
     # Automatically convert color parameters through resolve_color
     for key, val in list(properties.items()):
         if "color" in key:
@@ -72,6 +77,10 @@ def create_widget(parent, widget_type, **properties):
     sz = properties.pop("size", None)
     if img_target:
         try:
+            import paraby
+            base_dir = getattr(paraby, "_current_base_dir", None)
+            from paraby.utils.properties import resolve_safe_image_path
+            img_target = resolve_safe_image_path(base_dir, img_target)
             pil_img = Image.open(img_target)
             parsed_sz = parse_size(sz) if sz else (pil_img.width, pil_img.height)
             ctk_image = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=parsed_sz)

@@ -72,3 +72,30 @@ def test_comment_in_event_body():
     assert "print(\"clicked\")" in python_code
     assert "print(\"done\")" in python_code
     assert "pb.bind_event(" in python_code
+
+def test_image_path_traversal():
+    import os
+    from paraby.utils.properties import resolve_safe_image_path
+    
+    # Mocking base dir
+    base = os.path.abspath("/fake/project/dir")
+    
+    # 1. Safe path
+    safe = resolve_safe_image_path(base, "assets/img.png")
+    assert safe == os.path.abspath("/fake/project/dir/assets/img.png")
+    
+    # 2. Path traversal - should be blocked
+    with pytest.raises(ValueError) as e:
+        resolve_safe_image_path(base, "../../etc/passwd")
+    assert "nằm ngoài thư mục dự án" in str(e.value)
+    
+    # 3. Absolute path - should be blocked by default
+    with pytest.raises(ValueError) as e:
+        resolve_safe_image_path(base, "/etc/passwd")
+    assert "nằm ngoài thư mục dự án" in str(e.value)
+    
+    # 4. Absolute path allowed via env variable
+    os.environ["PARABY_ALLOW_ABSOLUTE_IMAGE_PATH"] = "1"
+    absolute = resolve_safe_image_path(base, "/etc/passwd")
+    assert absolute == "/etc/passwd"
+    del os.environ["PARABY_ALLOW_ABSOLUTE_IMAGE_PATH"]

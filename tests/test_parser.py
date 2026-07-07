@@ -73,3 +73,18 @@ def test_widget_types_consistency():
         assert std_type in WIDGET_CLASSES, f"Missing '{std_type}' in WIDGET_CLASSES for alias '{alias}'"
         assert alias in KNOWN_TYPES, f"Missing '{alias}' in KNOWN_TYPES"
 
+def test_reserved_keywords():
+    pui_code = """window(
+    my_button = btn(
+        class: main-btn
+        import: False
+        match: exact
+    )
+)"""
+    python_code = pb.transpile_pb(pui_code)
+    # verify compiling works
+    compile(python_code, "<string>", "exec")
+    
+    assert "class_=" in python_code
+    assert "import_=" in python_code
+    assert "match_=" in python_code

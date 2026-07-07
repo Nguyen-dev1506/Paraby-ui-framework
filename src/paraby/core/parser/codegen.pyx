@@ -1,4 +1,5 @@
 # cython: language_level=3
+import keyword
 
 def _emit_event_handler(out, ind, bind_target_var, this_expr, ev):
     out.append(f"{ind}def {bind_target_var}_{ev.std_type}():")
@@ -41,7 +42,8 @@ def generate_python(list ast_nodes):
             
         props = []
         for k, v in node.properties.items():
-            if k == "from": k = "from_"
+            if keyword.iskeyword(k) or keyword.issoftkeyword(k):
+                k = k + "_"
             props.append(f"{k}={v}")
         
         prop_str = ", ".join(props)

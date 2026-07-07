@@ -51,3 +51,6 @@ Lệnh ở mục 1 chỉ bắt được path dạng filesystem (`src/paraby/core
 
 ## Luật 15 — Mọi giá trị từ input người dùng dùng làm định danh (identifier) trong code sinh ra PHẢI qua validate identifier, mọi giá trị dùng làm literal PHẢI qua process_value()
 Bất kỳ chuỗi nào lấy từ input người dùng (.pui) mà sẽ được chèn vào code Python sinh ra dưới dạng TÊN BIẾN/TÊN HÀM/TÊN THUỘC TÍNH (không phải string literal) đều phải đi qua `_validate_identifier()` (hoặc tương đương) để đảm bảo chỉ chứa ký tự hợp lệ theo ngữ pháp Python định danh. Bất kỳ chuỗi nào sẽ được chèn dưới dạng GIÁ TRỊ (string/number/list literal) đều phải đi qua `process_value()` trong `lexer.pyx`, không được tự nối bằng f-string thô. Đây là nguyên nhân trực tiếp của 2 lỗ hổng code-injection đã phát hiện trong dự án này (qua "values:" và "name:") — cả hai đều do bỏ qua lớp sanitize chung khi thêm property đặc biệt (special-case) mới.
+
+## Luật 16 — Phải kiểm soát Path Traversal khi load tài nguyên ngoại vi (Ảnh, File)
+Tuyệt đối không dùng trực tiếp đường dẫn truyền từ file `.pui` vào các API mở file (như `Image.open()`) mà không kiểm tra (sanitize). Bất kỳ đường dẫn nào từ bên ngoài đều phải đi qua `resolve_safe_image_path()` (nằm trong `utils.properties`) để chặn đứng Path Traversal (`../../`), đảm bảo mọi tài nguyên phải nằm bên trong thư mục `_pb_base_dir` trừ khi được override qua biến môi trường.

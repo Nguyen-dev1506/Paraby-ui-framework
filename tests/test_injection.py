@@ -27,7 +27,7 @@ def test_code_injection_prevention():
     label = win.winfo_children()[0] # Usually the main frame or label depending on structure
     # Actually Paraby adds widgets as attributes
     assert hasattr(win, 'lbl')
-    assert win.lbl.cget("text") == '"); open(\'INJECTED.txt\', \'w\').write(\'HACKED\'); pb.create_widget(window, \'label\', text="'
+    assert win.lbl.cget("text") == '""); open(\'INJECTED.txt\', \'w\').write(\'HACKED\'); pb.create_widget(window, \'label\', text=""'
 
 def test_name_property_rejects_invalid_identifier():
     import paraby as pb
