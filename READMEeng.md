@@ -1,5 +1,5 @@
-# Paraby UI Framework v3.0
-🚀 **Version 3.0 Released: Fully optimized architecture, boosting compilation speed by 35%!**
+# Paraby UI Framework v3.2
+🚀 **Version 3.2 Released: Fixed injection vulnerability, optimized architecture and added proper build-system via pyproject.toml!**
 
 ![Paraby Banner](https://via.placeholder.com/800x200.png?text=Paraby+UI+-+Fastest+Python+UI+Framework)
 
@@ -24,9 +24,9 @@ Paraby is currently not on PyPI. You can install it directly from source:
 ```bash
 git clone https://github.com/Nguyen-dev1506/Paraby-ui-framework.git
 cd Paraby-ui-framework
-python setup.py
+pip install .
 ```
-*(Just run `python setup.py` and the bootstrap script will automatically install it for you!)*
+*(If you want to install it in developer mode, use `pip install -e .`)*
 
 ## Quick Start
 

@@ -1,4 +1,4 @@
-# Hướng dẫn Phát triển Paraby UI Framework v3.0 (Developer Guide)
+# Hướng dẫn Phát triển Paraby UI Framework v3.2 (Developer Guide)
 
 Phần	Nội dung
 Phần 1	Tổng quan kiến trúc + Cây thư mục chuẩn sau tái cấu trúc
@@ -9,7 +9,7 @@ Phần 5	4 quyết định thiết kế quan trọng (loop node, thụt lề tư
 Phần 6	Bảng tổng hợp nhanh toàn bộ ~1.593 dòng code
 
 
-> **Phiên bản tài liệu:** 3.0 — Cập nhật sau đợt tái cấu trúc kiến trúc (Restructured Edition)  
+> **Phiên bản tài liệu:** 3.2 — Cập nhật sau đợt tái cấu trúc kiến trúc (Restructured Edition)  
 > **Ngôn ngữ:** Tiếng Việt  
 > **Đối tượng:** Lập trình viên đóng góp mã nguồn (Contributors) và người dùng nâng cao (Advanced Users)
 
@@ -327,7 +327,7 @@ sequenceDiagram
 ---
 
 #### `src/paraby/help.pui`
-- **Chức năng chính:** File giao diện DSL nội bộ dùng cho **chế độ Cheat Sheet**. Khi người dùng chạy lệnh CLI `paraby app.pui`, Paraby sẽ nạp file này để hiển thị một cửa sổ Cheat Sheet tự sinh chứa danh sách widget, biến dữ liệu và mã logic gợi ý.
+- **Chức năng chính:** File giao diện DSL nội bộ dùng cho **chế độ Cheat Sheet**. Khi người dùng chạy lệnh CLI `paraby inspect app.pui`, Paraby sẽ nạp file này để hiển thị một cửa sổ Cheat Sheet tự sinh chứa danh sách widget, biến dữ liệu và mã logic gợi ý.
 - **Kích thước ước tính:** 23 dòng
 - **Thư viện/Độ phụ thuộc sử dụng:** Không có (file DSL thuần, được transpile bởi chính engine).
 - **Trích xuất/Nguồn gốc logic:** Giữ nguyên vị trí, không thay đổi.
@@ -410,7 +410,7 @@ sequenceDiagram
 ---
 
 #### `src/paraby/core/cli.py`
-- **Chức năng chính:** **Bộ sinh Cheat Sheet tự động qua CLI.** Khi người dùng chạy `paraby app.pui` từ terminal, file này sẽ: (1) Đọc và phân tích file `.pui` bằng `lexer` + `ast_builder`, (2) Trích xuất danh sách widget, biến dữ liệu binding, (3) Tự động sinh ra đoạn mã Python gợi ý (copy-paste) kèm type hints cho IDE, (4) Hiển thị kết quả trên một cửa sổ GUI Cheat Sheet (sử dụng `help.pui`).
+- **Chức năng chính:** **Bộ sinh Cheat Sheet tự động qua CLI.** Khi người dùng chạy `paraby inspect app.pui` từ terminal, file này sẽ: (1) Đọc và phân tích file `.pui` bằng `lexer` + `ast_builder`, (2) Trích xuất danh sách widget, biến dữ liệu binding, (3) Tự động sinh ra đoạn mã Python gợi ý (copy-paste) kèm type hints cho IDE, (4) Hiển thị kết quả trên một cửa sổ GUI Cheat Sheet (sử dụng `help.pui`).
 - **Kích thước ước tính:** 101 dòng
 - **Thư viện/Độ phụ thuộc sử dụng:**
   - Built-in: `sys`, `re`, `os`

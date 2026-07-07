@@ -156,7 +156,7 @@ def build_ast(list lines):
             
             if key == "values" and not (val.startswith("[") and val.endswith("]")):
                 parts = [p.strip() for p in val.split(',')]
-                val = "[" + ", ".join(f"'{p}'" for p in parts if p) + "]"
+                val = "[" + ", ".join(process_value(p) for p in parts if p) + "]"
             elif key == "name":
                 # Rename variable if user assigns 'name: my_var'
                 clean_name = val.strip().strip("'").strip('"')

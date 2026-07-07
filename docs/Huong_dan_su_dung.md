@@ -36,11 +36,10 @@ if win.my_btn.click_me:
     print("Nút đã được click!")
 ```
 
-### Cách 2: Chế độ Showroom Thử Nghiệm nhanh `test()`
-Chỉ cần gõ một dòng code duy nhất, Paraby sẽ tự hiển thị một cửa sổ showroom chứa toàn bộ các widget mẫu:
-```python
-import paraby as pb
-pb.build("test()")
+### Cách 2: Chế độ Showroom Thử Nghiệm nhanh
+Chỉ cần mở terminal và gõ lệnh sau, Paraby sẽ tự hiển thị một cửa sổ showroom chứa toàn bộ các widget mẫu:
+```bash
+paraby demo
 ```
 
 ### Cách 3: Nhúng mã DSL trực tiếp trong tệp `.py`
@@ -62,7 +61,7 @@ window():
 ### Cách 4: Chạy trực tiếp từ dòng lệnh CLI
 Chạy trực tiếp tệp DSL `.pb` hoặc `.pui`:
 ```bash
-python3 -m paraby giao_dien.pui
+paraby giao_dien.pui
 ```
 
 ---

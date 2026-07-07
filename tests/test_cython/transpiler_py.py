@@ -267,7 +267,7 @@ def build_ast(lines):
             
             if key == "values" and not (val.startswith("[") and val.endswith("]")):
                 parts = [p.strip() for p in val.split(',')]
-                val = "[" + ", ".join(f"'{p}'" for p in parts if p) + "]"
+                val = "[" + ", ".join(process_value(p) for p in parts if p) + "]"
             elif key == "name":
                 # Rename variable if user assigns 'name: my_var'
                 clean_name = val.strip().strip("'").strip('"')
@@ -312,6 +312,38 @@ def generate_python(ast_nodes):
     out.append("import paraby as pb")
     out.append("")
     
+    def gen_widget(node, parent_var, root_var_name, ind_level=4):
+        ind = " " * ind_level
+        
+        # Bỏ qua việc tạo biến/gán properties nếu node là loop, chỉ duyệt tiếp các node con
+        if node.node_type == 'loop':
+            for ev in node.events:
+                this_expr = f"getattr({root_var_name}, {repr(ev.var_name)}, {ev.var_name} if {repr(ev.var_name)} in locals() else None)"
+                _emit_event_handler(out, ind, ev.var_name, this_expr, ev)
+                
+            for child in node.children:
+                gen_widget(child, parent_var, root_var_name, ind_level)
+            return
+            
+        props = []
+        for k, v in node.properties.items():
+            if k == "from": k = "from_"
+            props.append(f"{k}={v}")
+        
+        prop_str = ", ".join(props)
+        w_args = f"{parent_var}, {repr(node.std_type)}"
+        if prop_str: w_args += f", {prop_str}"
+            
+        out.append(f"{ind}{node.var_name} = pb.create_widget({w_args})")
+        out.append(f"{ind}{root_var_name}.{node.var_name} = {node.var_name}")
+        out.append(f"{ind}pb.place_widget({node.var_name})")
+        
+        for ev in node.events:
+            _emit_event_handler(out, ind, node.var_name, node.var_name, ev)
+            
+        for child in node.children:
+            gen_widget(child, node.var_name, root_var_name, ind_level)
+
     for root in ast_nodes:
         if root.node_type == 'raw':
             out.append(root.std_type) # Contains original raw text line
@@ -326,40 +358,8 @@ def generate_python(ast_nodes):
             
             out.append(f"    {root.var_name} = pb.create_window(size={w_size}, color={w_color}, title={w_title})")
             
-            def gen_widget(node, parent_var, ind_level=4):
-                ind = " " * ind_level
-                
-                # Bỏ qua việc tạo biến/gán properties nếu node là loop, chỉ duyệt tiếp các node con
-                if node.node_type == 'loop':
-                    for ev in node.events:
-                        this_expr = f"getattr({root.var_name}, {repr(ev.var_name)}, {ev.var_name} if {repr(ev.var_name)} in locals() else None)"
-                        _emit_event_handler(out, ind, ev.var_name, this_expr, ev)
-                        
-                    for child in node.children:
-                        gen_widget(child, parent_var, ind_level)
-                    return
-                    
-                props = []
-                for k, v in node.properties.items():
-                    if k == "from": k = "from_"
-                    props.append(f"{k}={v}")
-                
-                prop_str = ", ".join(props)
-                w_args = f"{parent_var}, {repr(node.std_type)}"
-                if prop_str: w_args += f", {prop_str}"
-                    
-                out.append(f"{ind}{node.var_name} = pb.create_widget({w_args})")
-                out.append(f"{ind}{root.var_name}.{node.var_name} = {node.var_name}")
-                out.append(f"{ind}pb.place_widget({node.var_name})")
-                
-                for ev in node.events:
-                    _emit_event_handler(out, ind, node.var_name, node.var_name, ev)
-                    
-                for child in node.children:
-                    gen_widget(child, node.var_name, ind_level)
-                    
             for child in root.children:
-                gen_widget(child, root.var_name, 4)
+                gen_widget(child, root.var_name, root.var_name, 4)
                 
             for ev in root.events:
                 this_expr = f"getattr({root.var_name}, {repr(ev.var_name)}, None)"

@@ -52,7 +52,7 @@ sequenceDiagram
 | `src/paraby/_dialogs.py` | 15 | Hỗ trợ các hộp thoại nhanh như `alert`, `confirm`, `prompt`. | `tkinter.messagebox`, `tkinter.simpledialog` | Tách ra từ `__init__.py` cũ. | `alert`, `confirm`, `prompt` |
 | `src/paraby/_finder.py` | 49 | Import Hook tùy biến giúp import trực tiếp file `.pui` bằng lệnh `import`. | `sys`, `importlib.machinery`, `importlib.abc` | Tách ra từ `__init__.py` cũ. | `ParabyFinder`, `register` |
 | `src/paraby/_loader.py` | 116 | Quản lý vòng đời nạp file `.pui`, transpile, execute code. | `customtkinter`, `inspect`, `.parser.transpiler` | Phụ thuộc chính vào transpiler và `_binding.py`. | `load`, `run`, `build` |
-| `src/paraby/cli.py` | 100 | Cung cấp giao diện CLI in ra cheat sheet hướng dẫn khi gõ `paraby app.pui`. | `sys`, `re`, `paraby`, `.parser.*` | Dùng AST để duyệt trực tiếp không qua biên dịch. | `show_help` |
+| `src/paraby/cli.py` | 100 | Cung cấp giao diện CLI in ra cheat sheet hướng dẫn khi gõ `paraby inspect app.pui`. | `sys`, `re`, `paraby`, `.parser.*` | Dùng AST để duyệt trực tiếp không qua biên dịch. | `show_help` |
 | `src/paraby/colors.py` | 56 | Bảng định nghĩa hằng số màu sắc tuỳ chỉnh (hiện ít sử dụng trực tiếp). | - | Được dùng bởi một số style mặc định. | - |
 | `src/paraby/events.py` | 29 | Wrapper chuẩn hoá sự kiện UI sang mô hình sự kiện Paraby. | - | Hỗ trợ `_binding.py`. | `EventWrapper` |
 | `src/paraby/patch.py` | 96 | Monkey-patch `customtkinter` để giả lập các thuộc tính ma thuật (`.text`, `.value`, tự tìm UI auto-name). | `customtkinter` | Gọi ở runtime. | `patch_classes`, `KNOWN_TYPES` |

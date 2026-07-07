@@ -9,6 +9,7 @@ on:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
     - uses: actions/checkout@v4
@@ -34,4 +35,4 @@ jobs:
 
     - name: Run Tests with pytest
       run: |
-        xvfb-run python -m pytest tests/ -v
+        timeout 300 xvfb-run python -m pytest tests/ -v

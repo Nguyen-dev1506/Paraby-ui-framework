@@ -1,5 +1,5 @@
-# Paraby UI Framework v3.0
-🚀 **Phiên bản 3.0: Tối ưu toàn bộ kiến trúc, tăng tốc độ biên dịch lên 35%!**
+# Paraby UI Framework v3.2
+🚀 **Phiên bản 3.2: Vá lỗi bảo mật injection, tối ưu kiến trúc và hỗ trợ build-system chuẩn qua pyproject.toml!**
 
 ![Paraby Banner](https://via.placeholder.com/800x200.png?text=Paraby+UI+-+Fastest+Python+UI+Framework)
 
@@ -24,8 +24,9 @@ Tạm thời Paraby chưa được phát hành trên PyPI, bạn có thể cài 
 ```bash
 git clone https://github.com/Nguyen-dev1506/Paraby-ui-framework.git
 cd Paraby-ui-framework
-python3 setup.py install
+pip install .
 ```
+*(Nếu muốn cài đặt dạng developer để chỉnh sửa code, dùng `pip install -e .`)*
 
 ## Ví dụ nhanh (Quick Start)
 

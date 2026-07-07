@@ -40,11 +40,10 @@ if my_btn.click_me:
     print("Button was clicked!")
 ```
 
-### Method 2: Quick Test Showroom Mode `test()`
-By just writing a single line of code, Paraby will automatically display a showroom window containing all sample widgets:
-```python
-import paraby as pb
-pb.build("test()")
+### Method 2: Quick Test Showroom Mode
+Just open your terminal and type the following command to display a showroom window containing all sample widgets:
+```bash
+paraby demo
 ```
 
 ### Method 3: Embed DSL Directly in the `.py` File
@@ -68,7 +67,7 @@ window(
 ### Method 4: Run Directly from the CLI
 Run the DSL `.pb` or `.pui` file directly:
 ```bash
-python3 -m paraby my_ui.pui
+paraby my_ui.pui
 ```
 
 ---

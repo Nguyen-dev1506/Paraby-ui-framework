@@ -8,6 +8,25 @@ from paraby.language_manager import get as _t
 
 _AST_CACHE = {}
 
+_INPUT_VAR_MAP = {
+    (ctk.CTkEntry, ctk.CTkComboBox): (tk.StringVar, lambda v: str(v)),
+    (ctk.CTkSlider,): (tk.DoubleVar, lambda v: float(v) if v else 0.0),
+    (ctk.CTkCheckBox, ctk.CTkSwitch): (tk.IntVar, lambda v: int(v) if v else 0)
+}
+
+def make_trace(v, g, name):
+    def trace_cb(*args):
+        g[name] = v.get()
+    return trace_cb
+
+def _make_cleanup_fn(v, t_id):
+    def cleanup_fn(event):
+        try:
+            v.trace_remove("write", t_id)
+        except Exception:
+            pass
+    return cleanup_fn
+
 class EventVisitor(ast.NodeVisitor):
     def __init__(self):
         self.annotated_vars = set()
@@ -99,13 +118,8 @@ class StateBinder:
                         self.caller_globals[input_var] = initial_val
                         
                         tk_var = None
-                        var_map = {
-                            (ctk.CTkEntry, ctk.CTkComboBox): (tk.StringVar, lambda v: str(v)),
-                            (ctk.CTkSlider,): (tk.DoubleVar, lambda v: float(v) if v else 0.0),
-                            (ctk.CTkCheckBox, ctk.CTkSwitch): (tk.IntVar, lambda v: int(v) if v else 0)
-                        }
                         
-                        for w_types, (var_cls, val_func) in var_map.items():
+                        for w_types, (var_cls, val_func) in _INPUT_VAR_MAP.items():
                             if isinstance(attr_val, w_types):
                                 tk_var = var_cls(value=val_func(initial_val))
                                 if isinstance(attr_val, ctk.CTkEntry):
@@ -115,19 +129,10 @@ class StateBinder:
                                 break
                             
                         if tk_var:
-                            def make_trace(v, g, name):
-                                def trace_cb(*args):
-                                    g[name] = v.get()
-                                return trace_cb
                             trace_id = tk_var.trace_add("write", make_trace(tk_var, self.caller_globals, input_var))
                             attr_val._pb_trace_info = (tk_var, trace_id)
                             
-                            def cleanup_fn(event, v=tk_var, t_id=trace_id):
-                                try:
-                                    v.trace_remove("write", t_id)
-                                except Exception:
-                                    pass
-                            attr_val.bind("<Destroy>", cleanup_fn, add="+")
+                            attr_val.bind("<Destroy>", _make_cleanup_fn(tk_var, trace_id), add="+")
 
     def process_ast_events(self):
         if not os.path.isfile(self.caller_filepath):

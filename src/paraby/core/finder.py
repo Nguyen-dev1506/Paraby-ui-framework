@@ -46,4 +46,4 @@ def register():
     for finder in sys.meta_path:
         if isinstance(finder, ParabyFinder):
             return
-    sys.meta_path.insert(0, ParabyFinder())
+    sys.meta_path.append(ParabyFinder())
