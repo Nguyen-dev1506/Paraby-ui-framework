@@ -1,0 +1,30 @@
+window(
+    size: 400, 300
+    title: Apple Design Test
+    # Background should default to #000000
+
+    loop(
+        lbl_title = label(
+            text: Welcome to Paraby!
+            variant: header
+            place: top
+        )
+        
+        lbl_desc = label(
+            text: This is a description with normal text.
+            place: top
+        )
+
+        btn_primary = btn(
+            text: Primary
+            variant: primary
+            place: center
+        )
+
+        btn_secondary = btn(
+            text: Secondary
+            variant: secondary
+            place: bottom
+        )
+    )
+)
