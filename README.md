@@ -24,7 +24,7 @@ Tạm thời Paraby chưa được phát hành trên PyPI, bạn có thể cài 
 ```bash
 git clone https://github.com/Nguyen-dev1506/Paraby-ui-framework.git
 cd Paraby-ui-framework
-python3 setup.py install
+pip install -e ".[dev]"
 ```
 
 ## Ví dụ nhanh (Quick Start)

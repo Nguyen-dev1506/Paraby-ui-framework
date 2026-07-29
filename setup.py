@@ -73,6 +73,9 @@ setup(
         'darkdetect',
         'Pillow',
     ],
+    extras_require={
+        'dev': ['pytest', 'pytest-timeout'],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
