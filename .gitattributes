@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.pyi text eol=lf
+*.png binary
+*.ico binary
+*.ttf binary
+*.rar binary
