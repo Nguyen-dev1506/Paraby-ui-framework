@@ -6,6 +6,7 @@
 ![Đẹp](https://img.shields.io/badge/độ%20đẹp-vượt%20mong%20đợi-ff69b4)
 
 > ⚠️ **CẢNH BÁO SỨC KHOẺ:** Đọc README này có thể gây ra tác dụng phụ như: bỏ CustomTkinter thuần, cười một mình trước màn hình, và ảo tưởng rằng code UI dễ như đúng rồi.
+> 🛑 **CHỐNG CHỈ ĐỊNH:** Tài liệu này không dành cho người mắc hội chứng "thanh niên nghiêm túc". Nếu bạn đang tìm kiếm một văn phong học thuật, chuẩn mực, xin vui lòng quay xe sang đọc [README chính thức](README.md) ngay lập tức!
 
 🚀 **v3.3 — Kiến trúc thuần Python. Không Cython, không trình biên dịch C, không nước mắt.**
 
