@@ -33,6 +33,11 @@ def patch_classes():
     
         # 2. CTk __getattr__ to search for auto-named widgets
         def custom_win_getattr(self, name):
+            # Fast path: check the widget alias cache populated by create_widget()
+            cache = self.__dict__.get("_pb_widget_cache")
+            if cache and name in cache:
+                return cache[name]
+            # Slow path: prefix scan fallback (covers widgets created before cache existed)
             if name in KNOWN_TYPES:
                 prefixes = KNOWN_TYPES[name]
                 for attr in list(self.__dict__.keys()):
@@ -73,8 +78,8 @@ def patch_classes():
         def progress_value_set(self, val):
             try:
                 self.set(float(val) / 100.0)
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[Paraby] progress.value: cannot set value '{val}' — expected a number. ({e})")
                 
         setattr(ctk.CTkProgressBar, "value", property(progress_value_get, progress_value_set))
         

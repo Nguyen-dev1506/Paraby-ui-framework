@@ -20,56 +20,99 @@ WIDGET_CLASSES = {
     "image": ctk.CTkLabel
 }
 
-def create_widget(parent, widget_type, **properties):
-    """
-    Creates a CustomTkinter widget based on the widget type and properties.
-    """
-    w_type = widget_type.lower().strip()
-    
-    # Automatically convert color parameters through resolve_color
-    for key, val in list(properties.items()):
+# ── Private helpers ────────────────────────────────────────────────────────────
+
+def _resolve_colors(properties: dict) -> None:
+    """Resolves all color-related property values through the color resolver."""
+    for key in list(properties.keys()):
         if "color" in key:
-            properties[key] = resolve_color(val)
-            
-    # Process font, font_size, and type into a CustomTkinter font tuple
+            properties[key] = resolve_color(properties[key])
+
+
+def _resolve_font(properties: dict) -> None:
+    """Pops font/font_size/type keys and builds a CustomTkinter font tuple in place."""
     font_name = properties.pop("font", None)
     font_size = properties.pop("font_size", None)
     font_type = properties.pop("type", None)
-    
     if font_name or font_size or font_type:
         properties["font"] = build_font_tuple(font_name, font_size, font_type)
 
-    # Normalize special properties
+
+def _apply_design_system_defaults(std_type: str, properties: dict) -> None:
+    """Applies Apple Design System defaults based on widget type and variant."""
+    if std_type == "btn":
+        variant = properties.pop("variant", "primary")
+        if variant == "secondary":
+            properties.setdefault("fg_color", "#1C1C1E")
+            properties.setdefault("text_color", "#FFFFFF")
+            properties.setdefault("hover_color", "#2C2C2E")
+        else:
+            properties.setdefault("fg_color", "#FFFFFF")
+            properties.setdefault("text_color", "#000000")
+            properties.setdefault("hover_color", "#D1D1D6")
+
+        properties.setdefault("bg_color", "transparent")
+        properties.setdefault("width", 100)
+        properties.setdefault("height", 34)
+        properties.setdefault("corner_radius", 8)
+        properties.setdefault("border_width", 0)
+        if "font" not in properties:
+            properties["font"] = build_font_tuple("Quicksand", 15, "bold")
+
+    elif std_type == "label":
+        variant = properties.pop("variant", "normal")
+        properties.setdefault("text_color", "#FFFFFF")
+        if variant == "header":
+            if "font" not in properties:
+                properties["font"] = build_font_tuple("Quicksand", 26, "bold")
+        else:
+            if "font" not in properties:
+                properties["font"] = build_font_tuple("Quicksand", 15, "bold")
+
+
+def _normalize_property_aliases(w_type: str, std_type: str, properties: dict) -> None:
+    """Normalises shorthand/alias property names to their canonical CTk equivalents."""
+    # color → fg_color for widgets, text_color for labels
     if "color" in properties:
         if w_type in ("label", "lable", "text", "txt"):
             properties["text_color"] = properties.pop("color")
         else:
             properties["fg_color"] = properties.pop("color")
-            
+
     if "font_color" in properties:
         properties["text_color"] = properties.pop("font_color")
-        
+
     if "radius" in properties:
         properties["corner_radius"] = properties.pop("radius")
-            
-    # Smart warning: Remind programmer if text color and background color are too similar
-    fg = properties.get("fg_color")
-    tc = properties.get("text_color")
-    check_color_contrast(w_type, fg, tc)
-        
-    # Process text for Entry into placeholder_text
-    if w_type == "entry" and "text" in properties and "placeholder_text" not in properties:
+
+    # Entry: text → placeholder_text
+    if std_type == "entry" and "text" in properties and "placeholder_text" not in properties:
         properties["placeholder_text"] = properties.pop("text")
-        
+
     if "from" in properties:
         properties["from_"] = properties.pop("from")
-        
+
+    # ProgressBar requires mode when neither from_ nor mode is set
+    if std_type == "progress":
+        if "from_" not in properties and "mode" not in properties:
+            properties["mode"] = "determinate"
+
+    # Smart contrast warning
+    check_color_contrast(w_type, properties.get("fg_color"), properties.get("text_color"))
+
+
+def _load_widget_image(w_type: str, std_type: str, properties: dict):
+    """
+    Loads an image from 'path' or 'image' property and returns a CTkImage.
+    Also mutates properties to attach image/text defaults for image widgets.
+    Returns the CTkImage (or None).
+    """
     img_path = properties.pop("path", None)
     btn_image = properties.pop("image", None)
     img_target = img_path if img_path else btn_image
-    ctk_image = None
-    
     sz = properties.pop("size", None)
+    ctk_image = None
+
     if img_target:
         try:
             pil_img = Image.open(img_target)
@@ -77,7 +120,7 @@ def create_widget(parent, widget_type, **properties):
             ctk_image = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=parsed_sz)
         except Exception as e:
             print(_t("widget_image_load_error", target=img_target, error=e))
-            
+
     if w_type in ("image", "img", "anh"):
         if "text" not in properties:
             properties["text"] = ""
@@ -85,36 +128,50 @@ def create_widget(parent, widget_type, **properties):
             properties["image"] = ctk_image
     elif w_type in ("btn", "button") and ctk_image:
         properties["image"] = ctk_image
-        
+
+    return ctk_image
+
+
+# ── Public API ─────────────────────────────────────────────────────────────────
+
+def create_widget(parent, widget_type, **properties):
+    """
+    Creates a CustomTkinter widget based on the widget type and properties.
+    """
+    w_type = widget_type.lower().strip()
+    std_type = WIDGET_ALIASES.get(w_type)   # Computed once, passed to all helpers
+
+    _resolve_colors(properties)
+    _resolve_font(properties)
+    _apply_design_system_defaults(std_type, properties)
+    _normalize_property_aliases(w_type, std_type, properties)
+    _load_widget_image(w_type, std_type, properties)
+
+    # Stash placement/meta options before passing to CTk
     place_opt = properties.pop("place", None)
     margin_opt = properties.pop("margin", None)
     input_var = properties.pop("input", None)
-    
-    std_type = WIDGET_ALIASES.get(w_type)
+
     widget_class = WIDGET_CLASSES.get(std_type) if std_type else None
-    
     if not widget_class:
         raise ValueError(_t("widget_type_not_supported", type=w_type))
-        
-    if std_type == "progress":
-        if "from_" not in properties and "mode" not in properties:
-            properties["mode"] = "determinate"
 
     widget = widget_class(master=parent, **properties)
-    
+
     if place_opt is not None:
         widget._pb_place = place_opt
-        
+
     if margin_opt is not None:
         try:
             widget._pb_margin = int(margin_opt)
         except ValueError:
             widget._pb_margin = 0
-            
+
     if input_var is not None:
         widget._pb_input_var = input_var
-        
+
     return widget
+
 
 def place_widget(widget, place_opt=None):
     """
@@ -122,67 +179,98 @@ def place_widget(widget, place_opt=None):
     """
     if place_opt is None:
         place_opt = getattr(widget, "_pb_place", None)
-        if place_opt is None:
-            widget.pack(pady=5)
-            return
 
-    if isinstance(place_opt, str):
-        place_opt = place_opt.strip().lower()
-        if place_opt == "center":
-            widget.place(relx=0.5, rely=0.5, anchor="center")
-        elif place_opt == "top":
-            widget.pack(side="top", pady=10)
-        elif place_opt == "bottom":
-            widget.pack(side="bottom", pady=10)
-        elif place_opt == "left":
-            if type(widget).__name__ == "CTkFrame":
-                margin = getattr(widget, "_pb_margin", 0)
-                if margin > 0:
-                    widget.pack(side="left", fill="y", padx=(margin, margin//2), pady=margin)
-                else:
-                    widget.pack(side="left", fill="y", padx=0)
-                widget.pack_propagate(False)
-            else:
-                widget.pack(side="left", padx=10)
-        elif place_opt == "right":
-            if type(widget).__name__ == "CTkFrame":
-                margin = getattr(widget, "_pb_margin", 0)
-                if margin > 0:
-                    widget.pack(side="right", fill="both", expand=True, padx=(margin//2, margin), pady=margin)
-                else:
-                    widget.pack(side="right", fill="both", expand=True, padx=0)
-                widget.pack_propagate(False)
-            else:
-                widget.pack(side="right", padx=10)
-        elif place_opt == "top_left":
-            widget.place(relx=0.0, rely=0.0, anchor="nw", x=10, y=10)
-        elif place_opt == "top_right":
-            widget.place(relx=1.0, rely=0.0, anchor="ne", x=-10, y=10)
-        elif place_opt == "bottom_left":
-            widget.place(relx=0.0, rely=1.0, anchor="sw", x=10, y=-10)
-        elif place_opt == "bottom_right":
-            widget.place(relx=1.0, rely=1.0, anchor="se", x=-10, y=-10)
-        elif "," in place_opt:
-            parts = place_opt.split(",")
-            pos_dict = {}
-            for part in parts:
-                if "=" in part:
-                    k, v = part.split("=")
-                    pos_dict[k.strip()] = int(v.strip())
-                else:
-                    if "x" not in pos_dict:
-                        pos_dict["x"] = int(part.strip())
-                    elif "y" not in pos_dict:
-                        pos_dict["y"] = int(part.strip())
-            widget.place(**pos_dict)
-        else:
-            widget.pack(pady=5)
-    elif isinstance(place_opt, (tuple, list)):
+    if place_opt is None:
+        widget.pack(pady=5)
+        return
+
+    if isinstance(place_opt, (tuple, list)):
         if len(place_opt) == 2:
             widget.place(x=place_opt[0], y=place_opt[1])
         elif len(place_opt) == 4:
             widget.place(x=place_opt[0], y=place_opt[1], width=place_opt[2], height=place_opt[3])
         else:
             widget.pack(pady=5)
-    else:
+        return
+
+    if not isinstance(place_opt, str):
         widget.pack(pady=5)
+        return
+
+    place_opt = place_opt.strip().lower()
+
+    # Named position dispatch
+    def _place_center():
+        widget.place(relx=0.5, rely=0.5, anchor="center")
+
+    def _place_top():
+        widget.pack(side="top", pady=10)
+
+    def _place_bottom():
+        widget.pack(side="bottom", pady=10)
+
+    def _place_left():
+        if type(widget).__name__ == "CTkFrame":
+            margin = getattr(widget, "_pb_margin", 0)
+            padding = (margin, margin // 2) if margin > 0 else (0, 0)
+            widget.pack(side="left", fill="y", padx=padding, pady=margin if margin > 0 else 0)
+            widget.pack_propagate(False)
+        else:
+            widget.pack(side="left", padx=10)
+
+    def _place_right():
+        if type(widget).__name__ == "CTkFrame":
+            margin = getattr(widget, "_pb_margin", 0)
+            padding = (margin // 2, margin) if margin > 0 else (0, 0)
+            widget.pack(side="right", fill="both", expand=True, padx=padding, pady=margin if margin > 0 else 0)
+            widget.pack_propagate(False)
+        else:
+            widget.pack(side="right", padx=10)
+
+    def _place_top_left():
+        widget.place(relx=0.0, rely=0.0, anchor="nw", x=10, y=10)
+
+    def _place_top_right():
+        widget.place(relx=1.0, rely=0.0, anchor="ne", x=-10, y=10)
+
+    def _place_bottom_left():
+        widget.place(relx=0.0, rely=1.0, anchor="sw", x=10, y=-10)
+
+    def _place_bottom_right():
+        widget.place(relx=1.0, rely=1.0, anchor="se", x=-10, y=-10)
+
+    _NAMED_POSITIONS = {
+        "center":       _place_center,
+        "top":          _place_top,
+        "bottom":       _place_bottom,
+        "left":         _place_left,
+        "right":        _place_right,
+        "top_left":     _place_top_left,
+        "top_right":    _place_top_right,
+        "bottom_left":  _place_bottom_left,
+        "bottom_right": _place_bottom_right,
+    }
+
+    handler = _NAMED_POSITIONS.get(place_opt)
+    if handler:
+        handler()
+        return
+
+    # Coordinate syntax: "x=10, y=20" or "10, 20"
+    if "," in place_opt:
+        pos_dict = {}
+        for part in place_opt.split(","):
+            part = part.strip()
+            if "=" in part:
+                k, v = part.split("=")
+                pos_dict[k.strip()] = int(v.strip())
+            else:
+                if "x" not in pos_dict:
+                    pos_dict["x"] = int(part)
+                elif "y" not in pos_dict:
+                    pos_dict["y"] = int(part)
+        widget.place(**pos_dict)
+        return
+
+    # Fallback — single point of truth
+    widget.pack(pady=5)

@@ -88,11 +88,7 @@ def run(pb_filepath):
     """
     Compiles and directly runs the UI file.
     """
-    # Need to skip 1 level further so we get the caller of run() instead of load() inside run(). 
-    # But wait, run calls load. So if we just call load, `frame = inspect.currentframe().f_back` in load
-    # will point to `run`, not the caller of `run`.
-    # Let's see original code: run just calls load. Wait, if it calls load, then `f_back` in load gets `run`?
-    # Yes, the original code had a bug! "run just calls load". We'll keep it exactly the same to not change behavior. (Ghi chú: đã sửa)
+    # Pass current frame so load() resolves the *caller of run()*, not run() itself.
     import inspect
     load(pb_filepath, _frame=inspect.currentframe())
 

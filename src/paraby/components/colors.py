@@ -12,6 +12,15 @@ COLOR_MAP = {
     "light": ("#f5f6fa", "#f1f2f6"),
     "transparent": "transparent",
     
+    # Apple Design System Colors (True Dark Mode)
+    "apple_bg": "#000000",
+    "apple_primary_btn": "#FFFFFF",
+    "apple_primary_text": "#000000",
+    "apple_secondary_btn": "#1C1C1E",
+    "apple_secondary_text": "#FFFFFF",
+    "apple_hover_primary": "#D1D1D6",
+    "apple_hover_secondary": "#2C2C2E",
+    
     # Red / Pink / Orange
     "red": ("#ff7675", "#d63031"),
     "crimson": ("#ff4757", "#c23616"),
