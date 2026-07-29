@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages
 import sys
 import os
 import platform
@@ -45,22 +45,6 @@ if __name__ == "__main__" and len(sys.argv) == 1:
     print("=" * 60)
     sys.exit(0)
 
-try:
-    from Cython.Build import cythonize
-    USE_CYTHON = True
-except ImportError:
-    USE_CYTHON = False
-
-ext = '.pyx' if USE_CYTHON else '.c'
-extensions = [
-    Extension("paraby.core.parser.lexer", [f"src/paraby/core/parser/lexer{ext}"]),
-    Extension("paraby.core.parser.ast_builder", [f"src/paraby/core/parser/ast_builder{ext}"]),
-    Extension("paraby.core.parser.codegen", [f"src/paraby/core/parser/codegen{ext}"]),
-    Extension("paraby.core.parser.transpiler", [f"src/paraby/core/parser/transpiler{ext}"]),
-]
-
-if USE_CYTHON:
-    extensions = cythonize(extensions, compiler_directives={'language_level': "3"})
 
 # Đọc nội dung file README tiếng Việt để làm mô tả
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -79,7 +63,6 @@ setup(
     package_dir={"": "src"},
     package_data={'paraby': ['*.pui']},
     include_package_data=True,
-    ext_modules=extensions,
     entry_points={
         'console_scripts': [
             'paraby=paraby.core.cli:main',

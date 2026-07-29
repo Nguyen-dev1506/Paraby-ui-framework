@@ -1,5 +1,5 @@
 # Paraby UI Framework v3.0
-🚀 **Phiên bản 3.0: Tối ưu toàn bộ kiến trúc, tăng tốc độ biên dịch lên 35%!**
+🚀 **Phiên bản 3.3: Kiến trúc thuần Python, chạy ngay không cần cài trình biên dịch C!**
 
 ![Paraby Banner](https://via.placeholder.com/800x200.png?text=Paraby+UI+-+Fastest+Python+UI+Framework)
 
@@ -81,7 +81,5 @@ Dự án này sẽ không thể thành hiện thực nếu thiếu đi những c
 - **Giấy phép:** [MIT License](https://github.com/TomSchimansky/CustomTkinter/blob/master/LICENSE)
 - *Lời tri ân:* Cảm ơn CustomTkinter đã mang đến một diện mạo hiện đại, tuyệt đẹp cho Tkinter. Mọi thành phần UI của Paraby đều được ánh xạ (map) trực tiếp lên sức mạnh của CustomTkinter.
 
-### Cython
-- **Tác giả:** Stefan Behnel, Robert Bradshaw, và cộng đồng Cython
-- **Giấy phép:** [Apache License 2.0](https://github.com/cython/cython/blob/master/LICENSE.txt)
-- *Lời tri ân:* Trái tim phân tích cú pháp (Parser) của Paraby sở hữu tốc độ sấm sét là nhờ sức mạnh biên dịch mã C từ Cython. Cảm ơn cộng đồng Cython đã tạo ra một công cụ tối ưu hóa hiệu năng kinh ngạc cho Python.
+### Kiến trúc Parser
+Bộ Parser DSL `.pui` của Paraby hiện được viết 100% bằng Python thuần (pure Python), bao gồm Lexer, AST Builder, Code Generator và Transpiler. Không yêu cầu trình biên dịch C hay bất kỳ native extension nào — cài đặt và chạy ngay trên mọi nền tảng.
