@@ -23,6 +23,8 @@ share/python-wheels/
 
 # File môi trường ảo
 venv/
+.venv/
+venv_test/
 env/
 ENV/
 env.bak/
