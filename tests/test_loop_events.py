@@ -1,14 +1,10 @@
-import sys
-import os
 import unittest
 import ast
 from unittest.mock import patch, MagicMock
 
-from test_cython.transpiler_py import clean_lines as clean_lines_py, build_ast as build_ast_py, generate_python as generate_python_py  # type: ignore
-from paraby.core.parser.lexer import clean_lines as clean_lines_cy
-from paraby.core.parser.ast_builder import build_ast as build_ast_cy
-from paraby.core.parser.codegen import generate_python as generate_python_cy
-from test_cython.sync_transpiler import sync_transpiler  # type: ignore
+from paraby.core.parser.lexer import clean_lines
+from paraby.core.parser.ast_builder import build_ast
+from paraby.core.parser.codegen import generate_python
 
 class FakeCTk:
     def __init__(self, *a, **kw): pass
@@ -25,10 +21,6 @@ class FakeCTk:
     def cget(self, *a, **kw): return "#000000"
 
 class TestLoopEvents(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        sync_transpiler()
-        
     def exec_and_verify(self, python_code):
         # Validate syntax
         ast.parse(python_code)
@@ -59,9 +51,9 @@ class TestLoopEvents(unittest.TestCase):
             )
         )
         """
-        lines = clean_lines_cy(dsl_code)
+        lines = clean_lines(dsl_code)
         with self.assertRaisesRegex(ValueError, "không hợp lệ trực tiếp trong loop"):
-            build_ast_cy(lines)
+            build_ast(lines)
 
     def test_bug_a_event_ordering(self):
         dsl_code = """
@@ -78,9 +70,9 @@ class TestLoopEvents(unittest.TestCase):
             )
         )
         """
-        lines = clean_lines_cy(dsl_code)
-        ast_nodes = build_ast_cy(lines)
-        python_code = generate_python_cy(ast_nodes)
+        lines = clean_lines(dsl_code)
+        ast_nodes = build_ast(lines)
+        python_code = generate_python(ast_nodes)
         
         # Test if execution succeeds without UnboundLocalError
         self.exec_and_verify(python_code)
@@ -90,7 +82,7 @@ class TestLoopEvents(unittest.TestCase):
         idx_def = python_code.find("def my_btn_click():")
         self.assertLess(idx_create, idx_def, "Event was defined before the widget was created!")
 
-    def test_event_binding_inside_loop_cython(self):
+    def test_event_binding_inside_loop(self):
         dsl_code = """
         window(
             loop(
@@ -102,27 +94,9 @@ class TestLoopEvents(unittest.TestCase):
             )
         )
         """
-        lines = clean_lines_cy(dsl_code)
-        ast_nodes = build_ast_cy(lines)
-        python_code = generate_python_cy(ast_nodes)
-        self.assertIn('print("Clicked inside loop!")', python_code)
-        self.exec_and_verify(python_code)
-        
-    def test_event_binding_inside_loop_pure_python(self):
-        dsl_code = """
-        window(
-            loop(
-                my_btn = btn(
-                    text: Hi
-                )
-                if my_btn.click:
-                    print("Clicked inside loop!")
-            )
-        )
-        """
-        lines = clean_lines_py(dsl_code)
-        ast_nodes = build_ast_py(lines)
-        python_code = generate_python_py(ast_nodes)
+        lines = clean_lines(dsl_code)
+        ast_nodes = build_ast(lines)
+        python_code = generate_python(ast_nodes)
         self.assertIn('print("Clicked inside loop!")', python_code)
         self.exec_and_verify(python_code)
         
@@ -146,9 +120,9 @@ class TestLoopEvents(unittest.TestCase):
             )
         )
         """
-        lines = clean_lines_py(dsl_code)
-        ast_nodes = build_ast_py(lines)
-        python_code = generate_python_py(ast_nodes)
+        lines = clean_lines(dsl_code)
+        ast_nodes = build_ast(lines)
+        python_code = generate_python(ast_nodes)
         self.assertIn('print("Hello Deep Nesting")', python_code)
         self.exec_and_verify(python_code)
 
