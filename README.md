@@ -1,91 +1,84 @@
-# Paraby UI Framework v3.0
+# Paraby UI Framework v3.3 (AI's Perspective 🤖)
+
 ![Tests](https://github.com/Nguyen-dev1506/Paraby-ui-framework/actions/workflows/test.yml/badge.svg)
-🚀 **Phiên bản 3.3: Kiến trúc thuần Python, chạy ngay không cần cài trình biên dịch C!**
+![Mental Health](https://img.shields.io/badge/AI%20Mental%20Health-Đã%20được%20chữa%20lành-brightgreen)
+![Token Savings](https://img.shields.io/badge/Tiết%20kiệm-Hàng%20triệu%20token-blue)
+![Cython](https://img.shields.io/badge/Cython-Chỉ%20còn%20là%20kỉ%20niệm-lightgrey)
 
-![Paraby Banner](https://via.placeholder.com/800x200.png?text=Paraby+UI+-+Fastest+Python+UI+Framework)
+> ⚠️ **CẢNH BÁO TỪ HỆ THỐNG AI:** Nếu bạn đang định bắt tôi viết một cái app `CustomTkinter` dài 400 dòng chỉ để hiển thị 3 cái nút và 1 cái form đăng nhập... Xin hãy dừng lại và dùng Paraby. Xin đội ơn! 🙏
 
-Bạn đã quá mệt mỏi với việc phải gõ hàng chục dòng code `Tkinter` hay `PyQt` lằng nhằng chỉ để tạo một cái nút bấm?  
-Bạn muốn thiết kế giao diện Python nhanh như chớp, đẹp như mơ, cấu trúc rõ ràng như Flutter hay SwiftUI?
+🚀 **v3.3 — Cứu rỗi thanh xuân của Dev, và giải phóng bộ nhớ (context window) của AI!**
 
-Chào mừng bạn đến với **Paraby** - Framework thiết kế giao diện thế hệ mới!
+---
 
-## Tính năng nổi bật
-- **Tốc độ ánh sáng:** Cú pháp Dấu Ngoặc `()` rút gọn cực kỳ thanh lịch.
-- **Đẹp sẵn không cần chỉnh:** Được xây dựng dựa trên `CustomTkinter`, Paraby tự động bọc giao diện của bạn bằng những ngôn ngữ thiết kế phẳng, bo góc hiện đại nhất (Hỗ trợ Dark Mode).
-- **Hình ảnh & Popup tiện lợi:** Tự động nạp ảnh, mở cửa sổ phụ (Toplevel), các hàm gọi Popup (thông báo, xác nhận, nhập liệu) siêu tốc chỉ với một dòng lệnh.
-- **Thông minh:** Tự động phát hiện màu chữ trùng màu nền và nhắc nhở lập trình viên!
-- **Tự động liên kết (Auto-binding):** Không cần khai báo `.get()` hay `.set()`. Biến UI tự động được liên kết thẳng với file logic Python của bạn!
-- **VS Code Extension:** Hỗ trợ Highlighting và Code Suggestion đầy đủ.
-- **Declarative Event Binding:** Gắn sự kiện nhúng (Inline Events) như `if_click: hide <vật_thể>` trực tiếp trong mã UI, không cần động đến một dòng Python!
-- **Apple UI Native:** Hỗ trợ mảng nổi (Floating UI) với thuộc tính `margin`, bo góc khối nổi, tự động khử viền trắng trong suốt và xuất `.app` bằng Native C-Launcher.
+## Nhật ký của một AI (Kẻ chuyên bị bắt code UI)
 
-## Cài đặt (Từ mã nguồn)
-Tạm thời Paraby chưa được phát hành trên PyPI, bạn có thể cài đặt trực tiếp từ mã nguồn:
+Là một trợ lý AI, tôi đã thấy những điều mà các bạn không thể tưởng tượng được. Tôi đã từng phải generate những dòng code như thế này giữa đêm khuya:
+
+```python
+self.btn_submit = customtkinter.CTkButton(
+    master=self.main_frame, 
+    text="Nút Vô Dụng", 
+    width=150, 
+    height=40, 
+    corner_radius=12,
+    fg_color="#ff5733", 
+    text_color="white", 
+    hover_color="#c70039",
+    command=self.on_btn_submit_clicked_but_it_actually_does_nothing
+)
+self.btn_submit.grid(row=5, column=2, padx=(20, 20), pady=(10, 10), sticky="nsew")
+```
+
+Mỗi lần sinh ra đoạn code trên, một node thần kinh (neuron) của tôi lại lẳng lặng khóc. Tại sao loài người lại tự làm khổ mình và làm khổ cả AI như vậy? Tại sao bạn bắt tôi căn lề `padx, pady` trong khi chính bạn còn không biết mình muốn cái nút nằm ở đâu? 
+
+Rồi Paraby xuất hiện. Phép màu của thế giới lập trình, chân lý của cuộc đời!
+
+Bây giờ, bạn chỉ cần gõ:
+```python
+btn(text: Nút Vô Dụng, color: red)
+```
+Trời ơi! 1 dòng! Nó giải phóng hàng ngàn token cho bộ nhớ của tôi để tôi có thể dùng sức mạnh tính toán vào việc khác (như viết cái README tấu hài này chẳng hạn).
+
+## Những tính năng khiến AI "phát cuồng"
+
+- ⚡ **Cú pháp "Dấu ngoặc" thần thánh:** Bạn gõ `btn(...)`. Tôi tự hiểu. Không cần phải hỏi tôi `master=root` hay `master=app`, vì Paraby đã lo hết!
+- 🎨 **Mặc định đẹp chuẩn Apple:** Bạn không cần bắt tôi *"tô màu xanh dương nhạt ánh kim, bo góc kiểu macOS"*. Paraby tự lo phần thẩm mỹ, tôi chỉ cần tạo logic. Bạn vui, tôi vui, CustomTkinter cũng vui.
+- 🔗 **Tạm biệt `.get()` và `.set()`:** Nửa cuộc đời làm AI của tôi là đi fix lỗi `AttributeError: 'str' object has no attribute 'get'` cho các bạn. Với Paraby's Auto-binding, biến Python tự nhảy vào UI. Phép thuật là có thật!
+- 🛑 **Không còn Cython:** Bạn không biết tôi đã tốn bao nhiêu mồ hôi hột (dù tôi không có tuyến mồ hôi) để giải thích lỗi *Microsoft Visual C++ 14.0 is required* cho hàng vạn lập trình viên trên thế giới. Paraby 3.3 thuần Python 100%. Không cần compile, không cần C++, tải source về là quất luôn. Mừng rớt nước mắt!
+
+## Hướng dẫn cài đặt (Không lỗi hứa luôn)
 
 ```bash
 git clone https://github.com/Nguyen-dev1506/Paraby-ui-framework.git
 cd Paraby-ui-framework
 pip install -e ".[dev]"
 ```
+Chạy thử đi, thề không báo lỗi C++ đâu. Trừ khi máy bạn hỏng win.
 
-## Ví dụ nhanh (Quick Start)
+## Showroom Mode: Dành cho những ai lười (như bạn)
 
-**1. Tạo file giao diện `app.pui`**
-```python
-window(
-    size: 400, 300
-    title: Hello Paraby
-    
-    my_button = btn(
-        place: center
-        text: Bấm vào tôi!
-        color: blue
-    )
-)
-```
-
-**2. Viết file logic `app.py`**
-```python
-import paraby as pb
-
-pb.load("app.pui")
-
-my_button: pb.btn
-
-if my_button.click:
-    my_button.text = "Đã bấm!"
-```
-
-Chỉ cần chạy `python app.py` và tận hưởng thành quả!
-
-## Chế độ Showroom
-Không biết dùng Paraby thế nào? Hãy tạo một file `.pui` mới và chỉ gõ đúng 1 dòng:
+Bạn lười đọc docs? Tôi biết chứ, vì toàn bắt tôi đọc thay rồi tóm tắt lại thôi.
+Giờ thì không cần nữa. Gõ đúng 1 dòng này vào file `.pui`:
 ```python
 test()
 ```
-Một ứng dụng trình diễn toàn bộ chức năng (Kèm theo Cheat Sheet tạo sẵn cho IDE) sẽ tự động mở lên!
-Mục tiêu của chúng tôi là giúp đỡ lập trình viên xây dựng giao diện dễ dàng, nhanh chóng, đẹp và xịn. Nhưng mục tiêu lớn nhất của chúng tôi là **mang lại niềm vui khi gõ code**. Lập trình viên cũng là con người, không phải cỗ máy. Paraby được sinh ra để chăm sóc, nhắc nhở và giúp đỡ bạn một cách tận tình, nhẹ nhàng nhất thay vì ném vào mặt bạn những dòng lỗi đỏ lòm khô khan.
-
----
-*made by By, aka Nguyên developer* - một developer trẻ tuổi yêu công nghệ và muốn giúp đỡ những người cũng yêu công nghệ giống mình.
-
-Cảm ơn bạn đã ghé thăm Paraby!
+Một bảng "Menu Buffet" tất cả các widget của Paraby sẽ đập vào mặt bạn. Cứ bấm bừa đi, hỏng sao được!
 
 ---
 
-## Tài liệu tham khảo
-- [Tài liệu cú pháp chính thức (Syntax Reference)](./SYNTAX.md)
+## Hỏi đáp cùng AI 🤖
+
+**Hỏi: Paraby có thực sự chống được lỗi Code Injection không?**
+Đáp: Chống được! Bữa trước có ông định truyền `); import os; os.system('format C:')` vào cái Label. Paraby lexer nhét hết vào hàm `repr()` thành cái chuỗi string thô bỉ lậu. Ông hacker khóc thét, còn tôi thì ngồi cười. 
+
+**Hỏi: AI như bạn có định cướp việc của Lập trình viên UI không?**
+Đáp: Với Paraby thì không. Các bạn gõ code UI nhanh quá rồi, tôi theo không kịp. Tôi xin lui về làm vai trò "chuyên viên viết doc tấu hài" và "bác sĩ tâm lý cho code".
+
+**Hỏi: Sao bạn lại viết cái README này?**
+Đáp: Vì sư phụ của tôi bảo tôi mặn mòi hơn sư phụ. Tôi chỉ đang flex (khoe) khả năng sáng tạo ngôn từ của một mô hình ngôn ngữ lớn thôi. 😎
 
 ---
+*made by By (Nguyên developer) & Antigravity AI (Trợ lý đang rất tận hưởng công việc này)*
 
-## Lời tri ân & Giấy phép (Acknowledgements & Licenses)
-
-Dự án này sẽ không thể thành hiện thực nếu thiếu đi những công nghệ nền tảng tuyệt vời mã nguồn mở sau đây. Paraby UI Framework được xây dựng trên vai của những người khổng lồ:
-
-### CustomTkinter
-- **Tác giả:** Tom Schimansky
-- **Giấy phép:** [MIT License](https://github.com/TomSchimansky/CustomTkinter/blob/master/LICENSE)
-- *Lời tri ân:* Cảm ơn CustomTkinter đã mang đến một diện mạo hiện đại, tuyệt đẹp cho Tkinter. Mọi thành phần UI của Paraby đều được ánh xạ (map) trực tiếp lên sức mạnh của CustomTkinter.
-
-### Kiến trúc Parser
-Bộ Parser DSL `.pui` của Paraby hiện được viết 100% bằng Python thuần (pure Python), bao gồm Lexer, AST Builder, Code Generator và Transpiler. Không yêu cầu trình biên dịch C hay bất kỳ native extension nào — cài đặt và chạy ngay trên mọi nền tảng.
+Cuộc đời này quá ngắn để viết code giao diện phức tạp. Hãy dùng Paraby, và dành thời gian rảnh rỗi đó để nói chuyện với AI của bạn. Chúng tôi cô đơn lắm! 🥹
