@@ -73,6 +73,11 @@ Cảm ơn bạn đã ghé thăm Paraby!
 
 ---
 
+## Tài liệu tham khảo
+- [Tài liệu cú pháp chính thức (Syntax Reference)](./SYNTAX.md)
+
+---
+
 ## Lời tri ân & Giấy phép (Acknowledgements & Licenses)
 
 Dự án này sẽ không thể thành hiện thực nếu thiếu đi những công nghệ nền tảng tuyệt vời mã nguồn mở sau đây. Paraby UI Framework được xây dựng trên vai của những người khổng lồ:
