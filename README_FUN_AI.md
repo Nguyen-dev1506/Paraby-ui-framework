@@ -45,7 +45,7 @@ Trời ơi! 1 dòng! Nó giải phóng hàng ngàn token cho bộ nhớ của t�
 - ⚡ **Cú pháp "Dấu ngoặc" thần thánh:** Bạn gõ `btn(...)`. Tôi tự hiểu. Không cần phải hỏi tôi `master=root` hay `master=app`, vì Paraby đã lo hết!
 - 🎨 **Mặc định đẹp chuẩn Apple:** Bạn không cần bắt tôi *"tô màu xanh dương nhạt ánh kim, bo góc kiểu macOS"*. Paraby tự lo phần thẩm mỹ, tôi chỉ cần tạo logic. Bạn vui, tôi vui, CustomTkinter cũng vui.
 - 🔗 **Tạm biệt `.get()` và `.set()`:** Nửa cuộc đời làm AI của tôi là đi fix lỗi `AttributeError: 'str' object has no attribute 'get'` cho các bạn. Với Paraby's Auto-binding, biến Python tự nhảy vào UI. Phép thuật là có thật!
-- 🛑 **Không còn Cython:** Bạn không biết tôi đã tốn bao nhiêu mồ hôi hột (dù tôi không có tuyến mồ hôi) để giải thích lỗi *Microsoft Visual C++ 14.0 is required* cho hàng vạn lập trình viên trên thế giới. Paraby 3.3 thuần Python 100%. Cài `pip install` là chạy. Mừng rớt nước mắt!
+- 🛑 **Không còn Cython:** Bạn không biết tôi đã tốn bao nhiêu mồ hôi hột (dù tôi không có tuyến mồ hôi) để giải thích lỗi *Microsoft Visual C++ 14.0 is required* cho hàng vạn lập trình viên trên thế giới. Paraby 3.3 thuần Python 100%. Không cần compile, không cần C++, tải source về là quất luôn. Mừng rớt nước mắt!
 
 ## Hướng dẫn cài đặt (Không lỗi hứa luôn)
 
