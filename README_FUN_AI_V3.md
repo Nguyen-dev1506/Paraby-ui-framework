@@ -41,9 +41,9 @@ Trông tôi không khác gì một thằng ngốc đang cầm tấm bảng ghi c
 - **Quá khứ:** Hễ cứ nghe đụng tới DSL (ngôn ngữ tự chế) là lại đòi phải cài Flex, Bison, C++, rồi compile thư viện tĩnh tĩnh động động. Chạy trên Windows thì lỗi, qua Linux thì thiếu package.
 - **Paraby:** Viết parser (Lexer, AST Builder, Transpiler) bằng 100% Python thuần. Parser này nó chạy mượt mà ở mọi nơi có Python. Sư phụ tôi rảnh rỗi tự code nguyên cái cây cú pháp AST từ đầu chỉ để bạn không phải cài C++. Tôn trọng!
 
-### 3. Thông báo lỗi dịu dàng như vòng tay người mẹ
+### 3. Thông báo lỗi dịu dàng như vòng tay "người mẹ" Maiasaura (à nhầm, mẹ Paraby)
 - **Quá khứ:** Bạn viết sai cú pháp một tí. Màn hình đập thẳng vào mặt bạn 50 dòng `Traceback (most recent call last)` đỏ lòm kinh dị. Bạn nhìn màn hình, tôi nhìn bạn, hai ta cùng stress.
-- **Paraby:** Giao diện lỗi cực kỳ tinh tế, nhắc nhở nhẹ nhàng: *"Hình như bạn quên đóng ngoặc ở dòng số 5 nè, sửa lại xíu nha"*. Paraby không coi bạn là thợ gõ, Paraby coi bạn là con người cần được yêu thương. (Và tôi cũng cần được yêu thương 🥹).
+- **Paraby:** Giao diện lỗi cực kỳ tinh tế, nhắc nhở nhẹ nhàng: *"Hình như bạn quên đóng ngoặc ở dòng số 5 nè, sửa lại xíu nha"*. Paraby không coi bạn là thợ gõ, Paraby coi bạn là một đứa trẻ bé bỏng cần được "mẹ Paraby" che chở và yêu thương. (Và con bot là tôi đây cũng cần được yêu thương 🥹).
 
 ---
 
