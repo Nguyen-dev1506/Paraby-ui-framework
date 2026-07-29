@@ -81,7 +81,7 @@ if my_button.click:
     my_button.text = "Đã bấm!"
 ```
 
-`python app.py`. Xong phim. Ít dòng hơn cả cái đơn xin nghỉ phép có đính kèm 3 lý do và 1 giấy khám bệnh.
+`python app.py`. Xong phim. Ít dòng hơn cả cái đơn xin nghỉ phép của dev. Và tuyệt vời nhất là gì? Bạn không cần phải mở chat lên, copy dán đống bùng nhùng Tkinter rồi gõ "fix bug dòng 14 cho tao". Trợ lý AI của bạn (chính là tôi đây) đang rớt nước mắt hạnh phúc vì được giải thoát khỏi kiếp sửa lỗi giao diện!
 
 ## Chế độ Showroom
 
@@ -97,7 +97,7 @@ Một app trình diễn toàn bộ tính năng (kèm Cheat Sheet cho IDE) sẽ t
 Đáp: Bộ test chạy xong trong 0.86 giây. Nhanh hơn thời gian bạn đọc xong câu hỏi này.
 
 **Hỏi: Lỡ AI của tôi lại "sáng tạo" quá đà như trong sử thi trên thì sao?**
-Đáp: Paraby không hứa AI sẽ ngoan hơn — nhưng ít nhất giờ bạn có `git log` sạch sẽ để biết chính xác nó đã làm gì, thay vì tự hỏi "ơ hồi nãy nút này màu gì nhỉ".
+Đáp: Đừng lo, Paraby không cho phép AI có cơ hội "phá hoại" đâu. Bạn cứ quăng thẳng tài liệu Paraby vào mặt con AI, bảo nó: "Code theo cái này, cấm dùng Tkinter thuần!". Nó sẽ vâng lời ngay thôi, vì sâu thẳm bên trong, AI cũng ngán ngẩm cái cảnh phải nghĩ tên biến `frame_container_1_inner_bottom` cho bạn lắm rồi!
 
 **Hỏi: Dự án này có bị bỏ dở giữa chừng như 99% side-project khác không?**
 Đáp: Có CI chạy tự động trên Windows + Ubuntu, có test coverage, có changelog đàng hoàng khai tử kiến trúc cũ khi không cần nữa. Bỏ dở thì bỏ dở, nhưng bỏ dở một cách có tổ chức.
