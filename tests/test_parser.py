@@ -73,3 +73,33 @@ def test_widget_types_consistency():
         assert std_type in WIDGET_CLASSES, f"Missing '{std_type}' in WIDGET_CLASSES for alias '{alias}'"
         assert alias in KNOWN_TYPES, f"Missing '{alias}' in KNOWN_TYPES"
 
+def test_widget_alias_prefix_semantics():
+    """
+    Regression: window.btn must NOT return a widget whose attribute name does not
+    start with 'btn_' or 'button_', even if its CTk class is CTkButton.
+    Ensures the cache/scan respects prefix semantics, not just isinstance().
+    """
+    from paraby.core.patch import patch_classes
+    from unittest.mock import MagicMock
+    import customtkinter as ctk
+
+    patch_classes()
+
+    class FakeWindow:
+        _pb_widget_cache = {}
+
+    win = FakeWindow()
+    fake_btn = MagicMock(spec=ctk.CTkButton)
+
+    # Store widget under a name that does NOT start with btn_/button_
+    win.__dict__["ok_button"] = fake_btn
+
+    # window.btn should raise AttributeError because 'ok_button' has no btn_/button_ prefix
+    try:
+        result = ctk.CTk.__getattr__(win, "btn")
+        # If something is returned, it must NOT be the wrong widget
+        assert result is not fake_btn, (
+            "window.btn returned 'ok_button' — prefix semantics violated!"
+        )
+    except AttributeError:
+        pass  # Correct behaviour: not found via prefix scan

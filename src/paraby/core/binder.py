@@ -90,6 +90,19 @@ class StateBinder:
                 if isinstance(attr_val, ctk.CTkBaseClass):
                     self.caller_globals[attr_name] = attr_val
                     self.injected_widgets.add(attr_name)
+
+                    # Populate widget alias cache: mirrors the exact prefix-scan semantics of
+                    # custom_win_getattr so that cache[alias] = widget IFF attr_name starts with
+                    # one of KNOWN_TYPES[alias]'s prefixes — preserving original match behaviour.
+                    cache = getattr(self.window, "_pb_widget_cache", None)
+                    if cache is not None:
+                        from paraby.core.parser.widget_registry import KNOWN_TYPES
+                        for alias, prefixes in KNOWN_TYPES.items():
+                            if alias not in cache:
+                                for prefix in prefixes:
+                                    if attr_name.startswith(prefix):
+                                        cache[alias] = attr_val
+                                        break
                     
                     # Data Binding for input properties
                     if hasattr(attr_val, '_pb_input_var'):
