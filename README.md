@@ -1,4 +1,5 @@
 # Paraby UI Framework v3.0
+![Tests](https://github.com/Nguyen-dev1506/Paraby-ui-framework/actions/workflows/test.yml/badge.svg)
 🚀 **Phiên bản 3.3: Kiến trúc thuần Python, chạy ngay không cần cài trình biên dịch C!**
 
 ![Paraby Banner](https://via.placeholder.com/800x200.png?text=Paraby+UI+-+Fastest+Python+UI+Framework)

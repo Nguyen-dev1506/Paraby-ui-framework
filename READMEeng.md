@@ -1,4 +1,5 @@
 # Paraby UI Framework v3.0
+![Tests](https://github.com/Nguyen-dev1506/Paraby-ui-framework/actions/workflows/test.yml/badge.svg)
 🚀 **Version 3.0 Released: Fully modularized architecture, boosting compilation speed by 35%!**
 
 ![Paraby Banner](https://via.placeholder.com/800x200.png?text=Paraby+UI+-+Fastest+Python+UI+Framework)
