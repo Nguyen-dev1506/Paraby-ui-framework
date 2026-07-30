@@ -62,6 +62,8 @@
         "setup_installing": "Auto-installing Paraby framework...",
         "setup_success": "Paraby successfully installed! You can now use the 'paraby' command.",
         "setup_fail": "Installation failed. Please check the error logs above.",
-        "setup_already_installed": "Paraby is already installed in your environment! No installation needed."
+        "setup_already_installed": "Paraby is already installed in your environment! No installation needed.",
+        "font_load_warning": "⚠️ [Paraby] Failed to load Quicksand font into the system ({error}). The UI will use the default system font.",
+        "font_file_missing_warning": "⚠️ [Paraby] Font file not found at '{path}'. The UI will use the default system font."
     }
 }

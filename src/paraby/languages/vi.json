@@ -62,6 +62,8 @@
         "setup_installing": "Đang tự động cài đặt Paraby framework...",
         "setup_success": "Cài đặt Paraby thành công! Bây giờ bạn đã có thể dùng lệnh 'paraby'.",
         "setup_fail": "Cài đặt thất bại. Vui lòng kiểm tra log lỗi bên trên.",
-        "setup_already_installed": "Paraby đã được cài đặt trong môi trường của bạn! Không cần cài đặt lại."
+        "setup_already_installed": "Paraby đã được cài đặt trong môi trường của bạn! Không cần cài đặt lại.",
+        "font_load_warning": "⚠️ [Paraby] Không nạp được font Quicksand vào hệ thống ({error}). Giao diện sẽ dùng font mặc định của máy thay thế.",
+        "font_file_missing_warning": "⚠️ [Paraby] Không tìm thấy file font tại '{path}'. Giao diện sẽ dùng font mặc định của máy thay thế."
     }
 }
