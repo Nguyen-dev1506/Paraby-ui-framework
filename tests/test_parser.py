@@ -103,3 +103,36 @@ def test_widget_alias_prefix_semantics():
         )
     except AttributeError:
         pass  # Correct behaviour: not found via prefix scan
+
+def test_no_atexit_mainloop_in_pytest(tmp_path):
+    """
+    Xác nhận không có callback mainloop nào được đăng ký vào atexit khi chạy dưới pytest,
+    ngăn chặn lỗi treo tiến trình CI trên Windows.
+    """
+    from unittest.mock import patch
+    import os
+    import paraby as pb
+
+    pui_code = """window(
+    size: 100, 100
+)"""
+    test_file = tmp_path / "test_atexit.pui"
+    test_file.write_text(pui_code, encoding="utf-8")
+
+    class FakeCTk:
+        def __init__(self, *a, **kw): pass
+        def title(self, *a, **kw): pass
+        def geometry(self, *a, **kw): pass
+        def configure(self, *a, **kw): pass
+        def mainloop(self, *a, **kw): pass
+
+    with patch('customtkinter.CTk', FakeCTk):
+        with patch('atexit.register') as mock_register:
+            # Đảm bảo chắc chắn môi trường là pytest
+            assert "PYTEST_CURRENT_TEST" in os.environ
+            
+            window = pb.load(str(test_file))
+            assert window is not None
+            
+            # Hàm load() KHÔNG ĐƯỢC gọi atexit.register
+            mock_register.assert_not_called()

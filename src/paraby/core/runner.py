@@ -96,7 +96,9 @@ def _execute_transpiled_code(python_code, pb_filepath, _is_popup):
     if not hasattr(window, "_pb_atexit_registered"):
         window._pb_atexit_registered = True
         if not _is_popup:
-            atexit.register(window.mainloop)
+            import os
+            if "PYTEST_CURRENT_TEST" not in os.environ:
+                atexit.register(window.mainloop)
             
     return window, mod_dict
 
