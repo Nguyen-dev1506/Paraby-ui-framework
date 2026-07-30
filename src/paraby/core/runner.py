@@ -16,6 +16,25 @@ def _load_file_content(pb_filepath):
     with open(pb_filepath, 'r', encoding='utf-8') as f:
         source = f.read()
         
+    if source.strip() == "test()":
+        source = """
+window(
+    title: Paraby Showroom Buffet
+    size: 450, 500
+    
+    label(text: PARABY UI FRAMEWORK, variant: header, place: top)
+    label(text: Phiên bản 3.3 - Mặn mà & Tốc độ, place: top)
+    
+    btn(text: Đây là Nút, color: #ff5733)
+    entry(text: Gõ gì đó vào đây...)
+    checkbox(text: Check em đi sư phụ)
+    switch(text: Gạt lên gạt xuống)
+    slider(from: 0, to: 100)
+    combobox(values: [Tùy chọn 1, Tùy chọn 2, Tùy chọn 3])
+    progress()
+)
+"""
+        
     return source, pb_filepath
 
 def _execute_transpiled_code(python_code, pb_filepath, _is_popup):
