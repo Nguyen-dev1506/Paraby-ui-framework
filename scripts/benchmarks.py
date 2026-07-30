@@ -6,12 +6,8 @@ import os
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
-from tests.test_cython.sync_transpiler import sync_transpiler  # type: ignore
-sync_transpiler()
-
-from tests.test_cython.transpiler_py import transpile_pb as transpile_py  # type: ignore
-from paraby.core.parser import transpile_pb as transpile_cy  # type: ignore
-from paraby.language_manager import get as _t  # type: ignore
+from paraby.core.parser import transpile_pb as transpile_py
+from paraby.language_manager import get as _t
 
 # Tạo một đoạn code DSL cực lớn để benchmark
 dummy_dsl = """window(
@@ -44,7 +40,7 @@ def test_speed():
     iterations = 20
     print(_t("bench_iterations", count=iterations) + "\n")
     
-    # 1. Test Pure Python
+    # Test Pure Python Transpiler
     print(_t("bench_running_python"))
     start_py = time.perf_counter()
     for _ in range(iterations):
@@ -53,22 +49,6 @@ def test_speed():
     time_py = end_py - start_py
     print(_t("bench_time_python", time=time_py) + "\n")
     
-    # 2. Test Cython
-    print(_t("bench_running_cython"))
-    start_cy = time.perf_counter()
-    for _ in range(iterations):
-        _ = transpile_cy(dummy_dsl)
-    end_cy = time.perf_counter()
-    time_cy = end_cy - start_cy
-    print(_t("bench_time_cython", time=time_cy) + "\n")
-    
-    # 3. Compare
-    print(_t("bench_result_title"))
-    if time_cy < time_py:
-        speedup = time_py / time_cy
-        print(_t("bench_cython_faster", speedup=speedup))
-    else:
-        print(_t("bench_cython_slower"))
     print("=========================================")
 
 if __name__ == "__main__":

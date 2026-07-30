@@ -43,11 +43,6 @@
         "bench_iterations": "Iterations per compiler: {count} times",
         "bench_running_python": "⏳ Running Pure Python Transpiler...",
         "bench_time_python": "   -> Pure Python time: {time:.4f} seconds",
-        "bench_running_cython": "⏳ Running Cython Transpiler (.so / .pyd) ...",
-        "bench_time_cython": "   -> Cython time:      {time:.4f} seconds",
-        "bench_result_title": "============== RESULT ==================",
-        "bench_cython_faster": "✅ Cython is FASTER than Pure Python by {speedup:.2f}x!",
-        "bench_cython_slower": "❌ Cython is slower? (Make sure you compiled the C-Extension successfully with `python3 setup.py build_ext --inplace`)",
 
         "lang_select_prompt": "Please select your language:",
         "lang_select_input": "Enter number (default: 1): ",

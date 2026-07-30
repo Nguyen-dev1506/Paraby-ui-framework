@@ -43,11 +43,6 @@
         "bench_iterations": "Số vòng lặp mỗi trình biên dịch: {count} lần",
         "bench_running_python": "⏳ Đang chạy bằng Pure Python Transpiler...",
         "bench_time_python": "   -> Thời gian Pure Python: {time:.4f} giây",
-        "bench_running_cython": "⏳ Đang chạy bằng Cython Transpiler (.so / .pyd) ...",
-        "bench_time_cython": "   -> Thời gian Cython:      {time:.4f} giây",
-        "bench_result_title": "============== KẾT QUẢ ==================",
-        "bench_cython_faster": "✅ Cython NHANH HƠN Pure Python gấp {speedup:.2f} lần!",
-        "bench_cython_slower": "❌ Cython chậm hơn? (Hãy chắc chắn bạn đã compile thành công C-Extension bằng `python3 setup.py build_ext --inplace`)",
 
         "lang_select_prompt": "Vui lòng chọn ngôn ngữ của bạn:",
         "lang_select_input": "Nhập số (mặc định: 1): ",
