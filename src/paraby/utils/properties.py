@@ -13,9 +13,11 @@ def load_custom_font():
         import ctypes
         import os
         import sys
-        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        font_path = os.path.join(base_dir, "fonts", "Quicksand-VariableFont_wght.ttf")
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        font_path = os.path.join(base_dir, "assets", "fonts", "Quicksand-VariableFont_wght.ttf")
         if not os.path.exists(font_path):
+            from paraby.language_manager import get as _t
+            print(_t("font_file_missing_warning", path=font_path))
             return
             
         if sys.platform == "darwin":
@@ -30,7 +32,8 @@ def load_custom_font():
             ctypes.windll.gdi32.AddFontResourceExW(font_path, FR_PRIVATE, 0)
             _FONT_LOADED = True
     except Exception as e:
-        pass
+        from paraby.language_manager import get as _t
+        print(_t("font_load_warning", error=str(e)))
 
 def parse_size(size_str):
     if isinstance(size_str, str) and "x" in size_str:

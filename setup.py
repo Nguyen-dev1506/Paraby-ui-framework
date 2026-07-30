@@ -61,7 +61,7 @@ setup(
     url="https://github.com/Nguyen-dev1506/Paraby-ui-framework",
     packages=find_packages(where="src", include=['paraby', 'paraby.*']),
     package_dir={"": "src"},
-    package_data={'paraby': ['*.pui']},
+    package_data={'paraby': ['*.pui', 'assets/fonts/*.ttf', 'assets/fonts/*.txt']},
     include_package_data=True,
     entry_points={
         'console_scripts': [
