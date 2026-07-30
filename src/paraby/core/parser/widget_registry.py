@@ -70,6 +70,11 @@ WIDGET_REGISTRY = {
         "aliases": ["popup", "modal", "alert"],
         "prefixes": ("popup_", "modal_", "alert_"),
         "ctk_class": "ParabyPopup"
+    },
+    "scroll_col": {
+        "aliases": ["scroll_col"],
+        "prefixes": ("scroll_col_",),
+        "ctk_class": "CTkScrollableFrame"
     }
 }
 

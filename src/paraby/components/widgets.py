@@ -22,7 +22,8 @@ WIDGET_CLASSES = {
     "text_box": ctk.CTkTextbox,
     "progress": ctk.CTkProgressBar,
     "image": ctk.CTkLabel,
-    "popup": ParabyPopup
+    "popup": ParabyPopup,
+    "scroll_col": ctk.CTkScrollableFrame
 }
 
 # ── Private helpers ────────────────────────────────────────────────────────────
@@ -129,7 +130,7 @@ def _apply_design_system_defaults(std_type: str, properties: dict) -> None:
         properties.setdefault("border_width", 1)
         properties.setdefault("corner_radius", 8)
 
-    elif std_type in ("row", "col"):
+    elif std_type in ("row", "col", "scroll_col"):
         properties.setdefault("fg_color", "transparent")
 
 
@@ -219,11 +220,15 @@ def create_widget(parent, widget_type, **properties):
     widget_class = WIDGET_CLASSES.get(std_type) if std_type else None
     if not widget_class:
         raise ValueError(_t("widget_type_not_supported", type=w_type))
+        
+    if std_type == "scroll_col":
+        if "height" not in properties:
+            raise ValueError("scroll_col cần khai báo height, ví dụ: height: 400")
 
     widget = widget_class(master=parent, **properties)
 
-    if std_type in ("row", "col"):
-        widget._pb_layout_type = std_type
+    if std_type in ("row", "col", "scroll_col"):
+        widget._pb_layout_type = "col" if std_type == "scroll_col" else std_type
         if gap_opt is not None:
             widget._pb_gap = gap_opt
 
@@ -251,10 +256,20 @@ def place_widget(widget, place_opt=None):
 
     if place_opt is None:
         master = widget.master
-        layout_type = getattr(master, "_pb_layout_type", None)
+        layout_type = None
+        gap_str = "sm"
+        
+        # Traverse up to handle CTkScrollableFrame internal wrappers
+        curr = master
+        for _ in range(4):
+            if curr is None: break
+            layout_type = getattr(curr, "_pb_layout_type", None)
+            if layout_type in ("row", "col"):
+                gap_str = str(getattr(curr, "_pb_gap", "sm")).lower()
+                break
+            curr = getattr(curr, "master", None)
         
         if layout_type in ("row", "col"):
-            gap_str = str(getattr(master, "_pb_gap", "sm")).lower()
             gap_map = {"xs": 5, "sm": 10, "md": 15, "lg": 20, "xl": 30}
             if gap_str in gap_map:
                 gap = gap_map[gap_str]

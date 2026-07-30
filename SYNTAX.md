@@ -84,6 +84,7 @@ Widget alias được định nghĩa **tập trung duy nhất** tại `src/parab
 | `row` | `hang` | `CTkFrame` | `row_`, `hang_` |
 | `col` | `column`, `cot` | `CTkFrame` | `col_`, `column_`, `cot_` |
 | `popup` | `modal`, `alert` | `ParabyPopup` | `popup_`, `modal_`, `alert_` |
+| `scroll_col` | `scroll_col` | `CTkScrollableFrame` | `scroll_col_` |
 
 > **Lưu ý về generic accessor:** `window.btn` (hoặc `window.<alias>`) chỉ trả về widget nếu **tên biến thực sự bắt đầu bằng đúng tiền tố** liệt kê ở cột cuối — KHÔNG match theo kiểu class. Ví dụ `ok_button = btn(...)` sẽ **không** được `window.btn` tìm thấy vì thiếu tiền tố `btn_`/`button_`. Đây là hành vi cố ý, có test hồi quy bảo vệ tại `tests/test_parser.py::test_widget_alias_prefix_semantics` — không được thay đổi ngầm.
 
@@ -107,7 +108,8 @@ Widget alias được định nghĩa **tập trung duy nhất** tại `src/parab
 | `path` / `image` | `image`, `btn` | đường dẫn ảnh |
 | `size` | `image` | `"WxH"` hoặc mặc định theo kích thước ảnh gốc |
 | `name` | mọi widget | đổi tên biến ngay trong khai báo (ưu tiên hơn cách gán `var = widget(...)`) |
-| `gap` | `row`, `col` | khoảng đệm giữa các widget con: `xs`, `sm`, `md`, `lg`, `xl` |
+| `gap` | `row`, `col`, `scroll_col` | khoảng đệm giữa các widget con: `xs`, `sm`, `md`, `lg`, `xl` |
+| `height` | `scroll_col` | chiều cao khu vực cuộn (BẮT BUỘC) |
 
 ### 2.6. Cú pháp giá trị (value)
 

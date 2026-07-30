@@ -77,3 +77,5 @@ class popup:
     
 class modal(popup): pass
 class alert(popup): pass
+
+class scroll_col: pass
