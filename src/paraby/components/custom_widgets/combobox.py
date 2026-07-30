@@ -49,7 +49,7 @@ class ParabyComboBox(ctk.CTkFrame):
         self._btn_frame.bind("<Button-1>", self._toggle_dropdown)
         
         self._v_label = ctk.CTkLabel(self._btn_frame, text="v", font=v_font, text_color=text_color)
-        self._v_label.place(relx=0.5, rely=0.48, anchor="center") # Ép chữ v lên một xíu để cân bằng thị giác
+        self._v_label.place(relx=0.5, rely=0.42, anchor="center") # Nhích chữ v lên thêm chút nữa
         self._v_label.bind("<Button-1>", self._toggle_dropdown)
         
         self.bind("<Button-1>", self._toggle_dropdown)
