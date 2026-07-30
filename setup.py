@@ -14,15 +14,6 @@ if __name__ == "__main__" and len(sys.argv) == 1:
 
     print("=" * 60)
     print(_t("setup_welcome"))
-    print(_t("setup_detect_os", os=platform.system()))
-    
-    sys_name = platform.system().lower()
-    if sys_name == "linux":
-        print(_t("setup_linux_hint"))
-    elif sys_name == "windows":
-        print(_t("setup_windows_hint"))
-    elif sys_name == "darwin":
-        print(_t("setup_mac_hint"))
         
     try:
         import importlib.metadata
