@@ -81,6 +81,9 @@ Widget alias được định nghĩa **tập trung duy nhất** tại `src/parab
 | `text_box` | `textbox`, `khung_chu` | `CTkTextbox` | `text_box_`, `textbox_`, `khung_chu_` |
 | `progress` | `loading`, `thanh_tien_do` | `CTkProgressBar` | `progress_`, `loading_`, `thanh_tien_do_` |
 | `image` | `img`, `anh` | (CTkLabel + ảnh) | `image_`, `img_`, `anh_` |
+| `row` | `hang` | `CTkFrame` | `row_`, `hang_` |
+| `col` | `column`, `cot` | `CTkFrame` | `col_`, `column_`, `cot_` |
+| `popup` | `modal`, `alert` | `ParabyPopup` | `popup_`, `modal_`, `alert_` |
 
 > **Lưu ý về generic accessor:** `window.btn` (hoặc `window.<alias>`) chỉ trả về widget nếu **tên biến thực sự bắt đầu bằng đúng tiền tố** liệt kê ở cột cuối — KHÔNG match theo kiểu class. Ví dụ `ok_button = btn(...)` sẽ **không** được `window.btn` tìm thấy vì thiếu tiền tố `btn_`/`button_`. Đây là hành vi cố ý, có test hồi quy bảo vệ tại `tests/test_parser.py::test_widget_alias_prefix_semantics` — không được thay đổi ngầm.
 
@@ -104,6 +107,7 @@ Widget alias được định nghĩa **tập trung duy nhất** tại `src/parab
 | `path` / `image` | `image`, `btn` | đường dẫn ảnh |
 | `size` | `image` | `"WxH"` hoặc mặc định theo kích thước ảnh gốc |
 | `name` | mọi widget | đổi tên biến ngay trong khai báo (ưu tiên hơn cách gán `var = widget(...)`) |
+| `gap` | `row`, `col` | khoảng đệm giữa các widget con: `xs`, `sm`, `md`, `lg`, `xl` |
 
 ### 2.6. Cú pháp giá trị (value)
 
@@ -133,6 +137,7 @@ Tên event chuẩn theo loại widget:
 | `slider` | `change` |
 | `checkbox`, `switch` | `change` |
 | `combobox` | `select` |
+| `popup` | `show` (chưa có, nhưng có method show/hide trong .py) |
 
 ---
 

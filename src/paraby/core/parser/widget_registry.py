@@ -55,6 +55,21 @@ WIDGET_REGISTRY = {
         "aliases": ["image", "img", "anh"],
         "prefixes": ("image_", "img_", "anh_"),
         "ctk_class": None
+    },
+    "row": {
+        "aliases": ["row", "hang"],
+        "prefixes": ("row_", "hang_"),
+        "ctk_class": "CTkFrame"
+    },
+    "col": {
+        "aliases": ["col", "column", "cot"],
+        "prefixes": ("col_", "column_", "cot_"),
+        "ctk_class": "CTkFrame"
+    },
+    "popup": {
+        "aliases": ["popup", "modal", "alert"],
+        "prefixes": ("popup_", "modal_", "alert_"),
+        "ctk_class": "ParabyPopup"
     }
 }
 

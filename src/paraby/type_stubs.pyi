@@ -63,3 +63,17 @@ class textbox(text_box): pass
 class khung_chu(text_box): pass
 
 class window: pass
+
+class row: pass
+class hang(row): pass
+
+class col: pass
+class column(col): pass
+class cot(col): pass
+
+class popup:
+    show: bool
+    hide: bool
+    
+class modal(popup): pass
+class alert(popup): pass
