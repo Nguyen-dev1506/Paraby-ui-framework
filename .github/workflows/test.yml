@@ -14,13 +14,6 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest]
         python-version: ["3.10", "3.11", "3.12"]
-        exclude:
-          # Lỗi hạ tầng của actions/setup-python: Thiếu file init.tcl trên Windows cho 3.10 và 3.11
-          # Đã thử cài choco tcl và set TCL_LIBRARY nhưng vẫn không khắc phục được.
-          - os: windows-latest
-            python-version: "3.10"
-          - os: windows-latest
-            python-version: "3.11"
       fail-fast: false
 
     steps:
@@ -32,37 +25,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
+        check-latest: true
 
     - name: Install dependencies
       run: pip install -e ".[dev]"
 
-    - name: Fix Tkinter/Tcl on Windows if broken
-      if: runner.os == 'Windows'
-      shell: pwsh
-      run: |
-        python -c "import tkinter; tkinter.Tk()" 2>$null
-        if ($LASTEXITCODE -ne 0) {
-          Write-Host "Tkinter loi, cai Tcl qua Chocolatey va tro dan duong dan..."
-          choco install tcl -y --no-progress
-          $tclPath = Get-ChildItem -Path "C:\" -Filter "tcl8.6" -Recurse -Directory -ErrorAction SilentlyContinue | Select-Object -First 1
-          $tkPath = Get-ChildItem -Path "C:\" -Filter "tk8.6" -Recurse -Directory -ErrorAction SilentlyContinue | Select-Object -First 1
-          if ($tclPath) {
-            echo "TCL_LIBRARY=$($tclPath.FullName)" >> $env:GITHUB_ENV
-            Write-Host "Da set TCL_LIBRARY = $($tclPath.FullName)"
-          }
-          if ($tkPath) {
-            echo "TK_LIBRARY=$($tkPath.FullName)" >> $env:GITHUB_ENV
-            Write-Host "Da set TK_LIBRARY = $($tkPath.FullName)"
-          }
-          python -c "import tkinter; tkinter.Tk()"
-          if ($LASTEXITCODE -ne 0) {
-            Write-Host "::warning::Van khong sua duoc Tkinter sau khi set TCL_LIBRARY/TK_LIBRARY"
-          } else {
-            Write-Host "Da sua thanh cong."
-          }
-        } else {
-          Write-Host "Tkinter OK, khong can sua."
-        }
 
     - name: Run tests (Windows)
       if: runner.os == 'Windows'
