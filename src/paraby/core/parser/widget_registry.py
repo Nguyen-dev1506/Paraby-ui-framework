@@ -29,7 +29,7 @@ WIDGET_REGISTRY = {
     "combobox": {
         "aliases": ["combobox", "dropdown", "select"],
         "prefixes": ("combobox_", "dropdown_", "select_"),
-        "ctk_class": "CTkComboBox"
+        "ctk_class": "ParabyComboBox"
     },
     "switch": {
         "aliases": ["switch", "nut_gat"],
