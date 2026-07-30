@@ -86,7 +86,26 @@ def process_value(val_str):
             parsed = _ast.literal_eval(val_str)
             return repr(parsed)
         except (ValueError, SyntaxError):
-            pass  # không parse được -> rơi xuống xử lý như text thô bên dưới
+            # Nếu người dùng viết kiểu: [Tùy chọn 1, Tùy chọn 2]
+            inner = val_str[1:-1]
+            parts = [p.strip() for p in inner.split(',')]
+            q_parts = []
+            for pc in parts:
+                if (pc.startswith('"') and pc.endswith('"')) or (pc.startswith("'") and pc.endswith("'")):
+                    q_parts.append(_safe_string_literal_impl(pc))
+                else:
+                    try:
+                        float(pc)
+                        q_parts.append(pc)
+                    except ValueError:
+                        q_parts.append(repr(pc))
+            
+            if val_str.startswith('['):
+                return "[" + ", ".join(q_parts) + "]"
+            elif val_str.startswith('('):
+                return "(" + ", ".join(q_parts) + ")"
+            else:
+                return "{" + ", ".join(q_parts) + "}"
 
     if ',' in val_str:
         parts = [p.strip() for p in val_str.split(',')]

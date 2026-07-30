@@ -4,6 +4,7 @@ from paraby.core.parser.constants import WIDGET_ALIASES
 from paraby.components.colors import resolve_color
 from paraby.utils.properties import parse_size, build_font_tuple, check_color_contrast
 from paraby.language_manager import get as _t
+from paraby.components.custom_widgets.combobox import ParabyComboBox
 
 # Base map of standard widget types to CTk classes
 WIDGET_CLASSES = {
@@ -12,7 +13,7 @@ WIDGET_CLASSES = {
     "label": ctk.CTkLabel,
     "slider": ctk.CTkSlider,
     "checkbox": ctk.CTkCheckBox,
-    "combobox": ctk.CTkComboBox,
+    "combobox": ParabyComboBox,
     "switch": ctk.CTkSwitch,
     "frame": ctk.CTkFrame,
     "text_box": ctk.CTkTextbox,
@@ -40,34 +41,89 @@ def _resolve_font(properties: dict) -> None:
 
 def _apply_design_system_defaults(std_type: str, properties: dict) -> None:
     """Applies Apple Design System defaults based on widget type and variant."""
+    # Mặc định font Quicksand cho mọi widget có chữ
+    if std_type in ("btn", "label", "entry", "checkbox", "switch", "combobox", "text_box"):
+        if "font" not in properties:
+            if std_type == "label" and properties.get("variant") == "header":
+                properties["font"] = build_font_tuple("Quicksand", 26, "bold")
+            elif std_type in ("btn", "label"):
+                properties["font"] = build_font_tuple("Quicksand", 15, "bold")
+            else:
+                properties["font"] = build_font_tuple("Quicksand", 14, "bold")
+
     if std_type == "btn":
         variant = properties.pop("variant", "primary")
         if variant == "secondary":
-            properties.setdefault("fg_color", "#1C1C1E")
-            properties.setdefault("text_color", "#FFFFFF")
-            properties.setdefault("hover_color", "#2C2C2E")
-        else:
             properties.setdefault("fg_color", "#FFFFFF")
             properties.setdefault("text_color", "#000000")
             properties.setdefault("hover_color", "#D1D1D6")
+            properties.setdefault("border_width", 0)
+        else:
+            properties.setdefault("fg_color", "#000000")
+            properties.setdefault("text_color", "#FFFFFF")
+            properties.setdefault("hover_color", "#1C1C1E")
+            properties.setdefault("border_color", "#3A3A3C")
+            properties.setdefault("border_width", 1)
 
         properties.setdefault("bg_color", "transparent")
         properties.setdefault("width", 100)
         properties.setdefault("height", 34)
         properties.setdefault("corner_radius", 8)
-        properties.setdefault("border_width", 0)
-        if "font" not in properties:
-            properties["font"] = build_font_tuple("Quicksand", 15, "bold")
 
     elif std_type == "label":
         variant = properties.pop("variant", "normal")
         properties.setdefault("text_color", "#FFFFFF")
-        if variant == "header":
-            if "font" not in properties:
-                properties["font"] = build_font_tuple("Quicksand", 26, "bold")
-        else:
-            if "font" not in properties:
-                properties["font"] = build_font_tuple("Quicksand", 15, "bold")
+
+    elif std_type == "entry":
+        properties.setdefault("fg_color", "#1C1C1E")
+        properties.setdefault("text_color", "#FFFFFF")
+        properties.setdefault("border_color", "#2C2C2E")
+        properties.setdefault("border_width", 1)
+        properties.setdefault("corner_radius", 8)
+        
+    elif std_type == "checkbox":
+        properties.setdefault("fg_color", "#FFFFFF")
+        properties.setdefault("checkmark_color", "#000000")
+        properties.setdefault("border_color", "#3A3A3C")
+        properties.setdefault("text_color", "#FFFFFF")
+        properties.setdefault("hover_color", "#D1D1D6")
+
+    elif std_type == "switch":
+        properties.setdefault("fg_color", "#3A3A3C")
+        properties.setdefault("progress_color", "#FFFFFF")
+        properties.setdefault("button_color", "#FFFFFF")
+        properties.setdefault("button_hover_color", "#D1D1D6")
+        properties.setdefault("text_color", "#FFFFFF")
+
+    elif std_type == "slider":
+        properties.setdefault("fg_color", "#3A3A3C")
+        properties.setdefault("progress_color", "#FFFFFF")
+        properties.setdefault("button_color", "#FFFFFF")
+        properties.setdefault("button_hover_color", "#D1D1D6")
+
+    elif std_type == "combobox":
+        properties.setdefault("fg_color", "#1C1C1E")
+        properties.setdefault("text_color", "#FFFFFF")
+        properties.setdefault("border_color", "#2C2C2E")
+        properties.setdefault("button_color", "#2C2C2E")
+        properties.setdefault("button_hover_color", "#3A3A3C")
+        properties.setdefault("dropdown_fg_color", "#1C1C1E")
+        properties.setdefault("dropdown_text_color", "#FFFFFF")
+        properties.setdefault("corner_radius", 8)
+        properties.setdefault("border_width", 1)
+        if "dropdown_font" not in properties:
+            properties["dropdown_font"] = build_font_tuple("Quicksand", 14, "bold")
+
+    elif std_type == "progress":
+        properties.setdefault("fg_color", "#3A3A3C")
+        properties.setdefault("progress_color", "#FFFFFF")
+        
+    elif std_type == "text_box":
+        properties.setdefault("fg_color", "#1C1C1E")
+        properties.setdefault("text_color", "#FFFFFF")
+        properties.setdefault("border_color", "#2C2C2E")
+        properties.setdefault("border_width", 1)
+        properties.setdefault("corner_radius", 8)
 
 
 def _normalize_property_aliases(w_type: str, std_type: str, properties: dict) -> None:

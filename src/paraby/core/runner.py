@@ -20,17 +20,37 @@ def _load_file_content(pb_filepath):
         source = """
 window(
     title: Paraby Showroom Buffet
-    size: 450, 500
+    size: 450, 600
     
-    label(text: PARABY UI FRAMEWORK, variant: header, place: top)
-    label(text: Phiên bản 3.3 - Mặn mà & Tốc độ, place: top)
+    label(
+        text: PARABY UI FRAMEWORK
+        variant: header
+        place: top
+    )
+    label(
+        text: Phiên bản 3.3 - Mặn mà & Tốc độ
+        place: top
+    )
     
-    btn(text: Đây là Nút, color: #ff5733)
-    entry(text: Gõ gì đó vào đây...)
-    checkbox(text: Check em đi sư phụ)
-    switch(text: Gạt lên gạt xuống)
-    slider(from: 0, to: 100)
-    combobox(values: [Tùy chọn 1, Tùy chọn 2, Tùy chọn 3])
+    btn(
+        text: Đây là Nút
+    )
+    entry(
+        text: Gõ gì đó vào đây...
+    )
+    checkbox(
+        text: Check em đi sư phụ
+    )
+    switch(
+        text: Gạt lên gạt xuống
+    )
+    slider(
+        from: 0
+        to: 100
+    )
+    combobox(
+        values: [Tùy chọn 1, Tùy chọn 2, Tùy chọn 3]
+    )
     progress()
 )
 """

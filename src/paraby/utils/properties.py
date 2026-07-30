@@ -74,4 +74,7 @@ def check_color_contrast(w_type, fg, tc):
             lum_fg = get_luminance(fg_check)
             lum_tc = get_luminance(tc_check)
             if abs(lum_fg - lum_tc) < 0.2:
-                print(_t("widget_color_contrast_hint", type=w_type))
+                try:
+                    print(_t("widget_color_contrast_hint", type=w_type))
+                except UnicodeEncodeError:
+                    print(f"[Paraby Warning] Poor color contrast detected for widget {w_type}.")
