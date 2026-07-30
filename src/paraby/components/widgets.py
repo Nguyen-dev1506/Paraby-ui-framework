@@ -5,6 +5,7 @@ from paraby.components.colors import resolve_color
 from paraby.utils.properties import parse_size, build_font_tuple, check_color_contrast
 from paraby.language_manager import get as _t
 from paraby.components.custom_widgets.combobox import ParabyComboBox
+from paraby.components.custom_widgets.popup import ParabyPopup
 
 # Base map of standard widget types to CTk classes
 WIDGET_CLASSES = {
@@ -16,9 +17,12 @@ WIDGET_CLASSES = {
     "combobox": ParabyComboBox,
     "switch": ctk.CTkSwitch,
     "frame": ctk.CTkFrame,
+    "row": ctk.CTkFrame,
+    "col": ctk.CTkFrame,
     "text_box": ctk.CTkTextbox,
     "progress": ctk.CTkProgressBar,
-    "image": ctk.CTkLabel
+    "image": ctk.CTkLabel,
+    "popup": ParabyPopup
 }
 
 # ── Private helpers ────────────────────────────────────────────────────────────
@@ -125,6 +129,9 @@ def _apply_design_system_defaults(std_type: str, properties: dict) -> None:
         properties.setdefault("border_width", 1)
         properties.setdefault("corner_radius", 8)
 
+    elif std_type in ("row", "col"):
+        properties.setdefault("fg_color", "transparent")
+
 
 def _normalize_property_aliases(w_type: str, std_type: str, properties: dict) -> None:
     """Normalises shorthand/alias property names to their canonical CTk equivalents."""
@@ -207,12 +214,18 @@ def create_widget(parent, widget_type, **properties):
     place_opt = properties.pop("place", None)
     margin_opt = properties.pop("margin", None)
     input_var = properties.pop("input", None)
+    gap_opt = properties.pop("gap", None)
 
     widget_class = WIDGET_CLASSES.get(std_type) if std_type else None
     if not widget_class:
         raise ValueError(_t("widget_type_not_supported", type=w_type))
 
     widget = widget_class(master=parent, **properties)
+
+    if std_type in ("row", "col"):
+        widget._pb_layout_type = std_type
+        if gap_opt is not None:
+            widget._pb_gap = gap_opt
 
     if place_opt is not None:
         widget._pb_place = place_opt
@@ -237,6 +250,24 @@ def place_widget(widget, place_opt=None):
         place_opt = getattr(widget, "_pb_place", None)
 
     if place_opt is None:
+        master = widget.master
+        layout_type = getattr(master, "_pb_layout_type", None)
+        
+        if layout_type in ("row", "col"):
+            gap_str = str(getattr(master, "_pb_gap", "sm")).lower()
+            gap_map = {"xs": 5, "sm": 10, "md": 15, "lg": 20, "xl": 30}
+            if gap_str in gap_map:
+                gap = gap_map[gap_str]
+            else:
+                gap = gap_map["sm"]
+
+            if layout_type == "row":
+                widget.pack(side="left", padx=gap//2)
+            else:
+                widget.pack(side="top", pady=gap//2)
+            return
+
+        # Default standard packing if not in row/col
         widget.pack(pady=5)
         return
 
