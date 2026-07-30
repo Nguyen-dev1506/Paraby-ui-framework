@@ -1,4 +1,4 @@
-__version__ = "3.1"
+__version__ = "3.5"
 
 from paraby.core.runtime import (
     create_window,

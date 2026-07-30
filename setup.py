@@ -37,13 +37,23 @@ if __name__ == "__main__" and len(sys.argv) == 1:
     sys.exit(0)
 
 
+import re
+
+def get_version():
+    init_path = os.path.join(os.path.dirname(__file__), "src", "paraby", "__init__.py")
+    with open(init_path, "r", encoding="utf-8") as f:
+        match = re.search(r'^__version__\s*=\s*[\'"]([^\'"]+)[\'"]', f.read(), re.MULTILINE)
+        if match:
+            return match.group(1)
+        raise RuntimeError("Unable to find version string.")
+
 # Đọc nội dung file README tiếng Việt để làm mô tả
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
     name='paraby',
-    version='3.2',
+    version=get_version(),
     author='By, aka Nguyên developer',
     author_email='khoinguyenphan2014@gmail.com',
     description='A lightning-fast, highly readable UI framework for Python based on CustomTkinter',
