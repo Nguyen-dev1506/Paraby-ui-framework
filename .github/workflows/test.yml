@@ -14,6 +14,15 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest]
         python-version: ["3.10", "3.11", "3.12"]
+        exclude:
+          # Python 3.10/3.11 trên windows-latest bị lỗi hạ tầng Tcl/Tk từ phía GitHub Actions
+          # hosted tool cache (thiếu init.tcl), không phải lỗi code Paraby. check-latest: true
+          # đã được thử nhưng không khắc phục được. Tạm loại trừ, cân nhắc thêm lại khi 
+          # GitHub sửa lỗi phía họ hoặc khi có bằng chứng đã ổn định trở lại.
+          - os: windows-latest
+            python-version: "3.10"
+          - os: windows-latest
+            python-version: "3.11"
       fail-fast: false
 
     steps:
