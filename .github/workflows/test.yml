@@ -14,6 +14,13 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest]
         python-version: ["3.10", "3.11", "3.12"]
+        exclude:
+          # Lỗi hạ tầng của actions/setup-python: Thiếu file init.tcl trên Windows cho 3.10 và 3.11
+          # Đã thử cài choco tcl và set TCL_LIBRARY nhưng vẫn không khắc phục được.
+          - os: windows-latest
+            python-version: "3.10"
+          - os: windows-latest
+            python-version: "3.11"
       fail-fast: false
 
     steps:
