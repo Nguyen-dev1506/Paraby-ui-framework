@@ -1,6 +1,6 @@
 import re
 from paraby.core.parser.constants import WIDGET_ALIASES
-from paraby.core.parser.lexer import process_value
+from paraby.core.parser.lexer import process_value, _split_top_level_commas
 
 class WidgetRegistry:
     """Central dictionary managing all Paraby Widgets"""
@@ -99,7 +99,7 @@ def build_ast(lines):
                 std_type = WidgetRegistry.get_std_type(w_type)
                 if not v_name:
                     v_name = get_auto_name(std_type)
-                    
+
                 node = ASTNode('widget', v_name, std_type)
                 if stack:
                     stack[-1].children.append(node)
@@ -107,7 +107,17 @@ def build_ast(lines):
                     root_nodes.append(node)
                 stack.append(node)
                 continue
-                
+            elif stack:
+                # Looks like a widget call ("name(") but isn't a known widget
+                # type (e.g. a typo'd "buton("). Falling through silently
+                # here would leave nothing pushed onto the stack, so the
+                # closing ")" meant for this line would instead pop the real
+                # enclosing block one level too early — report it clearly.
+                raise ValueError(
+                    f"Loại widget '{w_type}' không tồn tại (dòng: '{stripped}'). "
+                    "Kiểm tra lại tên widget có bị gõ sai không."
+                )
+
         # Event Binding Definition
         ev_match = EVENT_REGEX.match(stripped)
         if ev_match:
@@ -115,7 +125,20 @@ def build_ast(lines):
             parent = stack[-1] if stack else None
             
             if '.' in full_ev:
-                w_name, e_name = full_ev.split('.', 1)
+                # Only "widget.event" is valid inside .pui files. The 3-level
+                # "win.widget.event" form (docs/Huong_dan_su_dung.md, SYNTAX.md)
+                # is a *.py caller-file* convention resolved separately by
+                # core/binder.py's EventVisitor — it isn't handled here, and
+                # splitting on the first dot would silently produce a broken
+                # multi-dot event name that codegen then emits as an invalid
+                # Python function name.
+                parts = full_ev.split('.')
+                if len(parts) != 2:
+                    raise ValueError(
+                        f"Cú pháp event '{full_ev}' không hợp lệ trong file .pui — "
+                        "chỉ hỗ trợ dạng 'ten_widget.ten_event' (1 dấu chấm)."
+                    )
+                w_name, e_name = parts
             else:
                 if parent and parent.node_type == 'loop':
                     raise ValueError("Cú pháp 'if click:' không hợp lệ trực tiếp trong loop() — phải ghi rõ tên widget, ví dụ 'if ten_widget.click:'")
@@ -154,7 +177,7 @@ def build_ast(lines):
             val = prop_match.group(2)
             
             if key == "values" and not (val.startswith("[") and val.endswith("]")):
-                parts = [p.strip() for p in val.split(',')]
+                parts = [p.strip() for p in _split_top_level_commas(val)]
                 val = "[" + ", ".join(f"'{p}'" for p in parts if p) + "]"
             elif key == "name":
                 # Rename variable if user assigns 'name: my_var'

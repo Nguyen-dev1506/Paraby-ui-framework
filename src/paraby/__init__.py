@@ -1,4 +1,4 @@
-__version__ = "3.5.1"
+__version__ = "3.5.2"
 
 from paraby.core.runtime import (
     create_window,
@@ -15,11 +15,16 @@ from paraby.components.popup import alert, confirm, prompt
 from paraby.core.runner import load, run, build, popup
 from paraby import language_manager as lang
 
-# Inject dummy types at runtime so `my_btn: pui.btn` doesn't throw AttributeError
+# Inject dummy types at runtime so `my_btn: pui.btn` doesn't throw AttributeError.
+# Skip any alias that already names a real exported function/class (e.g. "alert"
+# and "popup" are both widget-type aliases AND real public API functions imported
+# above) — otherwise the dummy type silently clobbers the real one.
 class _DummyType: pass
 for _alias in WIDGET_ALIASES.keys():
-    globals()[_alias] = _DummyType
-globals()["window"] = _DummyType
+    if _alias not in globals():
+        globals()[_alias] = _DummyType
+if "window" not in globals():
+    globals()["window"] = _DummyType
 
 __all__ = [
     "__version__",

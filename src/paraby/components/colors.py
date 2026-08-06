@@ -54,12 +54,29 @@ COLOR_MAP = {
     "magenta": ("#ff00ff", "#8b008b")
 }
 
+import re
+
+_HEX_COLOR_RE = re.compile(r"^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
+
 def resolve_color(color):
     """
     Converts string color names (e.g. 'gray', 'black') into a CustomTkinter color tuple.
+
+    Names not in COLOR_MAP are passed through unchanged — Tk recognizes many
+    color names (e.g. "steelblue") that aren't in our map, and validating
+    against the full Tk color database would require an active Tk root. A
+    malformed hex code (e.g. "#12345", "#gg0000") is unambiguously wrong
+    regardless of Tk version, so that case gets a clear Paraby-level error
+    instead of surfacing as a cryptic _tkinter.TclError deep in Tk.
     """
     if isinstance(color, str):
-        c_lower = color.strip().lower()
+        c_stripped = color.strip()
+        c_lower = c_stripped.lower()
         if c_lower in COLOR_MAP:
             return COLOR_MAP[c_lower]
+        if c_stripped.startswith("#") and not _HEX_COLOR_RE.match(c_stripped):
+            raise ValueError(
+                f"[Paraby] Mã màu hex không hợp lệ: '{color}'. "
+                "Định dạng đúng là #RGB, #RRGGBB hoặc #RRGGBBAA."
+            )
     return color

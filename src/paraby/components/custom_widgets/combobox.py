@@ -32,8 +32,7 @@ class ParabyComboBox(ctk.CTkFrame):
         self._current_value = self._values[0] if self._values else ""
         if self._variable:
             self._current_value = self._variable.get()
-            self._variable.trace_add("write", self._on_var_changed)
-            
+
         # Entry/Label to show current value
         self._label = ctk.CTkLabel(self, text=self._current_value, font=font, text_color=text_color, anchor="w")
         self._label.pack(side="left", fill="both", expand=True, padx=(12, 4))
@@ -56,7 +55,10 @@ class ParabyComboBox(ctk.CTkFrame):
         
         self._dropdown_frame = None
         self._bind_id = None
-        
+        self._var_trace_id = None
+        if self._variable:
+            self._var_trace_id = self._variable.trace_add("write", self._on_var_changed)
+
     def _on_var_changed(self, *args):
         if self._variable:
             self._label.configure(text=self._variable.get())
@@ -169,6 +171,22 @@ class ParabyComboBox(ctk.CTkFrame):
             self._command(value)
         self._close_dropdown()
         
+    def destroy(self):
+        # If the dropdown is open, its <Button-1> binding lives on the
+        # toplevel (self.winfo_toplevel()), which outlives this widget —
+        # left unremoved, the next click anywhere calls _check_click_outside
+        # on a destroyed widget and raises TclError. Likewise an external
+        # tk.Variable shared with other widgets would keep invoking
+        # _on_var_changed against our destroyed self._label.
+        self._close_dropdown()
+        if self._variable and self._var_trace_id:
+            try:
+                self._variable.trace_remove("write", self._var_trace_id)
+            except Exception:
+                pass
+            self._var_trace_id = None
+        super().destroy()
+
     def configure(self, **kwargs):
         if "values" in kwargs:
             self._values = kwargs.pop("values")

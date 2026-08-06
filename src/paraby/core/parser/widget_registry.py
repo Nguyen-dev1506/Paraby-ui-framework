@@ -98,16 +98,22 @@ for std_type, data in WIDGET_REGISTRY.items():
 
 
 def match_alias_for_attr(attr_name):
-    """Return the first KNOWN_TYPES alias whose prefix matches attr_name, or None.
+    """Return the KNOWN_TYPES alias whose prefix best matches attr_name, or None.
 
     Shared by binder.py (populating the widget alias cache eagerly) and
     patch.py (resolving an alias lazily) so both use one matching rule.
+
+    Picks the LONGEST matching prefix rather than the first one found in
+    registration order: "label"'s prefix "text_" and "text_box"'s prefix
+    "text_box_" both match an attr like "text_box_1", and first-match order
+    would resolve it as a label instead of the more specific text_box.
     """
+    best_alias, best_len = None, -1
     for alias, prefixes in KNOWN_TYPES.items():
         for prefix in prefixes:
-            if attr_name.startswith(prefix):
-                return alias
-    return None
+            if attr_name.startswith(prefix) and len(prefix) > best_len:
+                best_alias, best_len = alias, len(prefix)
+    return best_alias
 
 
 def find_attr_by_alias(attr_names, alias):
