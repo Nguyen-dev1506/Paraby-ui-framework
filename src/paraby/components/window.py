@@ -58,7 +58,21 @@ def create_window(size=None, color=None, title=None, is_toplevel=False):
             
     if color:
         window.configure(fg_color=resolve_color(color))
-        
+
+    def _on_close():
+        # A ParabyPopup calls grab_set() while open (custom_widgets/popup.py).
+        # If the window is closed while a popup is still open, Tk would
+        # otherwise be left thinking a grab is held by a widget that's about
+        # to be destroyed along with the rest of the window.
+        try:
+            if window.grab_current() is not None:
+                window.grab_release()
+        except Exception:
+            pass
+        window.destroy()
+    if hasattr(window, "protocol"):
+        window.protocol("WM_DELETE_WINDOW", _on_close)
+
     return window
 
 def start_app(window):

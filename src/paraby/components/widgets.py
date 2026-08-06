@@ -58,6 +58,8 @@ def _apply_design_system_defaults(std_type: str, properties: dict) -> None:
 
     if std_type == "btn":
         variant = properties.pop("variant", "primary")
+        if variant not in ("primary", "secondary"):
+            print(_t("widgets_unknown_variant", std_type=std_type, variant=variant, known="primary, secondary"))
         if variant == "secondary":
             properties.setdefault("fg_color", "#FFFFFF")
             properties.setdefault("text_color", "#000000")
@@ -77,6 +79,8 @@ def _apply_design_system_defaults(std_type: str, properties: dict) -> None:
 
     elif std_type == "label":
         variant = properties.pop("variant", "normal")
+        if variant not in ("normal", "header"):
+            print(_t("widgets_unknown_variant", std_type=std_type, variant=variant, known="normal, header"))
         properties.setdefault("text_color", "#FFFFFF")
 
     elif std_type == "entry":
