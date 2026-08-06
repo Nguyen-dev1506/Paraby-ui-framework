@@ -148,7 +148,7 @@ def main():
         
     if sys.argv[1] == "inspect":
         if len(sys.argv) < 3:
-            print("Usage: paraby inspect <file.pui>")
+            print(_t("cli_inspect_usage"))
             sys.exit(1)
         show_help(sys.argv[2])
         return

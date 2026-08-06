@@ -7,6 +7,7 @@
     "messages": {
         "cli_main_syntax": "Cú pháp: python3 -m paraby <tên_file.py | tên_file.pb>",
         "cli_syntax_usage": "Cú pháp: paraby <ten_file.pui>",
+        "cli_inspect_usage": "Cú pháp: paraby inspect <file.pui>",
         "cli_file_read_error": "Lỗi đọc file {file}: {error}",
         "cli_ast_parse_error": "Lỗi phân tích AST: {error}",
         "cli_cheat_sheet_title": "🛠️  PARABY CHEAT SHEET CHO FILE: {file} 🛠️",
@@ -26,6 +27,7 @@
         "core_file_not_found": "Không tìm thấy file giao diện: {filepath}",
         "core_window_init_error": "Không thể khởi tạo cửa sổ từ file giao diện: {filepath}",
         "core_event_binding_error": "[Paraby Cảnh báo] Lỗi gắn sự kiện tự động: {error}",
+        "widgets_unknown_variant": "[Paraby Cảnh báo] Variant '{variant}' không hợp lệ cho widget '{std_type}' (hợp lệ: {known}) — dùng mặc định.",
 
         "binder_suggestion_title": "✨ [GỢI Ý TỪ PARABY] BẬT GỢI Ý TỰ ĐỘNG CHO IDE ✨",
         "binder_suggestion_body_1": "IDE của bạn có thể gạch đỏ các biến UI vì chúng thiếu khai báo kiểu (type hints).",

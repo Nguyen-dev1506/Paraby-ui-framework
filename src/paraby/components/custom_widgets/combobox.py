@@ -3,15 +3,12 @@ import customtkinter as ctk
 class ParabyComboBox(ctk.CTkFrame):
     def __init__(self, master, values=None, command=None, variable=None,
                  fg_color="#1C1C1E", border_color="#2C2C2E", border_width=1, corner_radius=8,
-                 text_color="#FFFFFF", font=None, 
+                 text_color="#FFFFFF", font=None,
                  button_color="#2C2C2E", button_hover_color="#3A3A3C",
-                 dropdown_fg_color="#1C1C1E", dropdown_text_color="#FFFFFF", 
-                 dropdown_font=None, dropdown_corner_radius=8,
+                 dropdown_fg_color="#1C1C1E", dropdown_text_color="#FFFFFF",
+                 dropdown_font=None, dropdown_corner_radius=8, dropdown_hover_color=None,
                  width=140, height=28, **kwargs):
-        
-        # Bỏ các tham số không hợp lệ đối với CTkFrame
-        kwargs.pop("dropdown_hover_color", None)
-        
+
         super().__init__(master, width=width, height=height, corner_radius=corner_radius,
                          fg_color=fg_color, border_color=border_color, border_width=border_width, **kwargs)
         
@@ -27,6 +24,11 @@ class ParabyComboBox(ctk.CTkFrame):
         self._dropdown_corner_radius = dropdown_corner_radius
         self._button_color = button_color
         self._button_hover_color = button_hover_color
+        # Falls back to button_hover_color for backward compat with configs
+        # that never set it — previously this kwarg was silently dropped and
+        # dropdown items always used button_hover_color regardless.
+        self._dropdown_hover_color = dropdown_hover_color if dropdown_hover_color else button_hover_color
+        self._font = font
         
         # Current value
         self._current_value = self._values[0] if self._values else ""
@@ -137,7 +139,7 @@ class ParabyComboBox(ctk.CTkFrame):
         for val in self._values:
             btn = ctk.CTkButton(container, text=val, font=self._dropdown_font,
                                 fg_color="transparent", text_color=self._dropdown_text_color,
-                                hover_color=self._button_hover_color, anchor="w",
+                                hover_color=self._dropdown_hover_color, anchor="w",
                                 corner_radius=6,
                                 command=lambda v=val: self._select_value(v))
             btn.pack(fill="x", pady=1, padx=(10, 4))
@@ -188,8 +190,41 @@ class ParabyComboBox(ctk.CTkFrame):
         super().destroy()
 
     def configure(self, **kwargs):
+        # Route combobox-specific options to the internal widgets/attrs they
+        # actually affect — CTkFrame has no such options, so leaving them in
+        # kwargs would raise TclError (or, for values/command, silently do
+        # nothing since CTkFrame just ignores unknown-to-it kwargs it can't
+        # even reach).
         if "values" in kwargs:
             self._values = kwargs.pop("values")
         if "state" in kwargs:
-            kwargs.pop("state") # Ignore state for now
+            kwargs.pop("state")  # Ignore state for now
+        if "command" in kwargs:
+            self._command = kwargs.pop("command")
+        if "text_color" in kwargs:
+            text_color = kwargs.pop("text_color")
+            self._label.configure(text_color=text_color)
+            self._v_label.configure(text_color=text_color)
+        if "font" in kwargs:
+            font = kwargs.pop("font")
+            self._font = font
+            self._label.configure(font=font)
+            v_font = (font[0], font[1] + 4, font[2]) if font else ("Quicksand", 18, "bold")
+            self._v_label.configure(font=v_font)
+        if "button_color" in kwargs:
+            self._button_color = kwargs.pop("button_color")
+            self._btn_frame.configure(fg_color=self._button_color)
+        if "button_hover_color" in kwargs:
+            self._button_hover_color = kwargs.pop("button_hover_color")
+        if "dropdown_hover_color" in kwargs:
+            self._dropdown_hover_color = kwargs.pop("dropdown_hover_color")
+        if "dropdown_fg_color" in kwargs:
+            self._dropdown_fg_color = kwargs.pop("dropdown_fg_color")
+        if "dropdown_text_color" in kwargs:
+            self._dropdown_text_color = kwargs.pop("dropdown_text_color")
+        if "dropdown_font" in kwargs:
+            self._dropdown_font = kwargs.pop("dropdown_font")
+        if "dropdown_corner_radius" in kwargs:
+            self._dropdown_corner_radius = kwargs.pop("dropdown_corner_radius")
+
         super().configure(**kwargs)

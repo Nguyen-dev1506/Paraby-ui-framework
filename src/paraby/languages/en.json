@@ -7,6 +7,7 @@
     "messages": {
         "cli_main_syntax": "Syntax: python3 -m paraby <file_name.py | file_name.pb>",
         "cli_syntax_usage": "Syntax: paraby <file_name.pui>",
+        "cli_inspect_usage": "Usage: paraby inspect <file.pui>",
         "cli_file_read_error": "Error reading file {file}: {error}",
         "cli_ast_parse_error": "AST parse error: {error}",
         "cli_cheat_sheet_title": "🛠️  PARABY CHEAT SHEET FOR FILE: {file} 🛠️",
@@ -26,6 +27,7 @@
         "core_file_not_found": "UI file not found: {filepath}",
         "core_window_init_error": "Could not initialize window from UI file: {filepath}",
         "core_event_binding_error": "[Paraby Warning] Automatic event binding error: {error}",
+        "widgets_unknown_variant": "[Paraby Warning] Unknown variant '{variant}' for widget '{std_type}' (valid: {known}) — falling back to default.",
 
         "binder_suggestion_title": "✨ [PARABY SUGGESTION] ACTIVATE IDE AUTOCOMPLETE ✨",
         "binder_suggestion_body_1": "Your IDE might highlight UI variables in red because they are missing type hints.",
