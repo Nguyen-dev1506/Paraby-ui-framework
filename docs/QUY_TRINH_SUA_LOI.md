@@ -70,8 +70,7 @@ sửa lỗi ở một bản tách biệt.
 ## Nguyên tắc khi sửa lỗi
 
 - Sửa đúng lỗi được báo cáo, không mở rộng phạm vi (không refactor kèm theo
-  trừ khi lỗi đó chính là do thiết kế trùng lặp — xem `docs/AI_CODING_RULES.md`
-  Luật 12 và các luật khác).
+  trừ khi lỗi đó chính là do thiết kế trùng lặp — xem `AGENTS.md` ở gốc repo).
 - Với lỗi có thể có nhiều cách sửa (vd. có nên strict-validate input hay
   không), ưu tiên cách sửa **hẹp và chắc chắn đúng** thay vì cách "tổng quát"
   nhưng có rủi ro phá vỡ hành vi hợp lệ hiện có (vd. `colors.py`: chỉ chặn
