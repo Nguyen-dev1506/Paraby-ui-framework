@@ -98,7 +98,16 @@ def _execute_transpiled_code(python_code, pb_filepath, _is_popup):
         if not _is_popup:
             import os
             if "PYTEST_CURRENT_TEST" not in os.environ:
-                atexit.register(window.mainloop)
+                def _run_mainloop_if_alive(window=window):
+                    # The window may have been destroyed (e.g. closed by the
+                    # user) before interpreter shutdown; calling mainloop()
+                    # on a destroyed Tk widget raises TclError.
+                    try:
+                        if window.winfo_exists():
+                            window.mainloop()
+                    except Exception:
+                        pass
+                atexit.register(_run_mainloop_if_alive)
             
     return window, mod_dict
 

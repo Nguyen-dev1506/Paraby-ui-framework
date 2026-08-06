@@ -95,3 +95,28 @@ WIDGET_TYPE_MAP = {}
 for std_type, data in WIDGET_REGISTRY.items():
     if data.get("ctk_class"):
         WIDGET_TYPE_MAP[data["ctk_class"]] = std_type
+
+
+def match_alias_for_attr(attr_name):
+    """Return the first KNOWN_TYPES alias whose prefix matches attr_name, or None.
+
+    Shared by binder.py (populating the widget alias cache eagerly) and
+    patch.py (resolving an alias lazily) so both use one matching rule.
+    """
+    for alias, prefixes in KNOWN_TYPES.items():
+        for prefix in prefixes:
+            if attr_name.startswith(prefix):
+                return alias
+    return None
+
+
+def find_attr_by_alias(attr_names, alias):
+    """Return the first name in attr_names matching alias's known prefixes, or None."""
+    prefixes = KNOWN_TYPES.get(alias)
+    if not prefixes:
+        return None
+    for attr in attr_names:
+        for prefix in prefixes:
+            if attr.startswith(prefix):
+                return attr
+    return None

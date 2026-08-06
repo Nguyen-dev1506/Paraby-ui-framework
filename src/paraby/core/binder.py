@@ -43,7 +43,29 @@ class EventVisitor(ast.NodeVisitor):
 
     def visit_If(self, node):
         self.event_ifs.append(node)
+        if self._is_event_test(node.test):
+            # node.body is captured verbatim and exec'd as the callback
+            # source (see process_ast_events). Don't also recurse into it:
+            # a nested `if other_widget.click:` inside an event body would
+            # otherwise get registered a second time as an independent
+            # top-level binding, running its code twice when triggered.
+            return
         self.generic_visit(node)
+
+    @staticmethod
+    def _is_event_test(test):
+        """Mirrors the path-matching in process_ast_events: True if `test`
+        looks like the short (`widget.event`) or old (`win.widget.event`)
+        event syntax."""
+        path = []
+        val = test
+        while isinstance(val, ast.Attribute):
+            path.append(val.attr)
+            val = val.value
+        if isinstance(val, ast.Name):
+            path.append(val.id)
+            return len(path) in (2, 3)
+        return False
 
 class StateBinder:
     """Quản lý State và Tiêm biến toàn cục cho Paraby UI"""
@@ -91,18 +113,15 @@ class StateBinder:
                     self.caller_globals[attr_name] = attr_val
                     self.injected_widgets.add(attr_name)
 
-                    # Populate widget alias cache: mirrors the exact prefix-scan semantics of
-                    # custom_win_getattr so that cache[alias] = widget IFF attr_name starts with
-                    # one of KNOWN_TYPES[alias]'s prefixes — preserving original match behaviour.
+                    # Populate widget alias cache using the same prefix-matching rule
+                    # that patch.py's custom_win_getattr falls back to, so the two
+                    # implementations can't drift apart.
                     cache = getattr(self.window, "_pb_widget_cache", None)
                     if cache is not None:
-                        from paraby.core.parser.widget_registry import KNOWN_TYPES
-                        for alias, prefixes in KNOWN_TYPES.items():
-                            if alias not in cache:
-                                for prefix in prefixes:
-                                    if attr_name.startswith(prefix):
-                                        cache[alias] = attr_val
-                                        break
+                        from paraby.core.parser.widget_registry import match_alias_for_attr
+                        alias = match_alias_for_attr(attr_name)
+                        if alias and alias not in cache:
+                            cache[alias] = attr_val
                     
                     # Data Binding for input properties
                     if hasattr(attr_val, '_pb_input_var'):
