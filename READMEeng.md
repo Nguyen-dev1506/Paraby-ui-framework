@@ -68,7 +68,7 @@ Run `pb.load()` on that file, and a full-featured demo app will open!
 ## Contributing and Architecture
 
 Want to understand how Paraby parses DSL via its pure-Python parser and generates CustomTkinter code?  
-Check out the [Developer Guide](DEVELOPER_GUIDE.md) or the [Syntax Reference](./SYNTAX.md).
+Check out [AGENTS.md](AGENTS.md) (architecture + AI/coding-agent rules) or the [Syntax Reference](./SYNTAX.md).
 
 ---
 *made by By, aka Nguyên developer*
