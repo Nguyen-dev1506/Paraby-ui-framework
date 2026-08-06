@@ -39,9 +39,16 @@ def generate_python(ast_nodes):
             
             out.append(f"    {root.var_name} = pb.create_window(size={w_size}, color={w_color}, title={w_title})")
             
-            def gen_widget(node, parent_var, ind_level=4):
+            MAX_WIDGET_DEPTH = 200
+
+            def gen_widget(node, parent_var, ind_level=4, depth=0):
+                if depth > MAX_WIDGET_DEPTH:
+                    raise RecursionError(
+                        f"Cây widget lồng quá sâu (>{MAX_WIDGET_DEPTH} cấp) quanh '{node.var_name}' — "
+                        "kiểm tra lại file .pui có bị lồng widget/loop không cần thiết không."
+                    )
                 ind = " " * ind_level
-                
+
                 # Bỏ qua việc tạo biến/gán properties nếu node là loop, chỉ duyệt tiếp các node con
                 if node.node_type == 'loop':
                     for ev in node.events:
@@ -49,7 +56,7 @@ def generate_python(ast_nodes):
                         _emit_event_handler(out, ind, ev.var_name, this_expr, ev)
                         
                     for child in node.children:
-                        gen_widget(child, parent_var, ind_level)
+                        gen_widget(child, parent_var, ind_level, depth + 1)
                     return
                     
                 props = []
@@ -69,7 +76,7 @@ def generate_python(ast_nodes):
                     _emit_event_handler(out, ind, node.var_name, node.var_name, ev)
                     
                 for child in node.children:
-                    gen_widget(child, node.var_name, ind_level)
+                    gen_widget(child, node.var_name, ind_level, depth + 1)
                     
             for child in root.children:
                 gen_widget(child, root.var_name, 4)
