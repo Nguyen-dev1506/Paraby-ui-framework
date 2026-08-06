@@ -26,4 +26,5 @@ def bind_event(widget, event_name, callback):
             widget.bind("<Configure>", lambda event: callback())
             
     else:
-        widget.bind(event_name, lambda event: callback())
+        sequence = event_name if event_name.startswith("<") else f"<{event_name}>"
+        widget.bind(sequence, lambda event: callback())

@@ -12,6 +12,6 @@ def New_window():
 
 if __name__ == "__main__":
     import sys
-    _win = New_window()
-    if _win and not hasattr(_win, "_pb_looped"):
-        _win.mainloop()
+    _window = New_window()
+    if _window and not hasattr(_window, "_pb_looped"):
+        _window.mainloop()

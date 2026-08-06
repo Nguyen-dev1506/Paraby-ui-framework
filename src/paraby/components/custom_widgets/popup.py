@@ -13,7 +13,8 @@ class ParabyPopup(ctk.CTkFrame):
         
         # We start hidden
         self.place_forget()
-        
+        self._escape_bound = False
+
     def show(self):
         # Place overlay to cover the entire master
         self._overlay.place(x=0, y=0, relwidth=1, relheight=1)
@@ -29,10 +30,14 @@ class ParabyPopup(ctk.CTkFrame):
         self.grab_set()
         self.focus_set()
         
-        # Bind Escape key to hide. 
+        # Bind Escape key to hide.
         # We bind to the toplevel window to ensure it catches it.
-        top = self.winfo_toplevel()
-        top.bind("<Escape>", self._on_escape, add="+")
+        # Guarded so repeated show() calls (without a matching hide()) don't
+        # stack duplicate bindings that would fire _on_escape multiple times.
+        if not self._escape_bound:
+            top = self.winfo_toplevel()
+            top.bind("<Escape>", self._on_escape, add="+")
+            self._escape_bound = True
         
     def _on_escape(self, event):
         self.hide()
@@ -48,6 +53,7 @@ class ParabyPopup(ctk.CTkFrame):
         # Unbind escape
         top = self.winfo_toplevel()
         top.unbind("<Escape>")
+        self._escape_bound = False
         
     def destroy(self):
         if hasattr(self, "_overlay") and self._overlay:

@@ -172,4 +172,10 @@ def build_ast(lines):
         if not stack and not in_event_node:
             root_nodes.append(ASTNode('raw', None, raw_line))
 
+    if stack:
+        unclosed = ", ".join(f"{n.node_type} '{n.var_name}'" for n in stack)
+        raise ValueError(
+            f"Thiếu dấu đóng ')' cho: {unclosed}. Kiểm tra lại các block chưa được đóng trong file .pui."
+        )
+
     return root_nodes

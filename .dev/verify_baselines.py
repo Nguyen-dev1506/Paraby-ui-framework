@@ -51,7 +51,7 @@ fixtures = {
 all_match = True
 for name, pui_code in fixtures.items():
     new_code = pb.transpile_pb(pui_code)
-    with open(f"baselines/{name}.py", "r", encoding="utf-8") as f:
+    with open(f".dev/baselines/{name}.py", "r", encoding="utf-8") as f:
         old_code = f.read()
     if new_code != old_code:
         print(f"Mismatch in {name}!")

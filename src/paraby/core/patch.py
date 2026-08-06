@@ -1,6 +1,6 @@
 import customtkinter as ctk
 
-from paraby.core.parser.widget_registry import KNOWN_TYPES
+from paraby.core.parser.widget_registry import KNOWN_TYPES, find_attr_by_alias
 
 def patch_classes():
     """
@@ -39,11 +39,9 @@ def patch_classes():
                 return cache[name]
             # Slow path: prefix scan fallback (covers widgets created before cache existed)
             if name in KNOWN_TYPES:
-                prefixes = KNOWN_TYPES[name]
-                for attr in list(self.__dict__.keys()):
-                    for prefix in prefixes:
-                        if attr.startswith(prefix):
-                            return getattr(self, attr)
+                attr = find_attr_by_alias(self.__dict__.keys(), name)
+                if attr:
+                    return getattr(self, attr)
             raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
         ctk.CTk.__getattr__ = custom_win_getattr
     
