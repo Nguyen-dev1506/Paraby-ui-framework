@@ -43,7 +43,29 @@ class EventVisitor(ast.NodeVisitor):
 
     def visit_If(self, node):
         self.event_ifs.append(node)
+        if self._is_event_test(node.test):
+            # node.body is captured verbatim and exec'd as the callback
+            # source (see process_ast_events). Don't also recurse into it:
+            # a nested `if other_widget.click:` inside an event body would
+            # otherwise get registered a second time as an independent
+            # top-level binding, running its code twice when triggered.
+            return
         self.generic_visit(node)
+
+    @staticmethod
+    def _is_event_test(test):
+        """Mirrors the path-matching in process_ast_events: True if `test`
+        looks like the short (`widget.event`) or old (`win.widget.event`)
+        event syntax."""
+        path = []
+        val = test
+        while isinstance(val, ast.Attribute):
+            path.append(val.attr)
+            val = val.value
+        if isinstance(val, ast.Name):
+            path.append(val.id)
+            return len(path) in (2, 3)
+        return False
 
 class StateBinder:
     """Quản lý State và Tiêm biến toàn cục cho Paraby UI"""

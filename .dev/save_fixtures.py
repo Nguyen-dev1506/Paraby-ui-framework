@@ -80,5 +80,5 @@ def dump_fixtures(output_file):
             f.write("\n")
 
 if __name__ == '__main__':
-    dump_fixtures('fixtures_before.txt')
-    print("Fixtures saved to fixtures_before.txt")
+    dump_fixtures('.dev/fixtures_before.txt')
+    print("Fixtures saved to .dev/fixtures_before.txt")
