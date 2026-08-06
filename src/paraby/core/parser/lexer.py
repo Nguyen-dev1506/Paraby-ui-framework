@@ -47,6 +47,44 @@ def clean_lines(code_text):
             
     return result
 
+def _split_top_level_commas(s):
+    """Split on commas that are NOT inside a quoted string.
+
+    A plain str.split(',') breaks values like ["a, b", c] mid-string because
+    it has no notion of quoting; this walks the string tracking quote/escape
+    state so an embedded comma inside "..."/'...' isn't treated as a
+    separator.
+    """
+    parts = []
+    current = []
+    in_single = False
+    in_double = False
+    escape = False
+    for ch in s:
+        if escape:
+            current.append(ch)
+            escape = False
+            continue
+        if ch == '\\':
+            current.append(ch)
+            escape = True
+            continue
+        if ch == '"' and not in_single:
+            in_double = not in_double
+            current.append(ch)
+            continue
+        if ch == "'" and not in_double:
+            in_single = not in_single
+            current.append(ch)
+            continue
+        if ch == ',' and not in_single and not in_double:
+            parts.append("".join(current))
+            current = []
+            continue
+        current.append(ch)
+    parts.append("".join(current))
+    return parts
+
 def _safe_string_literal_impl(s):
     try:
         parsed = _ast.literal_eval(s)
@@ -88,7 +126,7 @@ def process_value(val_str):
         except (ValueError, SyntaxError):
             # Nếu người dùng viết kiểu: [Tùy chọn 1, Tùy chọn 2]
             inner = val_str[1:-1]
-            parts = [p.strip() for p in inner.split(',')]
+            parts = [p.strip() for p in _split_top_level_commas(inner)]
             q_parts = []
             for pc in parts:
                 if (pc.startswith('"') and pc.endswith('"')) or (pc.startswith("'") and pc.endswith("'")):
@@ -108,7 +146,7 @@ def process_value(val_str):
                 return "{" + ", ".join(q_parts) + "}"
 
     if ',' in val_str:
-        parts = [p.strip() for p in val_str.split(',')]
+        parts = [p.strip() for p in _split_top_level_commas(val_str)]
         try:
             [float(p) for p in parts if p]
             return "(" + val_str + ")"

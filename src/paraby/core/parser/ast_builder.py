@@ -1,6 +1,6 @@
 import re
 from paraby.core.parser.constants import WIDGET_ALIASES
-from paraby.core.parser.lexer import process_value
+from paraby.core.parser.lexer import process_value, _split_top_level_commas
 
 class WidgetRegistry:
     """Central dictionary managing all Paraby Widgets"""
@@ -177,7 +177,7 @@ def build_ast(lines):
             val = prop_match.group(2)
             
             if key == "values" and not (val.startswith("[") and val.endswith("]")):
-                parts = [p.strip() for p in val.split(',')]
+                parts = [p.strip() for p in _split_top_level_commas(val)]
                 val = "[" + ", ".join(f"'{p}'" for p in parts if p) + "]"
             elif key == "name":
                 # Rename variable if user assigns 'name: my_var'
