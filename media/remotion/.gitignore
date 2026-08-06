@@ -1,0 +1,5 @@
+node_modules/
+.remotion/
+out/*.png
+out/sfx.wav
+out/*_sound.mp4
