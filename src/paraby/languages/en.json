@@ -8,6 +8,7 @@
         "cli_main_syntax": "Syntax: python3 -m paraby <file_name.py | file_name.pb>",
         "cli_syntax_usage": "Syntax: paraby <file_name.pui>",
         "cli_inspect_usage": "Usage: paraby inspect <file.pui>",
+        "cli_help_text": "Paraby UI Framework — CLI\n\nUsage:\n  paraby <file.pui>           Transpile and run a .pui/.pb file\n  paraby inspect <file.pui>   Show a cheat sheet (widgets, bindings, suggested .py code)\n  paraby demo                 Open the built-in Showroom demo\n  paraby intro                 Open the Paraby intro video\n  paraby --lang                Choose display language / nickname\n  paraby --help, -h            Show this help message",
         "cli_intro_opening": "🎬 Opening the Paraby intro video — hit fullscreen (F11 or your player's fullscreen button) for the full experience!",
         "cli_intro_not_found": "Intro video not found at '{path}'. It should ship with the package — try reinstalling Paraby.",
         "cli_intro_open_error": "Could not open the intro video at '{path}': {error}",

@@ -173,7 +173,11 @@ def main():
     if len(sys.argv) < 2:
         print(_t("cli_syntax_usage"))
         sys.exit(1)
-        
+
+    if sys.argv[1] in ("--help", "-h"):
+        print(_t("cli_help_text"))
+        return
+
     if sys.argv[1] == "inspect":
         if len(sys.argv) < 3:
             print(_t("cli_inspect_usage"))

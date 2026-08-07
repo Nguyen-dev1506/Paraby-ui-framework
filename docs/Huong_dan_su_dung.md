@@ -65,6 +65,17 @@ Chạy trực tiếp tệp DSL `.pb` hoặc `.pui`:
 python3 -m paraby giao_dien.pui
 ```
 
+### Các lệnh CLI khác
+
+| Lệnh | Mô tả |
+|---|---|
+| `paraby <file.pui>` | Transpile và chạy file `.pui`/`.pb` |
+| `paraby inspect <file.pui>` | Xem "cheat sheet": danh sách widget, biến bind 2 chiều, gợi ý code `.py` |
+| `paraby demo` | Mở app "Showroom" demo có sẵn (không cần viết file `.pui` nào) |
+| `paraby intro` | Mở video giới thiệu Paraby bằng trình phát mặc định của máy (bấm fullscreen để xem trọn vẹn) |
+| `paraby --lang` | Chọn ngôn ngữ hiển thị (`en`/`vi`/`vi_cakhia`/`vi_vui`) và đặt nickname để Paraby gọi tên bạn trong các thông báo |
+| `paraby --help` hoặc `-h` | Xem danh sách lệnh này |
+
 ---
 
 ## 2. Cấu hình Cửa sổ

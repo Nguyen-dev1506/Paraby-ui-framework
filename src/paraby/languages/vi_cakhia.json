@@ -8,6 +8,7 @@
         "cli_main_syntax": "Cú pháp: python3 -m paraby <ten_file.py | ten_file.pb> — gõ thiếu là tự trách bản thân nha {nickname}.",
         "cli_syntax_usage": "paraby <ten_file.pui> — có vậy thôi mà cũng phải tra cứu à {nickname}?",
         "cli_inspect_usage": "paraby inspect <file.pui> — đọc kỹ trước khi hỏi lại nha.",
+        "cli_help_text": "Paraby UI Framework — hướng dẫn cho {nickname} (đọc kỹ khỏi hỏi lại)\n\nCú pháp:\n  paraby <file.pui>           Chạy file .pui/.pb, có vậy thôi\n  paraby inspect <file.pui>   Xem cheat sheet — widget, binding, code mẫu\n  paraby demo                 Mở Showroom demo, khỏi tự viết file làm gì\n  paraby intro                 Mở video intro, xem đi rồi biết\n  paraby --lang                Đổi ngôn ngữ / đặt tên, tuỳ hứng {nickname}\n  paraby --help, -h            Đang đọc đây rồi còn gì",
         "cli_intro_opening": "🎬 Mở video intro nè {nickname}, nhớ bấm fullscreen chứ xem bé tí thì phí công dựng lắm đó.",
         "cli_intro_not_found": "Ủa video intro đâu mất tiêu rồi '{path}'? {nickname} cài thiếu gì rồi, cài lại đi.",
         "cli_intro_open_error": "Mở video intro lỗi rồi {nickname} ơi ('{path}'): {error}",

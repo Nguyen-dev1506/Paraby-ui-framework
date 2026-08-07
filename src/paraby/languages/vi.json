@@ -8,6 +8,7 @@
         "cli_main_syntax": "Cú pháp: python3 -m paraby <tên_file.py | tên_file.pb>",
         "cli_syntax_usage": "Cú pháp: paraby <ten_file.pui>",
         "cli_inspect_usage": "Cú pháp: paraby inspect <file.pui>",
+        "cli_help_text": "Paraby UI Framework — Dòng lệnh CLI\n\nCú pháp:\n  paraby <file.pui>           Transpile và chạy file .pui/.pb\n  paraby inspect <file.pui>   Xem cheat sheet (widget, data binding, gợi ý code .py)\n  paraby demo                 Mở Showroom demo có sẵn\n  paraby intro                 Mở video giới thiệu Paraby\n  paraby --lang                Chọn ngôn ngữ hiển thị / đặt nickname\n  paraby --help, -h            Xem hướng dẫn này",
         "cli_intro_opening": "🎬 Đang mở video intro Paraby — bấm fullscreen (F11 hoặc nút full màn hình của trình phát) để có trải nghiệm trọn vẹn nhé!",
         "cli_intro_not_found": "Không tìm thấy video intro tại '{path}'. File này lẽ ra phải đi kèm gói cài đặt — thử cài lại Paraby xem sao.",
         "cli_intro_open_error": "Không mở được video intro tại '{path}': {error}",

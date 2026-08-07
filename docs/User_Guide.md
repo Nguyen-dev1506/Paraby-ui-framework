@@ -71,6 +71,17 @@ Run the DSL `.pb` or `.pui` file directly:
 python3 -m paraby my_ui.pui
 ```
 
+### Other CLI commands
+
+| Command | Description |
+|---|---|
+| `paraby <file.pui>` | Transpile and run a `.pui`/`.pb` file |
+| `paraby inspect <file.pui>` | Show a "cheat sheet": widget list, two-way data bindings, suggested `.py` code |
+| `paraby demo` | Open the built-in "Showroom" demo (no `.pui` file needed) |
+| `paraby intro` | Open the Paraby intro video with the system's default player (go fullscreen for the full effect) |
+| `paraby --lang` | Choose the display language (`en`/`vi`/`vi_cakhia`/`vi_vui`) and set a nickname for Paraby to address you by |
+| `paraby --help` / `-h` | Show this command list |
+
 ---
 
 ## 2. Window Configuration
