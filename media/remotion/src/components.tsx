@@ -216,6 +216,13 @@ export const Icon: React.FC<{ kind: string; size?: number }> = ({ kind, size = 5
           <line x1="24" y1="76" x2="76" y2="24" stroke={COLORS.danger} strokeWidth="9" />
         </svg>
       );
+    case "play":
+      return (
+        <svg width={s} height={s} viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke={COLORS.accentBlue} strokeWidth="7" />
+          <polygon points="40,32 40,68 72,50" fill={COLORS.logoGold} />
+        </svg>
+      );
     case "shield":
       return (
         <svg width={s * 0.8} height={s} viewBox="0 0 70 84">
