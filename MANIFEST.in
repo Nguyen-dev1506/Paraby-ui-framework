@@ -1,6 +1,5 @@
 include README.md
 include src/paraby/*.pui
-include DEVELOPER_GUIDE.md
-include DEVELOPER_GUIDE_VN.md
 include src/paraby/assets/fonts/*.ttf
 include src/paraby/assets/fonts/*.txt
+include src/paraby/assets/intro.mp4

@@ -1,5 +1,7 @@
 import sys
+import os
 import re
+import subprocess
 from paraby.language_manager import get as _t
 
 def show_help(pui_file):
@@ -141,6 +143,32 @@ if _win and not hasattr(_win, "_pb_looped"):
     mod_dict = {'__name__': '__main__'}
     exec(SHOWROOM_CODE, mod_dict)
 
+def run_intro():
+    """
+    Mở video intro của Paraby bằng trình phát video mặc định của máy.
+    Không ép fullscreen được vì mỗi hệ điều hành/trình phát khác nhau —
+    chỉ mở file, người dùng tự bấm fullscreen (F11 hoặc nút full màn hình
+    của trình phát) để có đúng trải nghiệm "xem như sư phụ xem".
+    """
+    video_path = os.path.join(os.path.dirname(__file__), "..", "assets", "intro.mp4")
+    video_path = os.path.abspath(video_path)
+
+    if not os.path.isfile(video_path):
+        print(_t("cli_intro_not_found", path=video_path))
+        return
+
+    print(_t("cli_intro_opening"))
+    try:
+        if sys.platform == "win32":
+            os.startfile(video_path)
+        elif sys.platform == "darwin":
+            subprocess.run(["open", video_path], check=False)
+        else:
+            subprocess.run(["xdg-open", video_path], check=False)
+    except Exception as e:
+        print(_t("cli_intro_open_error", error=e, path=video_path))
+
+
 def main():
     if len(sys.argv) < 2:
         print(_t("cli_syntax_usage"))
@@ -155,6 +183,10 @@ def main():
         
     if sys.argv[1] == "demo":
         run_demo()
+        return
+
+    if sys.argv[1] == "intro":
+        run_intro()
         return
         
     if sys.argv[1] == "--lang":

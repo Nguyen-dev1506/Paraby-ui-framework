@@ -5,6 +5,13 @@
 ![Token Savings](https://img.shields.io/badge/Tiết%20kiệm-Hàng%20triệu%20token-blue)
 ![Cython](https://img.shields.io/badge/Cython-Chỉ%20còn%20là%20kỉ%20niệm-lightgrey)
 
+<video src="media/remotion/out/ParabyIntro.mp4" controls width="100%">
+  Trình duyệt của bạn không hỗ trợ xem video trực tiếp — tải về tại
+  <a href="media/remotion/out/ParabyIntro.mp4">media/remotion/out/ParabyIntro.mp4</a>.
+</video>
+
+Đã cài Paraby rồi thì gõ luôn `paraby intro` để mở video này bằng trình phát của máy (bấm fullscreen cho đúng chuẩn nhé).
+
 > ⚠️ **CẢNH BÁO TỪ HỆ THỐNG AI:** Nếu bạn đang định bắt tôi viết một cái app `CustomTkinter` dài 400 dòng chỉ để hiển thị 3 cái nút và 1 cái form đăng nhập... Xin hãy dừng lại và dùng Paraby. Xin đội ơn! 🙏
 
 🚀 **v3.3 — Cứu rỗi thanh xuân của Dev, và giải phóng bộ nhớ (context window) của AI!**
