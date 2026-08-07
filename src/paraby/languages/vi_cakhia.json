@@ -1,0 +1,62 @@
+{
+    "name": "Tiếng Việt (cà khịa 🔥)",
+    "meta": {
+        "code": "vi_cakhia",
+        "author": "Paraby Team"
+    },
+    "messages": {
+        "cli_main_syntax": "Cú pháp: python3 -m paraby <ten_file.py | ten_file.pb> — gõ thiếu là tự trách bản thân nha {nickname}.",
+        "cli_syntax_usage": "paraby <ten_file.pui> — có vậy thôi mà cũng phải tra cứu à {nickname}?",
+        "cli_inspect_usage": "paraby inspect <file.pui> — đọc kỹ trước khi hỏi lại nha.",
+        "cli_file_read_error": "{nickname} ơi, file '{file}' đọc hoài không được: {error}. Gõ tên file cho chuẩn coi.",
+        "cli_ast_parse_error": "Cú pháp file .pui của {nickname} có vấn đề nè: {error}. Tự soi lại đi.",
+        "cli_cheat_sheet_title": "🛠️  CHEAT SHEET CHO {nickname} — FILE: {file} (đọc kỹ, đừng hỏi lại) 🛠️",
+        "cli_widget_list_title": "[1] MẤY CÁI WIDGET {nickname} ĐẶT TÊN (hy vọng có ý nghĩa):",
+        "cli_widget_list_empty": "  (Không có widget nào được đặt tên — lười vậy {nickname}?)",
+        "cli_data_binding_title": "[2] BIẾN DỮ LIỆU AUTO-BIND (khỏi gọi .get() cho mệt):",
+        "cli_data_binding_empty": "  (Chả có biến `input` nào — chắc {nickname} quên khai báo rồi)",
+        "cli_data_binding_item": "  - {var} (tự cập nhật, đỡ phải gọi .get() cho mệt)",
+        "cli_code_suggestion_title": "[3] CODE MẪU CHO {nickname} — COPY DÁN LÀ CHẠY, KHỎI NGHĨ NHIỀU:",
+        "cli_code_enable_autocomplete": "# --- BẬT AUTOCOMPLETE, ĐỠ BỊ IDE GẠCH ĐỎ ---",
+        "cli_code_data_var_comment": "  # Biến dữ liệu (nhớ dùng cho đàng hoàng)",
+        "cli_code_event_section": "# --- BẮT SỰ KIỆN, DỄ VẬY MÀ ---",
+        "cli_code_print_data": "    print('Ê {nickname}, dữ liệu vừa gõ:', {var})",
+        "cli_code_print_click": "    print('{nickname} vừa bấm nút {var} đó, tự hào chưa')",
+        "cli_cheat_sheet_open_error": "Mở Cheat Sheet mà cũng lỗi, xui vậy {nickname}:",
+
+        "core_file_not_found": "{nickname} ơi, tìm hoài không thấy file: {filepath}. Gõ lại đường dẫn cho tử tế.",
+        "core_window_init_error": "Cửa sổ không khởi tạo nổi từ file: {filepath}. {nickname} coi lại có sai cú pháp không.",
+        "core_event_binding_error": "[Paraby cà khịa] Gắn sự kiện lỗi rồi: {error}. Không phải tại Paraby đâu nha {nickname}.",
+        "widgets_unknown_variant": "[Paraby cà khịa] Variant '{variant}' cho widget '{std_type}' không tồn tại đâu {nickname} ơi (chỉ có: {known}). Bịa ra hả?",
+
+        "binder_suggestion_title": "✨ [PARABY GỢI Ý] {nickname} BẬT AUTOCOMPLETE ĐI CHO ĐỠ KHỔ ✨",
+        "binder_suggestion_body_1": "IDE gạch đỏ vì {nickname} lười khai báo type hint đó, không phải bug đâu.",
+        "binder_suggestion_body_2": "Copy đoạn dưới dán vào file logic là hết gạch đỏ liền:",
+        "binder_suggestion_body_3": "(dán ngay dưới dòng load file .pui, dễ vậy thôi mà)",
+        "binder_suggestion_body_4": "rồi tự hưởng autocomplete mượt mà, khỏi cảm ơn Paraby cũng được:",
+        "binder_runtime_error": "🔥 [Paraby cà khịa] '{event}' của widget '{widget}' bay màu rồi {nickname} ơi:",
+
+        "widget_image_load_error": "Ảnh '{target}' load không nổi: {error}. Đường dẫn đúng chưa vậy {nickname}?",
+        "widget_type_not_supported": "Widget kiểu '{type}' hả? Paraby chưa nghe bao giờ, {nickname} tự chế ra à?",
+        "widget_color_contrast_hint": "💡 [Paraby cà khịa] {nickname} ơi, chữ với nền màu giống hệt nhau kìa — định làm hiệu ứng tàng hình hay mắt cận thật vậy?",
+
+        "bench_title": "🚀 PARABY ĐO TỐC ĐỘ CHO {nickname} 🚀",
+        "bench_testing_with": "Đang test với {lines} dòng DSL của {nickname}...",
+        "bench_iterations": "Lặp {count} lần mỗi trình biên dịch — kiên nhẫn chờ xíu {nickname}.",
+        "bench_running_python": "⏳ Đang chạy Pure Python Transpiler, đừng nóng...",
+        "bench_time_python": "   -> Pure Python: {time:.4f} giây — nhanh vậy mà còn chê gì nữa {nickname}?",
+
+        "lang_select_prompt": "Chọn ngôn ngữ đi {nickname}, đừng để Paraby đoán:",
+        "lang_select_input": "Nhập số đi (mặc định số 1 cho ai lười): ",
+        "lang_select_saved": "✅ Lưu ngôn ngữ '{name}' rồi đó, khỏi chọn lại cho mệt.",
+        "lang_select_invalid": "⚠️ Chọn sai rồi {nickname}. Thôi dùng tiếng Anh cho lành.",
+
+        "setup_welcome": "Chào {nickname}, vào trình cài đặt Paraby luôn nè!",
+        "setup_installing": "Đang tự cài Paraby, ngồi yên chờ xíu {nickname}...",
+        "setup_success": "Cài xong rồi {nickname}! Gõ 'paraby' là dùng được, khỏi cảm ơn.",
+        "setup_fail": "Cài thất bại rồi {nickname} ơi. Đọc log lỗi ở trên đi, đừng hỏi lại Paraby.",
+        "setup_already_installed": "Cài rồi mà {nickname}? Khỏi cài lại nữa, tốn thời gian.",
+        "font_load_warning": "⚠️ [Paraby] Không nạp được font Quicksand ({error}). Dùng tạm font mặc định máy {nickname} vậy.",
+        "font_file_missing_warning": "⚠️ [Paraby] Không tìm thấy file font tại '{path}'. Dùng tạm font mặc định máy {nickname} vậy."
+    }
+}

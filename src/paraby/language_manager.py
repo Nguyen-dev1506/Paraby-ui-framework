@@ -25,6 +25,7 @@ _cache = {}
 _current_lang_code = None
 _current_messages = None
 _fallback_messages = None
+_nickname = None
 
 
 def _scan_languages():
@@ -73,28 +74,45 @@ def _load_language(code):
         return {}
 
 
+def _read_config_full():
+    """Đọc toàn bộ file cấu hình ~/.paraby_config. Trả về dict rỗng nếu chưa có/lỗi."""
+    if not os.path.isfile(_CONFIG_PATH):
+        return {}
+    try:
+        with open(_CONFIG_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
 def _read_config():
     """
     Đọc file cấu hình ~/.paraby_config để lấy mã ngôn ngữ đã lưu.
     Trả về mã ngôn ngữ (str) hoặc None nếu chưa có/lỗi.
     """
-    if not os.path.isfile(_CONFIG_PATH):
-        return None
-    try:
-        with open(_CONFIG_PATH, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        return data.get("language", None)
-    except Exception:
-        return None
+    return _read_config_full().get("language", None)
 
 
-def _write_config(lang_code):
-    """Lưu mã ngôn ngữ đã chọn vào file ~/.paraby_config."""
+def _write_config(lang_code=None, nickname=None):
+    """
+    Lưu ngôn ngữ và/hoặc nickname vào ~/.paraby_config, giữ nguyên trường
+    còn lại đã lưu trước đó (ví dụ đổi ngôn ngữ không được xoá mất nickname).
+    """
+    data = _read_config_full()
+    if lang_code is not None:
+        data["language"] = lang_code
+    if nickname is not None:
+        data["nickname"] = nickname
     try:
         with open(_CONFIG_PATH, "w", encoding="utf-8") as f:
-            json.dump({"language": lang_code}, f)
+            json.dump(data, f, ensure_ascii=False)
     except Exception:
         pass  # Không thể ghi file → bỏ qua, dùng mặc định
+
+
+def get_nickname():
+    """Trả về nickname người dùng đã lưu, hoặc 'bạn' nếu chưa từng đặt."""
+    return _nickname or "bạn"
 
 
 def _init():
@@ -102,13 +120,15 @@ def _init():
     Khởi tạo hệ thống ngôn ngữ (chạy một lần duy nhất khi module được import).
     Đọc config đã lưu, hoặc mặc định dùng 'en' nếu chưa có.
     """
-    global _current_lang_code, _current_messages, _fallback_messages
+    global _current_lang_code, _current_messages, _fallback_messages, _nickname
 
     # Luôn nạp sẵn English làm fallback
     _fallback_messages = _load_language("en")
 
-    # Đọc ngôn ngữ từ config
-    saved_code = _read_config()
+    # Đọc ngôn ngữ + nickname từ config
+    config = _read_config_full()
+    _nickname = config.get("nickname") or None
+    saved_code = config.get("language")
     if saved_code:
         _current_lang_code = saved_code
         _current_messages = _load_language(saved_code)
@@ -124,7 +144,7 @@ def interactive_select():
     Được kích hoạt khi người dùng gõ: `paraby --lang` hoặc `python3 -m paraby --lang`.
     Sau khi chọn, lưu vào ~/.paraby_config để lần sau không phải chọn lại.
     """
-    global _current_lang_code, _current_messages
+    global _current_lang_code, _current_messages, _nickname
 
     languages = _scan_languages()
     if not languages:
@@ -155,9 +175,24 @@ def interactive_select():
         selected = languages[idx]
         _current_lang_code = selected["code"]
         _current_messages = _load_language(selected["code"])
-        _write_config(selected["code"])
+        _write_config(lang_code=selected["code"])
         # Dùng chính ngôn ngữ vừa chọn để hiển thị xác nhận
         print(f"\n{get('lang_select_saved', name=selected['name'])}\n")
+
+        # Hỏi nickname 1 lần — chỉ xảy ra khi người dùng CHỦ ĐỘNG chạy
+        # `paraby --lang`, không bao giờ tự động hỏi lúc khởi động bình
+        # thường. Enter để giữ nguyên/bỏ qua.
+        try:
+            current = f" (hiện tại: {_nickname})" if _nickname else ""
+            typed = input(f"🎤 Paraby gọi bạn là gì?{current} (Enter để bỏ qua): ").strip()
+        except (EOFError, KeyboardInterrupt):
+            typed = ""
+        # Không kiểm duyệt nội dung — chỉ chặn thứ phá layout console
+        # (xuống dòng, tên quá dài làm vỡ dòng cảnh báo 1 dòng).
+        typed = typed.replace("\n", " ").replace("\r", "")[:24].strip()
+        if typed:
+            _nickname = typed
+            _write_config(nickname=typed)
     else:
         print(f"\n{get('lang_select_invalid')}\n")
         _current_lang_code = "en"
@@ -189,14 +224,15 @@ def get(key, **kwargs):
     if text is None:
         return key
 
-    # Thay thế biến động nếu có
-    if kwargs:
-        try:
-            return text.format(**kwargs)
-        except (KeyError, IndexError, ValueError):
-            return text  # format lỗi → trả nguyên chuỗi, không crash
+    # Tự động có sẵn {nickname} cho mọi message (kể cả khi ngôn ngữ/message
+    # không dùng tới) — kwarg gọi tường minh vẫn được ưu tiên nếu trùng tên.
+    final_kwargs = {"nickname": get_nickname()}
+    final_kwargs.update(kwargs)
 
-    return text
+    try:
+        return text.format(**final_kwargs)
+    except (KeyError, IndexError, ValueError):
+        return text  # format lỗi → trả nguyên chuỗi, không crash
 
 
 def get_current_language():
