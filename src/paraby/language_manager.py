@@ -12,6 +12,7 @@ Cơ chế Fallback 3 lớp (không bao giờ crash):
 """
 
 import os
+import sys
 import json
 
 # Đường dẫn tới thư mục chứa các file ngôn ngữ .json
@@ -151,14 +152,14 @@ def interactive_select():
         print("No language files found in languages/ directory.")
         return
 
-    print("\n" + "=" * 50)
-    print("🌍  PARABY LANGUAGE SELECTION")
-    print("=" * 50)
-    print("Please select your language:\n")
+    safe_print("\n" + "=" * 50)
+    safe_print("🌍  PARABY LANGUAGE SELECTION")
+    safe_print("=" * 50)
+    safe_print("Please select your language:\n")
 
     for i, lang in enumerate(languages, 1):
         marker = " ✓" if lang["code"] == _current_lang_code else ""
-        print(f"  {i}. {lang['name']} ({lang['code']}){marker}")
+        safe_print(f"  {i}. {lang['name']} ({lang['code']}){marker}")
 
     print()
 
@@ -177,14 +178,21 @@ def interactive_select():
         _current_messages = _load_language(selected["code"])
         _write_config(lang_code=selected["code"])
         # Dùng chính ngôn ngữ vừa chọn để hiển thị xác nhận
-        print(f"\n{get('lang_select_saved', name=selected['name'])}\n")
+        safe_print(f"\n{get('lang_select_saved', name=selected['name'])}\n")
 
         # Hỏi nickname 1 lần — chỉ xảy ra khi người dùng CHỦ ĐỘNG chạy
         # `paraby --lang`, không bao giờ tự động hỏi lúc khởi động bình
         # thường. Enter để giữ nguyên/bỏ qua.
         try:
             current = f" (hiện tại: {_nickname})" if _nickname else ""
-            typed = input(f"🎤 Paraby gọi bạn là gì?{current} (Enter để bỏ qua): ").strip()
+            prompt = f"🎤 Paraby gọi bạn là gì?{current} (Enter để bỏ qua): "
+            try:
+                typed = input(prompt).strip()
+            except UnicodeEncodeError:
+                # Console không phải UTF-8 (cp1252/cp437 trên Windows) không in
+                # được emoji trong prompt — in an toàn trước rồi input() trơn.
+                safe_print(prompt)
+                typed = input().strip()
         except (EOFError, KeyboardInterrupt):
             typed = ""
         # Không kiểm duyệt nội dung — chỉ chặn thứ phá layout console
@@ -194,7 +202,7 @@ def interactive_select():
             _nickname = typed
             _write_config(nickname=typed)
     else:
-        print(f"\n{get('lang_select_invalid')}\n")
+        safe_print(f"\n{get('lang_select_invalid')}\n")
         _current_lang_code = "en"
         _current_messages = _fallback_messages
         _write_config("en")
@@ -238,6 +246,22 @@ def get(key, **kwargs):
 def get_current_language():
     """Trả về mã ngôn ngữ đang dùng (ví dụ: 'en', 'vi')."""
     return _current_lang_code
+
+
+def safe_print(text):
+    """
+    print() bọc chống UnicodeEncodeError — nhiều message dùng emoji (✨...),
+    và console mặc định trên Windows (cp1252/cp437 tuỳ locale, không phải
+    UTF-8) sẽ crash khi in ký tự đó. Một lỗi in ấn thuần tuý không được phép
+    làm hỏng luồng chính (ví dụ: khiến binder.py báo nhầm thành "lỗi bind
+    event" dù việc bind đã xong, chỉ có dòng gợi ý cuối cùng là in lỗi) —
+    nên ở đây chỉ hạ cấp xuống bản ASCII-safe thay vì để exception thoát ra.
+    """
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        encoding = getattr(sys.stdout, "encoding", None) or "ascii"
+        print(text.encode(encoding, errors="replace").decode(encoding))
 
 
 # ====================================================

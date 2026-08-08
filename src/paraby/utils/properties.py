@@ -31,6 +31,19 @@ def load_custom_font():
             FR_PRIVATE = 0x10
             ctypes.windll.gdi32.AddFontResourceExW(font_path, FR_PRIVATE, 0)
             _FONT_LOADED = True
+        elif sys.platform.startswith("linux"):
+            # FcConfigAppFontAddFile registers the font for THIS process only via
+            # fontconfig (what Tk/Xft use to resolve font names on Linux) — same
+            # "private, no system-wide side effect" property as FR_PRIVATE on
+            # Windows above, no need to write into ~/.fonts or run fc-cache.
+            try:
+                fontconfig = ctypes.CDLL("libfontconfig.so.1")
+            except OSError:
+                fontconfig = ctypes.CDLL("libfontconfig.so")
+            fontconfig.FcConfigAppFontAddFile.restype = ctypes.c_int
+            fontconfig.FcConfigAppFontAddFile.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+            if fontconfig.FcConfigAppFontAddFile(None, font_path.encode("utf-8")):
+                _FONT_LOADED = True
     except Exception as e:
         from paraby.language_manager import get as _t
         print(_t("font_load_warning", error=str(e)))

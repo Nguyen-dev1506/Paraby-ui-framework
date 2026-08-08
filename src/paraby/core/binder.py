@@ -4,7 +4,7 @@ import traceback
 import customtkinter as ctk
 import tkinter as tk
 from paraby.core.runtime import bind_event
-from paraby.language_manager import get as _t
+from paraby.language_manager import get as _t, safe_print
 
 _AST_CACHE = {}
 
@@ -95,15 +95,15 @@ class StateBinder:
                 missing_hints.append(f"{w_name}: {visitor.pb_alias}.{mapped_type}")
                 
         if missing_hints:
-            print("\n" + "="*65)
-            print(_t("binder_suggestion_title"))
-            print(_t("binder_suggestion_body_1"))
-            print(_t("binder_suggestion_body_2"))
-            print(_t("binder_suggestion_body_3"))
-            print(_t("binder_suggestion_body_4") + "\n")
+            safe_print("\n" + "="*65)
+            safe_print(_t("binder_suggestion_title"))
+            safe_print(_t("binder_suggestion_body_1"))
+            safe_print(_t("binder_suggestion_body_2"))
+            safe_print(_t("binder_suggestion_body_3"))
+            safe_print(_t("binder_suggestion_body_4") + "\n")
             for line in missing_hints:
-                print(line)
-            print("="*65 + "\n")
+                safe_print(line)
+            safe_print("="*65 + "\n")
 
     def inject_widgets_and_binding(self):
         for attr_name in dir(self.window):

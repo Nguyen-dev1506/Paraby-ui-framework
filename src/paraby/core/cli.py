@@ -2,7 +2,7 @@ import sys
 import os
 import re
 import subprocess
-from paraby.language_manager import get as _t
+from paraby.language_manager import get as _t, safe_print
 
 def show_help(pui_file):
     try:
@@ -157,7 +157,7 @@ def run_intro():
         print(_t("cli_intro_not_found", path=video_path))
         return
 
-    print(_t("cli_intro_opening"))
+    safe_print(_t("cli_intro_opening"))
     try:
         if sys.platform == "win32":
             os.startfile(video_path)

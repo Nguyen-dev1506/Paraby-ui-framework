@@ -36,6 +36,30 @@ def test_font_file_missing_warning(capsys):
         assert "Paraby" in captured.out
         assert "Quicksand-VariableFont_wght.ttf" in captured.out
 
+def test_font_loads_via_fontconfig_on_linux():
+    # Regression test: load_custom_font() previously had no Linux branch at
+    # all (only darwin/win32), so on Linux the font silently never got
+    # registered — no crash, no warning, just a quiet fallback away from
+    # Quicksand. This verifies the fontconfig path actually registers the
+    # font and flips _FONT_LOADED, not just that it fails to crash.
+    props._FONT_LOADED = False
+
+    from unittest.mock import MagicMock
+    mock_fontconfig = MagicMock()
+    mock_fontconfig.FcConfigAppFontAddFile.return_value = 1
+
+    with patch("os.path.exists", return_value=True), \
+         patch("sys.platform", "linux"), \
+         patch("ctypes.CDLL", return_value=mock_fontconfig) as mock_cdll:
+        props.load_custom_font()
+
+    mock_cdll.assert_called_once_with("libfontconfig.so.1")
+    mock_fontconfig.FcConfigAppFontAddFile.assert_called_once()
+    args = mock_fontconfig.FcConfigAppFontAddFile.call_args[0]
+    assert args[0] is None
+    assert args[1].endswith(b"Quicksand-VariableFont_wght.ttf")
+    assert props._FONT_LOADED is True
+
 def test_font_load_warning(capsys):
     props._FONT_LOADED = False
     
